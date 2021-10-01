@@ -1,0 +1,11 @@
+body {
+    --primary-color: #FF7A00;
+    --background-color: black;
+    --outline-color: white;
+}
+
+body.dark-theme {
+    --primary-color: #FF7A00;
+    --background-color: black;
+    --outline-color: white;
+}
