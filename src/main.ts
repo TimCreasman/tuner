@@ -3,50 +3,55 @@
 import {PitchDetectorService} from "./app/pitch-detector.service";
 
 let pitchDetectorService = new PitchDetectorService();
+let doDraw = true;
 
 document.addEventListener('DOMContentLoaded', () => {
+    window.requestAnimationFrame(draw);
 
-    pitchDetectorService.connectToStream().then(() => {
-        console.log("Connected to microphone");
-        // start the pitch detector
-        pitchDetectorService.start();
+    document.getElementById('startListening').addEventListener('click', () => {
+        doDraw = true;
+        pitchDetectorService.startListening();
     });
 
-    window.requestAnimationFrame(draw);
-    // document.getElementById('getPitch').addEventListener('click', () => {
-    //     document.getElementById('showPitch').innerText = 'pitch: ' + pitchDetectorService.getPitch();
-    // });
+    document.getElementById('stopListening').addEventListener('click', () => {
+        doDraw = false;
+        pitchDetectorService.stopListening();
+    });
 });
 
 const dots = [];
 
 function draw() {
-    let canvas = document.getElementById('graphPitch') as HTMLCanvasElement;
-    let ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // clear canvas
 
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-    ctx.strokeStyle = 'rgba(0, 153, 255, 0.4)';
-    ctx.save();
+    if (doDraw) {
+        let canvas = document.getElementById('graphPitch') as HTMLCanvasElement;
+        let ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height); // clear canvas
 
-    // create dot
-    // if (pitchDetectorService.getClarity() > 0.8) {
-        dots.push(new dot(canvas.width, map(pitchDetectorService.getPitch(), 0, 2000, canvas.height, 0) ));
-    // }
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+        ctx.strokeStyle = 'rgba(0, 153, 255, 0.4)';
+        ctx.save();
 
-    // iterate through dots
+        // create dot
+        // if (pitchDetectorService.getClarity() > 0.8) {
+        const dotY = map((pitchDetectorService.getPitch()*10), 0, 20000, canvas.height, 0);
+        // console.log(dotY);
+        dots.push(new dot(canvas.width, dotY));
+        // }
 
-    dots.forEach((dot, index) => {
-        ctx.beginPath();
-        ctx.arc(dot.x, dot.y, 5, 0, 2 * Math.PI);
-        ctx.stroke();
-        dot.x -= 1;
-        if (dot.x < 0) {
-            dots.slice(index, 1);
-        }
-    })
+        // iterate through dots
 
-    //
+        dots.forEach((dot, index) => {
+            ctx.beginPath();
+            ctx.arc(dot.x, dot.y, 5, 0, 2 * Math.PI);
+            ctx.stroke();
+            dot.x -= 1;
+            if (dot.x < 0) {
+                dots.slice(index, 1);
+            }
+        })
+    }
+
     window.requestAnimationFrame(draw);
 }
 

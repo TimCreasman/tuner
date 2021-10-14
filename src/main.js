@@ -3,40 +3,44 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var pitch_detector_service_1 = require("./app/pitch-detector.service");
 var pitchDetectorService = new pitch_detector_service_1.PitchDetectorService();
+var doDraw = true;
 document.addEventListener('DOMContentLoaded', function () {
-    pitchDetectorService.connectToStream().then(function () {
-        console.log("Connected to microphone");
-        // start the pitch detector
-        pitchDetectorService.start();
-    });
     window.requestAnimationFrame(draw);
-    // document.getElementById('getPitch').addEventListener('click', () => {
-    //     document.getElementById('showPitch').innerText = 'pitch: ' + pitchDetectorService.getPitch();
-    // });
+    document.getElementById('startListening').addEventListener('click', function () {
+        doDraw = true;
+        pitchDetectorService.startListening();
+    });
+    document.getElementById('stopListening').addEventListener('click', function () {
+        doDraw = false;
+        pitchDetectorService.stopListening();
+    });
 });
 var dots = [];
 function draw() {
-    var canvas = document.getElementById('graphPitch');
-    var ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // clear canvas
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-    ctx.strokeStyle = 'rgba(0, 153, 255, 0.4)';
-    ctx.save();
-    // create dot
-    // if (pitchDetectorService.getClarity() > 0.8) {
-    dots.push(new dot(canvas.width, map(pitchDetectorService.getPitch(), 0, 2000, canvas.height, 0)));
-    // }
-    // iterate through dots
-    dots.forEach(function (dot, index) {
-        ctx.beginPath();
-        ctx.arc(dot.x, dot.y, 5, 0, 2 * Math.PI);
-        ctx.stroke();
-        dot.x -= 1;
-        if (dot.x < 0) {
-            dots.slice(index, 1);
-        }
-    });
-    //
+    if (doDraw) {
+        var canvas = document.getElementById('graphPitch');
+        var ctx_1 = canvas.getContext('2d');
+        ctx_1.clearRect(0, 0, canvas.width, canvas.height); // clear canvas
+        ctx_1.fillStyle = 'rgba(0, 0, 0, 0.4)';
+        ctx_1.strokeStyle = 'rgba(0, 153, 255, 0.4)';
+        ctx_1.save();
+        // create dot
+        // if (pitchDetectorService.getClarity() > 0.8) {
+        var dotY = map((pitchDetectorService.getPitch() * 10), 0, 20000, canvas.height, 0);
+        // console.log(dotY);
+        dots.push(new dot(canvas.width, dotY));
+        // }
+        // iterate through dots
+        dots.forEach(function (dot, index) {
+            ctx_1.beginPath();
+            ctx_1.arc(dot.x, dot.y, 5, 0, 2 * Math.PI);
+            ctx_1.stroke();
+            dot.x -= 1;
+            if (dot.x < 0) {
+                dots.slice(index, 1);
+            }
+        });
+    }
     window.requestAnimationFrame(draw);
 }
 var dot = /** @class */ (function () {
