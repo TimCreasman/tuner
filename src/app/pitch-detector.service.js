@@ -39,17 +39,44 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PitchDetectorService = void 0;
 var pitchy_1 = require("pitchy");
 var PitchDetectorService = /** @class */ (function () {
-    function PitchDetectorService(updateRate) {
-        if (updateRate === void 0) { updateRate = 100; }
-        this.updateRate = updateRate;
-        this.audioContext = new window.AudioContext();
-        this.analyserNode = this.audioContext.createAnalyser();
-        this.pitchDetector = pitchy_1.PitchDetector.forFloat32Array(this.analyserNode.fftSize);
+    function PitchDetectorService(refreshRate) {
+        if (refreshRate === void 0) { refreshRate = 300; }
+        this.refreshRate = refreshRate;
+        this.audioSource = new AudioSource();
+        this.pitchDetector = pitchy_1.PitchDetector.forFloat32Array(this.audioSource.getAnalyserNode().fftSize);
     }
-    // TODO move this to an audio manager class?
-    PitchDetectorService.prototype.connectToStream = function () {
+    PitchDetectorService.prototype.startListening = function () {
+        var _this = this;
+        this.audioSource.connect().then(function () {
+            _this.intervalReference = window.setInterval(_this.pollValues.bind(_this), _this.refreshRate);
+        });
+    };
+    PitchDetectorService.prototype.stopListening = function () {
+        window.clearInterval(this.intervalReference);
+    };
+    PitchDetectorService.prototype.getPitch = function () {
+        return this.pitch;
+    };
+    PitchDetectorService.prototype.getClarity = function () {
+        return this.clarity;
+    };
+    PitchDetectorService.prototype.pollValues = function () {
+        var _a;
+        var inputArray = new Float32Array(this.pitchDetector.inputLength);
+        this.audioSource.getAnalyserNode().getFloatTimeDomainData(inputArray);
+        _a = this.pitchDetector.findPitch(inputArray, this.audioSource.getAudioContext().sampleRate), this.pitch = _a[0], this.clarity = _a[1];
+    };
+    return PitchDetectorService;
+}());
+exports.PitchDetectorService = PitchDetectorService;
+var AudioSource = /** @class */ (function () {
+    function AudioSource() {
+        this.audioContext = new AudioContext();
+        this.analyserNode = new AnalyserNode(this.audioContext);
+    }
+    AudioSource.prototype.connect = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var stream, err_1, sourceNode;
+            var stream, err_1, streamSourceNode;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -63,9 +90,9 @@ var PitchDetectorService = /** @class */ (function () {
                         console.log(err_1);
                         return [3 /*break*/, 3];
                     case 3:
-                        sourceNode = this.audioContext.createMediaStreamSource(stream);
-                        // pipe the microphone source to the pitch detector's analyser node
-                        sourceNode.connect(this.analyserNode);
+                        streamSourceNode = this.audioContext.createMediaStreamSource(stream);
+                        // pipe the media source to the analyser
+                        streamSourceNode.connect(this.analyserNode);
                         // in most browsers the audio context gets automatically suspended so it needs to be resumed here
                         return [4 /*yield*/, this.audioContext.resume()];
                     case 4:
@@ -76,25 +103,11 @@ var PitchDetectorService = /** @class */ (function () {
             });
         });
     };
-    PitchDetectorService.prototype.start = function () {
-        this.intervalReference = window.setInterval(this.pollValues.bind(this), this.updateRate);
+    AudioSource.prototype.getAnalyserNode = function () {
+        return this.analyserNode;
     };
-    PitchDetectorService.prototype.stop = function () {
-        window.clearInterval(this.intervalReference);
+    AudioSource.prototype.getAudioContext = function () {
+        return this.audioContext;
     };
-    PitchDetectorService.prototype.getPitch = function () {
-        return this.pitch;
-    };
-    PitchDetectorService.prototype.getClarity = function () {
-        return this.clarity;
-    };
-    PitchDetectorService.prototype.pollValues = function () {
-        var _a;
-        console.log(this.pitch, this.clarity);
-        var inputArray = new Float32Array(this.pitchDetector.inputLength);
-        this.analyserNode.getFloatTimeDomainData(inputArray);
-        _a = this.pitchDetector.findPitch(inputArray, this.audioContext.sampleRate), this.pitch = _a[0], this.clarity = _a[1];
-    };
-    return PitchDetectorService;
+    return AudioSource;
 }());
-exports.PitchDetectorService = PitchDetectorService;
