@@ -1,8 +1,8 @@
 # Tuner App
-
 ![Tuner Design](./src/assets/images/tuner_design_1.png)
 
 ## Overview
+![workflow status](https://github.com/TimCreasman/tuner/actions/workflows/ci.yml/badge.svg)
 
 My goal with this app was to design and develop an easy to use and pleasant to look at tuning app. 
 
