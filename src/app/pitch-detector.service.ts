@@ -5,9 +5,9 @@ export class PitchDetectorService {
     private readonly audioSource: AudioSource;
     // the rate at which to update the pitch
     private readonly refreshRate: number;
-    private pitchDetector;
-    private pitch;
-    private clarity;
+    private pitchDetector: PitchDetector<Float32Array>;
+    private pitch: number;
+    private clarity: number;
     private intervalReference : number;
 
     constructor(refreshRate: number = 300) {

@@ -4,20 +4,18 @@
   "description": "A tuning app",
   "scripts": {
     "build": "esbuild src/main.ts --bundle --outfile=dist/main.js",
-    "test": "jest"
+    "test": "jest --config jest.config.js --no-cache --runInBand --collect-coverage"
   },
   "author": "Tim Creasman",
   "license": "ISC",
-  "devDependencies": {
-    "@types/jest": "^27.0.2",
-    "esbuild": "^0.13.5",
-    "esbuild-jest": "^0.5.0",
-    "jest": "^27.2.1",
-    "ts-jest": "^27.0.6",
-    "ts-node": "^10.3.0"
-  },
   "dependencies": {
     "pitchy": "^2.0.3",
     "sdf-2d": "^0.7.6"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.2",
+    "esbuild": "^0.13.7",
+    "esbuild-jest": "^0.5.0",
+    "jest": "^27.2.5"
   }
 }
