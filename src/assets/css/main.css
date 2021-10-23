@@ -1,1 +1,26 @@
-@import "theme.css";
+@import "./theme.css";
+
+body {
+    background-color: var(--background-color);
+    --font-size: 10em;
+}
+
+.tuner-body {
+    height: 400px;
+    width: 400px;
+}
+
+.tuner-body .note {
+    text-align: center;
+    height: 100%;
+    color: var(--primary-color);
+    font-size: var(--font-size);
+    font-family: Tahoma;
+    /*-webkit-text-stroke: 10px var(--outline-color);*/
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

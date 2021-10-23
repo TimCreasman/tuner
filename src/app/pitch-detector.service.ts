@@ -9,6 +9,7 @@ export class PitchDetectorService {
     private pitch: number;
     private clarity: number;
     private intervalReference : number;
+    private onListen : (pitch: number, clarity: number)=>void;
 
     constructor(refreshRate: number = 300) {
         this.refreshRate = refreshRate;
@@ -18,7 +19,7 @@ export class PitchDetectorService {
 
     public startListening(): void {
         this.audioSource.connect().then(() => {
-            this.intervalReference = window.setInterval(this.pollValues.bind(this), this.refreshRate);
+            this.intervalReference = window.setInterval(this.listen.bind(this), this.refreshRate);
         });
     }
 
@@ -34,10 +35,15 @@ export class PitchDetectorService {
         return this.clarity;
     }
 
-    private pollValues(): void {
+    public setOnListen(newListen: (pitch: number, clarity: number)=>void) {
+        this.onListen = newListen;
+    }
+
+    private listen(): void {
         const inputArray = new Float32Array(this.pitchDetector.inputLength);
         this.audioSource.getAnalyserNode().getFloatTimeDomainData(inputArray);
         [this.pitch, this.clarity] = this.pitchDetector.findPitch(inputArray, this.audioSource.getAudioContext().sampleRate);
+        this.onListen(this.pitch, this.clarity);
     }
 }
 
