@@ -4,8 +4,8 @@
   "description": "A tuning app",
   "type": "module",
   "scripts": {
-    "start" : "node esbuild.config.js -w",
-    "build": "node esbuild.config.js",
+    "start": "node esbuild.serve.js -w",
+    "build": "node esbuild.build.js",
     "test": "jest --config jest.config.js --no-cache --runInBand --collect-coverage"
   },
   "author": "Tim Creasman",
