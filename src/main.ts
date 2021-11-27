@@ -1,5 +1,5 @@
-import {PitchDetectorService} from "./app/pitch-detector.service";
-import {NotationUtility} from "./app/notation-utility";
+import {PitchDetectorService} from "./app/services/pitch-detector.service";
+import {NotationUtility} from "./app/utilities/notation-utility";
 
 import './assets/css/main.css';
 

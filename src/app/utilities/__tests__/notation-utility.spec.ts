@@ -1,4 +1,4 @@
-import {B9, C0, NotationUtility} from "../app/notation-utility";
+import {B9, C0, NotationUtility} from "../notation-utility";
 
 describe('NotationUtility', function () {
     describe('hzToLetter', function () {

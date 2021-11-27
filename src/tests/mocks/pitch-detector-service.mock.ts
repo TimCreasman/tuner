@@ -1,4 +1,4 @@
-import {PitchDetectorService} from '../app/pitch-detector.service';
+import {PitchDetectorService} from '../../app/services/pitch-detector.service';
 
 export class PitchDetectorServiceMock {
     getPitch() {
