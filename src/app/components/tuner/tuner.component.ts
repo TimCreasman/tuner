@@ -1,17 +1,11 @@
 import {LitElement, html} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
+import template from './tuner.template';
 
 @customElement('tn-tuner')
 export class Tuner extends LitElement {
 
-    // constructor() {
-    //     super();
-    //     this.innerHTML = 'hello';
-    // }
-
     render(){
-        return html`
-            <p>hello from tuner</p>
-        `
+        return template;
     }
 }
