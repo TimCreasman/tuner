@@ -2,6 +2,7 @@ body {
     --primary-color: #FF7A00;
     --background-color: black;
     --outline-color: white;
+    --font-fanily: Tahoma;
 }
 
 body.dark-theme {
@@ -9,3 +10,7 @@ body.dark-theme {
     --background-color: black;
     --outline-color: white;
 }
+
+/*@font-face {*/
+/*    font-family: Tahoma;*/
+/*}*/

@@ -1,10 +1,30 @@
-import {PitchDetectorService} from "./app/pitch-detector.service";
+import {PitchDetectorService} from "./app/services/pitch-detector.service";
+import {NotationUtility} from "./app/utilities/notation-utility";
+// @ts-ignore
+import components from "./app/components/**/*";
+components[0].default;
+
+import './assets/css/main.css';
 
 let pitchDetectorService = new PitchDetectorService();
 let doDraw = true;
 
+const CLARITY_THRESHOLD = 0.6;
+
 document.addEventListener('DOMContentLoaded', () => {
-    window.requestAnimationFrame(draw);
+    // window.requestAnimationFrame(draw);
+
+    const noteLetter = document.getElementsByClassName('letter')[0];
+    const noteAccidental = document.getElementsByClassName('accidental')[0];
+
+    pitchDetectorService.setOnListen((pitch, clarity) => {
+        console.info( 'Pitch: ' + pitch + ', Clarity: ' + clarity);
+        if (clarity > CLARITY_THRESHOLD) {
+            noteLetter.innerHTML = NotationUtility.hzToNoteName(pitch);
+        } else {
+            noteLetter.innerHTML = '?';
+        }
+    });
 
     document.getElementById('startListening').addEventListener('click', () => {
         doDraw = true;
