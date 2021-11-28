@@ -8,6 +8,7 @@ esbuildServe(
     buildOptions,
     {
         port: 7000,
-        root: '.'
+        root: 'dist/',
+        live: true
     }
 );

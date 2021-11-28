@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { build } from 'esbuild';
 import { exec } from 'child_process';
+import importGlobPlugin from 'esbuild-plugin-import-glob';
 
 const copyIndexHtml = {
     name: 'copyIndex',
@@ -24,7 +25,7 @@ export const buildOptions = {
     bundle: true,
     outfile: 'dist/main.js',
     sourcemap: true,
-    plugins: [copyIndexHtml],
+    plugins: [copyIndexHtml, importGlobPlugin.default()],
 }
 
 build(buildOptions).catch(err => {

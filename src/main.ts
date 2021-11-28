@@ -1,5 +1,8 @@
 import {PitchDetectorService} from "./app/services/pitch-detector.service";
 import {NotationUtility} from "./app/utilities/notation-utility";
+// @ts-ignore
+import components from "./app/components/**/*";
+components[0].default;
 
 import './assets/css/main.css';
 
