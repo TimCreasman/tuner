@@ -10,8 +10,8 @@ My goal with this app was to design and develop an easy to use and pleasant to l
 
 ### Running locally
 1. First, clone this repo.
-2. To build locally, run `npm run build -- --watch` at the root directory.
-3. Open src/index.html in a browser to view the app.
+2. To build locally, run `npm run start` at the root directory.
+3. Open http://localhost:7000 to view the app.
 
 ### Testing locally
 1. run this command `npm run test`
