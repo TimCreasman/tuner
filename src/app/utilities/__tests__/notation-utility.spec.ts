@@ -1,22 +1,46 @@
-import {B9, C0, NotationUtility} from "../notation-utility";
+import {G9_NOTE, CN1_NOTE, NoteUtility, Note} from "../note-utility";
+import {CONFIG} from "../../../config";
+import A440_NOTE_FREQUENCIES from './A440_note_frequencies.json';
 
 describe('NotationUtility', function () {
-    describe('hzToLetter', function () {
+    /** Mock a few frequencies */
+    // assume frequency of A to be 440
+    CONFIG.frequencyOfA = 440;
+    const cn1Freq = 8.176;
+    const g9Freq = 12543.854;
+
+    describe('freqToNote', function () {
 
         it('should return C0 if frequency below C0', function () {
-            expect(NotationUtility.hzToNoteName(C0 - 1)).toEqual('C0');
+            expect(NoteUtility.freqToNote(A440_NOTE_FREQUENCIES[0] - 1)).toEqual(CN1_NOTE);
         });
 
-        it('should return B9 if above the frequency threshold', function () {
-            expect(NotationUtility.hzToNoteName(B9 + 1)).toEqual('B9');
+        it('should return G9 if above the frequency threshold', function () {
+            expect(NoteUtility.freqToNote(A440_NOTE_FREQUENCIES[A440_NOTE_FREQUENCIES.length - 1] + 1)).toEqual(G9_NOTE);
         });
 
         it('should not error out for normal bounded frequencies', function () {
-            for (let i = C0; i < B9; i+=1) {
+            for (let i = cn1Freq; i < g9Freq; i+=1) {
                 expect(() => {
-                    NotationUtility.hzToNoteName(i)
+                    NoteUtility.freqToNote(i)
                 }).not.toThrowError();
             }
+        });
+    });
+
+    describe('noteToPitch', function () {
+
+        it('should find correct pitches within 2 significant figures', function () {
+
+            function round(num: number) {
+                return Math.round((num + Number.EPSILON) * 1000) / 1000
+            }
+
+            A440_NOTE_FREQUENCIES.forEach(function (actualFreq, i) {
+                let calculatedFreq = NoteUtility.noteToPitch(new Note(i));
+                let roundedFreq = round(calculatedFreq);
+                expect(roundedFreq).toEqual(actualFreq);
+            });
         });
     });
 });
