@@ -3,3 +3,4 @@ export const CONFIG = {
     accidentalMode: 0,
     frequencyOfA: 440,
 };
+

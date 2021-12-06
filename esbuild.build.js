@@ -1,12 +1,12 @@
 #!/usr/bin/env node
-import { build } from 'esbuild';
-import { exec } from 'child_process';
+import {build} from 'esbuild';
+import {exec} from 'child_process';
 import importGlobPlugin from 'esbuild-plugin-import-glob';
 
 const copyIndexHtml = {
     name: 'copyIndex',
     setup() {
-        exec('cp src/index.html dist/index.html',(error, stdout, stderr) => {
+        exec('cp src/index.html dist/index.html', (error, stdout, stderr) => {
             if (error) {
                 console.log(`error: ${error.message}`);
                 return;

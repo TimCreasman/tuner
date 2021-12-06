@@ -1,4 +1,4 @@
-import {G9_NOTE, CN1_NOTE, NoteUtility, Note} from "../note-utility";
+import {CN1_NOTE, G9_NOTE, Note, NoteUtility} from "../note-utility";
 import {CONFIG} from "../../../config";
 import A440_NOTE_FREQUENCIES from './A440_note_frequencies.json';
 
@@ -20,7 +20,7 @@ describe('NotationUtility', function () {
         });
 
         it('should not error out for normal bounded frequencies', function () {
-            for (let i = cn1Freq; i < g9Freq; i+=1) {
+            for (let i = cn1Freq; i < g9Freq; i += 1) {
                 expect(() => {
                     NoteUtility.freqToNote(i)
                 }).not.toThrowError();
@@ -37,8 +37,8 @@ describe('NotationUtility', function () {
             }
 
             A440_NOTE_FREQUENCIES.forEach(function (actualFreq, i) {
-                let calculatedFreq = NoteUtility.noteToPitch(new Note(i));
-                let roundedFreq = round(calculatedFreq);
+                const calculatedFreq = NoteUtility.noteToPitch(new Note(i));
+                const roundedFreq = round(calculatedFreq);
                 expect(roundedFreq).toEqual(actualFreq);
             });
         });
