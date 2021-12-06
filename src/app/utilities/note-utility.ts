@@ -1,25 +1,27 @@
-import {CONFIG} from "../../config";
+import {CONFIG} from '../../config';
 
 export const NOTES_IN_OCTAVE = 12;
 
 // naming constants
-export const NAMES_WITH_SHARPS: string[] = ['C','C','D','D','E','F','F','G','G','A','A','B'];
+export const NAMES_WITH_SHARPS: string[] = ['C', 'C', 'D', 'D', 'E', 'F', 'F', 'G', 'G', 'A', 'A', 'B'];
 export const ACCIDENTAL_INDEXES: number[] = [1, 3, 6, 8, 10];
-export const NAMES_WITH_FLATS: string[] = ['C','D','D','E','E','F','G','G','A','A','B','B'];
+export const NAMES_WITH_FLATS: string[] = ['C', 'D', 'D', 'E', 'E', 'F', 'G', 'G', 'A', 'A', 'B', 'B'];
 
 /**
  * This class defines the properties of a note
  */
 export class Note {
 
-    // an midi index can be any number 0 to 127
+    // a midi index can be any number 0 to 127
     public index: number;
     // the octave of the note, is a number -1 to 9
     public readonly octave: number;
+
     // the letter notation of the note
     get letter(): string {
         return this.lookupLetter();
     }
+
     // the accidental related to the note
     get accidental(): string {
         return this.lookupAccidental();
@@ -105,7 +107,7 @@ export class NoteUtility {
     public static noteToPitch(note: Note): number {
         const halfStepsFromA = note.index - A4_NOTE.index;
         // the frequency between each note in an octave
-        const frequencyBetweenNotes = 2 ** (1/NOTES_IN_OCTAVE);
+        const frequencyBetweenNotes = 2 ** (1 / NOTES_IN_OCTAVE);
         return CONFIG.frequencyOfA * (frequencyBetweenNotes ** halfStepsFromA)
     }
 
