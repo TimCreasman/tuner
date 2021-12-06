@@ -1,5 +1,5 @@
-import {CN1_NOTE, G9_NOTE, Note, NoteUtility} from "../note-utility";
-import {CONFIG} from "../../../config";
+import {CN1_NOTE, G9_NOTE, Note, NoteUtility} from '../note-utility';
+import {CONFIG} from '../../../config';
 import A440_NOTE_FREQUENCIES from './A440_note_frequencies.json';
 
 describe('NotationUtility', function () {

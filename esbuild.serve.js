@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import {buildOptions} from "./esbuild.build.js";
+import {buildOptions} from './esbuild.build.js';
 
-import esbuildServe from "esbuild-serve";
+import esbuildServe from 'esbuild-serve';
 
 esbuildServe(
     buildOptions,

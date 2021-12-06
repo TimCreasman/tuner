@@ -4,7 +4,7 @@
 const config = {
     verbose: true,
     transform: {
-        "^.+\\.ts?$": "esbuild-jest"
+        '^.+\\.ts?$': 'esbuild-jest'
     }
 };
 

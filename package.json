@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node esbuild.serve.js -w",
     "build": "node esbuild.build.js",
+    "lint": "eslint .",
     "test": "jest --config jest.config.js --no-cache --runInBand --collect-coverage"
   },
   "author": "Tim Creasman",
