@@ -7,6 +7,11 @@ export const NAMES_WITH_SHARPS: string[] = ['C', 'C', 'D', 'D', 'E', 'F', 'F', '
 export const ACCIDENTAL_INDEXES: number[] = [1, 3, 6, 8, 10];
 export const NAMES_WITH_FLATS: string[] = ['C', 'D', 'D', 'E', 'E', 'F', 'G', 'G', 'A', 'A', 'B', 'B'];
 
+export enum ACCIDENTALS {
+    sharp,
+    flat
+}
+
 /**
  * This class defines the properties of a note
  */
@@ -37,7 +42,7 @@ export class Note {
         }
         this.index = index;
         // subtract the octave by 1 to shift it down. The range is -1 to 9
-        this.octave = Math.floor(index / NOTES_IN_OCTAVE) - 1
+        this.octave = Math.floor(index / NOTES_IN_OCTAVE) - 1;
     }
 
     /**
@@ -93,7 +98,7 @@ export class NoteUtility {
         const halfSteps = Math.round(NOTES_IN_OCTAVE * Math.log2(frequency / this.noteToPitch(CN1_NOTE)));
 
         if (isNaN(halfSteps)) {
-            throw new Error('calculated frequency produced NaN')
+            throw new Error('calculated frequency produced NaN');
         }
 
         return new Note(halfSteps);
@@ -108,7 +113,7 @@ export class NoteUtility {
         const halfStepsFromA = note.index - A4_NOTE.index;
         // the frequency between each note in an octave
         const frequencyBetweenNotes = 2 ** (1 / NOTES_IN_OCTAVE);
-        return CONFIG.frequencyOfA * (frequencyBetweenNotes ** halfStepsFromA)
+        return CONFIG.frequencyOfA * (frequencyBetweenNotes ** halfStepsFromA);
     }
 
 }
