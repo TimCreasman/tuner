@@ -21,7 +21,7 @@ const copyIndexHtml = {
             console.log('copied index.html');
         });
     }
-}
+};
 
 export const buildOptions = {
     entryPoints: ['src/main.ts'],
@@ -29,13 +29,13 @@ export const buildOptions = {
     outfile: 'dist/main.js',
     sourcemap: true,
     plugins: [copyIndexHtml, importGlobPlugin.default()],
-}
+};
 
 build(buildOptions).catch(err => {
     // eslint-disable-next-line no-undef
-    process.stderr.write(err.stderr)
+    process.stderr.write(err.stderr);
     // eslint-disable-next-line no-undef
-    process.exit(1)
+    process.exit(1);
 });
 
 

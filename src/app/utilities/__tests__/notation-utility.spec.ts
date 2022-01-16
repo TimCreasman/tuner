@@ -22,7 +22,7 @@ describe('NotationUtility', function () {
         it('should not error out for normal bounded frequencies', function () {
             for (let i = cn1Freq; i < g9Freq; i += 1) {
                 expect(() => {
-                    NoteUtility.freqToNote(i)
+                    NoteUtility.freqToNote(i);
                 }).not.toThrowError();
             }
         });
@@ -33,7 +33,7 @@ describe('NotationUtility', function () {
         it('should find correct pitches within 2 significant figures', function () {
 
             function round(num: number) {
-                return Math.round((num + Number.EPSILON) * 1000) / 1000
+                return Math.round((num + Number.EPSILON) * 1000) / 1000;
             }
 
             A440_NOTE_FREQUENCIES.forEach(function (actualFreq, i) {
