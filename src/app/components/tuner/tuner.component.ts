@@ -1,9 +1,10 @@
 import {html, LitElement} from 'lit';
-import {customElement, property, state} from 'lit/decorators.js';
-import {ACCIDENTALS, CN1_NOTE, G9_NOTE, Note, NoteUtility} from '../../utilities/note-utility';
+import {customElement, property} from 'lit/decorators.js';
+import {ACCIDENTALS, Note, NoteUtility} from '../../utilities/note-utility';
 import {OscillatorSource, PitchDetectorService} from '../../services/pitch-detector.service';
 import {MathUtility} from '../../utilities/math-utility';
 import {CONFIG} from '../../../config';
+import {Logger} from '../../utilities/log-utility';
 
 @customElement('tn-tuner')
 export class TunerComponent extends LitElement {
@@ -32,20 +33,9 @@ export class TunerComponent extends LitElement {
     @property()
     pitchAccidental: ACCIDENTALS;
 
-    /**
-     * Set to true if an oscillator is being used as the audio source
-     */
-    @state()
-    isOscillator = false;
-
     connectedCallback() {
-
-        if (CONFIG.debugMode) {
-            this.pitchDetectorService.audioSource = new OscillatorSource();
-            this.isOscillator = true;
-        }
-
         super.connectedCallback();
+
         this.pitchDetectorService.setOnListen((freq, clarity) => {
             // only update the note if we are confident about it
             if (clarity > 0.9) {
@@ -70,6 +60,11 @@ export class TunerComponent extends LitElement {
                 this.accuracy = 0;
             }
         });
+
+        if (CONFIG.debugMode) {
+            this.pitchDetectorService.audioSource = new OscillatorSource();
+        }
+
         this.pitchDetectorService.startListening();
     }
 
@@ -89,17 +84,45 @@ export class TunerComponent extends LitElement {
         osc.frequency = Number((<HTMLInputElement>inputEvent.target).value);
     }
 
+    /**
+     * Toggle the live playback of the audio source
+     * @private
+     */
+    private setPlayback(inputEvent: InputEvent) {
+        if ((<HTMLInputElement>inputEvent.target).checked) {
+            this.pitchDetectorService.audioSource.sourceNode.connect(this.pitchDetectorService.audioSource.audioContext.destination);
+        } else {
+            this.pitchDetectorService.audioSource.sourceNode.disconnect(this.pitchDetectorService.audioSource.audioContext.destination);
+        }
+    }
+
+    private resumeContext() {
+        this.pitchDetectorService.audioSource.audioContext.resume().then(() => {
+            Logger.debug('Audio source resumed');
+        }, reason => {
+            Logger.error('Audio source failed to resume', reason);
+        });
+    }
+
     render() {
         return html`
             ${CONFIG.debugMode ?
-                    html`<input type="range" .min=${NoteUtility.noteToPitch(CN1_NOTE)}
-                                .max=${NoteUtility.noteToPitch(G9_NOTE)}
-                                @input="${this.updateOscillatorFrequency}">
-                    ${this.accuracy}` : ''
+                    html`
+                        ${this.accuracy}
+                        <div>
+                            <input type="range" min="1000"
+                                   max="1300"
+                                   @input="${this.updateOscillatorFrequency}">
+                        </div>
+                    ` : ''
             }
-
-            <tn-tuner-ring .accuracy="${this.accuracy}" .pitchAccidental="${this.pitchAccidental}"></tn-tuner-ring>
-            <tn-tuner-note .note="${this.note}" .accuracy="${this.accuracy}"></tn-tuner-note>
+            <div>
+                Audio Playback: <input type="checkbox" @input="${this.setPlayback}">
+            </div>
+            <div @click="${this.resumeContext}">
+                <tn-tuner-ring .accuracy=" ${this.accuracy}" .pitchAccidental="${this.pitchAccidental}"></tn-tuner-ring>
+                <tn-tuner-note .note="${this.note}" .accuracy="${this.accuracy}"></tn-tuner-note>
+            </div>
         `;
     }
 }

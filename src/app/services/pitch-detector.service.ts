@@ -1,4 +1,5 @@
 import {PitchDetector} from 'pitchy';
+import {Logger} from '../utilities/log-utility';
 
 export class PitchDetectorService {
     // the rate at which to update the pitch
@@ -53,11 +54,11 @@ export class PitchDetectorService {
         const inputArray = new Float32Array(this.pitchDetector.inputLength);
         this._audioSource.analyserNode.getFloatTimeDomainData(inputArray);
         [this._pitch, this._clarity] = this.pitchDetector.findPitch(inputArray, this._audioSource.audioContext.sampleRate);
-        // TODO - better error handling?
-        // if (this.pitch === 0) {
-        //     this.stopListening();
-        //     throw new Error('Error connecting to microphone. Is the microphone active?');
-        // }
+
+        if (this.pitch === 0) {
+            Logger.debug('Pitch not detected.', this._pitch, this._clarity);
+        }
+
         this.onListen(this._pitch, this._clarity);
     }
 }
@@ -69,6 +70,8 @@ interface AudioSource {
     // window.AnalyserNode
     get analyserNode(): AnalyserNode;
 
+    get sourceNode(): MediaStreamAudioSourceNode | OscillatorNode;
+
     connect(): Promise<AudioSource>;
 }
 
@@ -78,6 +81,8 @@ export class MicSource implements AudioSource {
     readonly audioContext: AudioContext;
     // window.AnalyserNode
     readonly analyserNode: AnalyserNode;
+
+    sourceNode: MediaStreamAudioSourceNode;
 
     public constructor() {
         this.audioContext = new AudioContext();
@@ -93,9 +98,9 @@ export class MicSource implements AudioSource {
         }
 
         // the microphone source
-        const streamSourceNode = this.audioContext.createMediaStreamSource(stream);
+        this.sourceNode = this.audioContext.createMediaStreamSource(stream);
         // pipe the media source to the analyser
-        streamSourceNode.connect(this.analyserNode);
+        this.sourceNode.connect(this.analyserNode);
         // in most browsers the audio context gets automatically suspended, so it needs to be resumed here
         await this.audioContext.resume();
         return this;
@@ -108,7 +113,7 @@ export class OscillatorSource implements AudioSource {
     // window.AnalyserNode
     readonly analyserNode: AnalyserNode;
 
-    private oscillator: OscillatorNode;
+    sourceNode: OscillatorNode;
 
     public constructor() {
         this.audioContext = new AudioContext();
@@ -117,18 +122,13 @@ export class OscillatorSource implements AudioSource {
 
     public async connect() {
 
-        this.oscillator = this.audioContext.createOscillator();
+        this.sourceNode = this.audioContext.createOscillator();
 
         // value in hertz
-        this.oscillator.type = 'sine';
-        this.oscillator.frequency.setValueAtTime(440, this.audioContext.currentTime);
-        this.oscillator.start();
-        this.oscillator.connect(this.analyserNode);
-        // const gain = this.audioContext.createGain();
-        // gain.gain.value = 0.01;
-        // this.oscillator.connect(gain);
-        // gain.connect(this.audioContext.destination);
-        // this.oscillator.connect(this.audioContext.destination);
+        this.sourceNode.type = 'sine';
+        this.sourceNode.frequency.setValueAtTime(440, this.audioContext.currentTime);
+        this.sourceNode.start();
+        this.sourceNode.connect(this.analyserNode);
 
         // in most browsers the audio context gets automatically suspended, so it needs to be resumed here
         await this.audioContext.resume();
@@ -136,6 +136,6 @@ export class OscillatorSource implements AudioSource {
     }
 
     set frequency(_frequency: number) {
-        this.oscillator.frequency.setValueAtTime(_frequency, this.audioContext.currentTime);
+        this.sourceNode.frequency.setValueAtTime(_frequency, this.audioContext.currentTime);
     }
 }
