@@ -1,4 +1,5 @@
 import {CONFIG} from '../../config';
+import {MathUtility} from './math-utility';
 
 export const NOTES_IN_OCTAVE = 12;
 
@@ -37,10 +38,7 @@ export class Note {
      * @param index the midi index for the note (0 to 127)
      */
     public constructor(index: number) {
-        if (index < 0 || index > 127) {
-            throw Error('Note index has to be a number between 0-127.');
-        }
-        this.index = index;
+        this.index = MathUtility.clamp(index, 0, 127);
         // subtract the octave by 1 to shift it down. The range is -1 to 9
         this.octave = Math.floor(index / NOTES_IN_OCTAVE) - 1;
     }
