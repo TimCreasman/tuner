@@ -120,7 +120,7 @@ export class TunerComponent extends LitElement {
                 Audio Playback: <input type="checkbox" @input="${this.setPlayback}">
             </div>
             <div @click="${this.resumeContext}">
-                <tn-tuner-ring .accuracy=" ${this.accuracy}" .pitchAccidental="${this.pitchAccidental}"></tn-tuner-ring>
+                <tn-tuner-ring .accuracy="${this.accuracy}" .pitchAccidental="${this.pitchAccidental}"></tn-tuner-ring>
                 <tn-tuner-note .note="${this.note}" .accuracy="${this.accuracy}"></tn-tuner-note>
             </div>
         `;
