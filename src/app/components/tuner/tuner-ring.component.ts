@@ -150,12 +150,12 @@ export class TunerRingComponent extends LitElement {
     render() {
         return html`
             <div class="tuner-ring">
-                <div class="spoke spoke1"></div>
-                <div class="spoke spoke2"></div>
-                <div class="spoke spoke3"></div>
-                <div class="spoke spoke4"></div>
-                <div class="spoke spoke5"></div>
-                <div class="spoke spoke6"></div>
+                <!--                <div class="spoke spoke1"></div>-->
+                <!--                <div class="spoke spoke2"></div>-->
+                <!--                <div class="spoke spoke3"></div>-->
+                <!--                <div class="spoke spoke4"></div>-->
+                <!--                <div class="spoke spoke5"></div>-->
+                <!--                <div class="spoke spoke6"></div>-->
                 <div class="tuner-needle"></div>
             </div>
         `;

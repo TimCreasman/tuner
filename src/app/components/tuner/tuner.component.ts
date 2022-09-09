@@ -25,7 +25,10 @@ export class TunerComponent extends LitElement {
      * The accuracy of the detected note
      */
     @property()
-    accuracy = 50;
+    accuracy = 0;
+
+    @property()
+    clarity = 1;
 
     /**
      * The accidental of the incoming pitch
@@ -37,9 +40,12 @@ export class TunerComponent extends LitElement {
         super.connectedCallback();
 
         this.pitchDetectorService.setOnListen((freq, clarity) => {
+            this.clarity = clarity;
             // only update the note if we are confident about it
-            if (clarity > 0.9) {
+            if (clarity > 0.98) {
                 this.note = NoteUtility.freqToNote(freq);
+            } else {
+                return;
             }
 
             const expectedPitch = NoteUtility.noteToPitch(this.note);
@@ -110,18 +116,20 @@ export class TunerComponent extends LitElement {
                     html`
                         ${this.accuracy}
                         <div>
-                            <input type="range" min="1000"
+                            <input type="range" min="400"
                                    max="1300"
                                    @input="${this.updateOscillatorFrequency}">
                         </div>
                     ` : ''
             }
+            ${this.clarity}
             <div>
                 Audio Playback: <input type="checkbox" @input="${this.setPlayback}">
             </div>
             <div @click="${this.resumeContext}">
                 <tn-tuner-ring .accuracy="${this.accuracy}" .pitchAccidental="${this.pitchAccidental}"></tn-tuner-ring>
-                <tn-tuner-note .note="${this.note}" .accuracy="${this.accuracy}"></tn-tuner-note>
+                <tn-tuner-note .note="${this.note}" .accuracy="${this.accuracy}"
+                               .clarity="${this.clarity}"></tn-tuner-note>
             </div>
         `;
     }
