@@ -1,5 +1,6 @@
 body {
     --primary-color: #FF7A00;
+    --primary-color-rgb: 255, 122, 0;
     --background-color: black;
     --outline-color: white;
     --font-fanily: Tahoma;
@@ -7,6 +8,7 @@ body {
 
 body.dark-theme {
     --primary-color: #FF7A00;
+    --primary-color-rgb: 255, 122, 0;
     --background-color: black;
     --outline-color: white;
 }

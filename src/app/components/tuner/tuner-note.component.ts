@@ -1,11 +1,11 @@
-import {css, html, LitElement} from 'lit';
+import {css, html, LitElement, PropertyValues} from 'lit';
 import {customElement, property, query} from 'lit/decorators.js';
 import {Note} from '../../utilities/note-utility';
 import {MathUtility} from '../../utilities/math-utility';
 
 const TunerNoteComponentStyles = css`
   .tuner-note-container {
-    width: 200px;
+    width: 300px;
     text-align: center;
   }
 
@@ -70,9 +70,7 @@ export class TunerNoteComponent extends LitElement {
     clarity = 1;
 
     @property({type: Number})
-    set accuracy(newValue: number) {
-        this.updateBuffer(MathUtility.round(newValue, 3));
-    }
+    accuracy = 0;
 
     @query('#height-animator')
     private heightAnimatorReference: HTMLElement;
@@ -80,20 +78,9 @@ export class TunerNoteComponent extends LitElement {
 
     private accuracyBuffer: number[] = [TunerNoteComponent.bufferSize];
 
-    private get accuracyAverage() {
-        return this.accuracyBuffer.reduce((a, b) => a + b) / this.accuracyBuffer.length;
-    }
-
     constructor() {
         super();
         this.heightAnimator = new HeightAnimatorComponent();
-    }
-
-    private updateBuffer(accuracy: number) {
-        this.accuracyBuffer.push(accuracy);
-        if (this.accuracyBuffer.length === TunerNoteComponent.bufferSize) {
-            this.accuracyBuffer.shift();
-        }
     }
 
     private updateHeightAnimation() {
@@ -103,14 +90,19 @@ export class TunerNoteComponent extends LitElement {
             this.heightAnimator.reference = this.heightAnimatorReference;
         }
 
-        const newHeight = MathUtility.map(this.accuracyAverage, 0, 1, 90, 25);
+        const newHeight = MathUtility.map(this.accuracy, 0, 1, 90, 25);
         this.heightAnimator.to = newHeight + '';
     }
 
-    render() {
-
+    protected update(changedProperties: PropertyValues) {
+        super.update(changedProperties);
+        if (isNaN(Number(changedProperties.get('accuracy')))) {
+            return;
+        }
         this.updateHeightAnimation();
+    }
 
+    render() {
         return html`
             <div class="tuner-note-container">
                 <svg id="view" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">

@@ -1,74 +1,27 @@
 import {customElement, property} from 'lit/decorators.js';
 import {css, html, LitElement} from 'lit';
 import {ACCIDENTALS} from '../../utilities/note-utility';
+import {MathUtility} from '../../utilities/math-utility';
 
 const TunerRingComponentStyles = css`
   :host {
     --needle-degree: 0rad;
     --opacity: 1;
-
-    --spoke1-degree: 0rad;
-    --spoke2-degree: 0rad;
-    --spoke3-degree: 0rad;
-    --spoke4-degree: 0rad;
-    --spoke5-degree: 0rad;
-    --spoke6-degree: 0rad;
   }
 
   .tuner-ring {
     position: absolute;
-    width: 200px;
-  }
-
-  .spoke {
-    --width: 1px;
-    background-color: var(--outline-color);
-
-    width: var(--width);
-    height: 100px;
-
-    position: absolute;
-    left: calc(50% - (var(--width) / 2));
-    transform-origin: bottom;
-  }
-
-  .spoke1 {
-    background-color: red;
-    transform: rotate(var(--spoke1-degree));
-  }
-
-  .spoke2 {
-    background-color: green;
-    transform: rotate(var(--spoke2-degree));
-  }
-
-  .spoke3 {
-    background-color: blue;
-    transform: rotate(var(--spoke3-degree));
-  }
-
-  .spoke4 {
-    background-color: cyan;
-    transform: rotate(var(--spoke4-degree));
-  }
-
-  .spoke5 {
-    background-color: purple;
-    transform: rotate(var(--spoke5-degree));
-  }
-
-  .spoke6 {
-    background-color: pink;
-    transform: rotate(var(--spoke6-degree));
+    width: 300px;
+    height: 300px;
   }
 
   .tuner-needle {
     --width: 5px;
 
-    background: linear-gradient(to bottom, var(--outline-color) 50%, rgba(0, 0, 0, 0) 0%);
+    background: white;
 
     width: var(--width);
-    height: 100px;
+    height: 50%;
 
     position: absolute;
     left: calc(50% - (var(--width) / 2));
@@ -76,6 +29,15 @@ const TunerRingComponentStyles = css`
     opacity: var(--opacity);
     transform: rotate(var(--needle-degree));
     transform-origin: bottom;
+  }
+
+  .ring {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+    outline: 0.5rem solid white;
+    outline-offset: -0.25rem;
   }
 `;
 
@@ -85,79 +47,131 @@ export class TunerRingComponent extends LitElement {
     static styles = TunerRingComponentStyles;
 
     @property()
-    accuracy = 50;
+    accuracy = 0;
 
     @property()
     pitchAccidental: ACCIDENTALS;
 
-    connectedCallback() {
-        super.connectedCallback();
-    }
+    frequencyDegree = 0;
 
     protected updated() {
-        const frequencyDegree = this.calculateErrorDegree();
-
-        this.style.setProperty('--needle-degree', frequencyDegree + 'rad');
-        this.style.setProperty('--opacity', this.accuracy + '');
-
-        // this.style.setProperty('--spoke1-degree', TunerRingComponent.calculateSpokeAngle() + 'rad');
-        this.style.setProperty('--spoke1-degree', TunerRingComponent.calculateSpokeAngle(frequencyDegree, Math.PI / 12) + 'rad');
-        this.style.setProperty('--spoke2-degree', TunerRingComponent.calculateSpokeAngle(frequencyDegree, 23 * Math.PI / 12) + 'rad');
-
-        this.style.setProperty('--spoke3-degree', TunerRingComponent.calculateSpokeAngle(frequencyDegree, Math.PI / 6) + 'rad');
-        // this.style.setProperty('--spoke4-degree', TunerRingComponent.calculateSpokeAngle(frequencyDegree, Math.PI / 6) + 'rad');
-
-        // this.style.setProperty('--spoke5-degree', TunerRingComponent.calculateSpokeAngle(frequencyDegree, Math.PI / 8) + 'rad');
-        // this.style.setProperty('--spoke6-degree', -TunerRingComponent.calculateSpokeAngle(frequencyDegree, Math.PI / 8) + 'rad');
-
-        // this.style.setProperty('--spoke3-degree', TunerRingComponent.calculateSpokeAngle(-(frequencyDegree + 2) / 4) + 'rad');
-        // this.style.setProperty('--spoke4-degree', TunerRingComponent.calculateSpokeAngle(-(frequencyDegree - 2) / 4) + 'rad');
+        // Degree goes from -PI/2 to PI/2 with straight-up being 0
+        this.frequencyDegree = this.convertAccuracyToRadians();
+        this.style.setProperty('--needle-degree', this.frequencyDegree + 'rad');
     }
 
-    private calculateErrorDegree(): number {
-        // convert the accuracy of the note to a degree
-        const degree: number = (1 - this.accuracy) * (Math.PI / 2);
+    private convertAccuracyToRadians(): number {
+        let radians: number = this.accuracy * (Math.PI / 2) - Math.PI / 2;
 
-        // if the note is flat return a negative degree (rotate to the left) otherwise positive
-        switch (this.pitchAccidental) {
-            case ACCIDENTALS.flat:
-                return degree * -1;
-            case ACCIDENTALS.sharp:
-                return degree;
+        if (this.pitchAccidental == ACCIDENTALS.sharp) {
+            radians *= -1;
         }
-    }
 
-    private static calculateSpokeAngle(theta: number, constant: number) {
-        return Math.cos(theta + constant) * (Math.PI / 2) * constant;
-        // return 1 / (theta + (1 / constant))
-        // private static calculateSpokeAngle(theta: number, amplitude: number) {
-        // const frequency = 1;
-        // // const amplitude = (Math.PI/2);
-        // // const
-        // if (theta > (frequency + 1)) {
-        //     return -amplitude;
-        // } else if (theta < -(frequency + 1)) {
-        //     return amplitude;
-        // } else {
-        //     return Math.sin(-theta * frequency + (frequency * 1)) * amplitude;
-        // }
-        // return Math.abs(theta / 4);
-        // return Math.cos(theta + Math.PI/2) * (Math.PI/2);
-        // const constant = (Math.PI / 2);
-        // return Math.cos(theta)* (Math.PI / 2);
+        // map the accuracy of the note to radians around the entire circle
+        return radians;
     }
 
     render() {
+        const circles = [];
+        const circleCount = 16;
+
+        for (let i = 0; i < circleCount; i++) {
+            // divide the semicircle into even parts, and start placing circles from the left.
+            const offsetDegree = ((Math.PI) / circleCount) * i;
+
+            circles.push(html`
+                <tn-circle .index="${i}" .frequencyDegree="${this.frequencyDegree}"
+                           .targetDegree="${(offsetDegree - Math.PI / 2)}"></tn-circle>
+            `);
+        }
+
         return html`
             <div class="tuner-ring">
-                <!--                <div class="spoke spoke1"></div>-->
-                <!--                <div class="spoke spoke2"></div>-->
-                <!--                <div class="spoke spoke3"></div>-->
-                <!--                <div class="spoke spoke4"></div>-->
-                <!--                <div class="spoke spoke5"></div>-->
-                <!--                <div class="spoke spoke6"></div>-->
-                <div class="tuner-needle"></div>
+                <!--                <div class="tuner-needle"></div>-->
+                <div class="ring">
+                    ${circles}
+                </div>
             </div>
         `;
+    }
+}
+
+const CircleComponentStyles = css`
+  :host {
+    --bottom: 0%;
+    --left: 0%;
+    --circumference: 1;
+    --z-index: 0;
+    --inner-opacity: 1;
+    --opacity: 1;
+
+    bottom: var(--bottom);
+    left: var(--left);
+    position: absolute;
+    border-radius: 50%;
+    height: 1rem;
+    width: 1rem;
+    outline: 0.35rem solid var(--primary-color);
+    outline-offset: -0.5rem;
+    background-color: var(--outline-color);
+    transform: translate(-50%, 50%) scale(var(--circumference));
+    z-index: var(--z-index);
+    opacity: var(--opacity);
+
+    transition: transform ease 200ms, opacity ease 200ms;
+  }
+
+`;
+
+@customElement('tn-circle')
+export class CircleComponent extends LitElement {
+
+    static styles = CircleComponentStyles;
+
+    @property()
+    frequencyDegree = 0;
+
+    @property()
+    targetDegree = 0;
+
+    @property()
+    index = 0;
+
+    connectedCallback() {
+        super.connectedCallback();
+        this.setupPosition();
+    }
+
+    protected updated() {
+        const difference = CircleComponent.angleDifference(this.targetDegree, this.frequencyDegree);
+
+        // Map the difference in angles to other scales:
+        const circumference = MathUtility.map(difference, 0, Math.PI / 2, 3, 0);
+        const zIndex = Math.floor(MathUtility.map(difference, 0, Math.PI / 2, 20, 4));
+        const opacity = MathUtility.map(difference, 0, Math.PI / 2, 1.3, 0.5);
+
+        this.style.setProperty('--circumference', circumference + '');
+        // Ensure the biggest circle appears on top:
+        this.style.setProperty('--z-index', zIndex + '');
+        this.style.setProperty('--opacity', opacity + '');
+    }
+
+    /**
+     * Calculates the true difference between two angles in radians
+     * @param angle1
+     * @param angle2
+     * @private
+     */
+    private static angleDifference(angle1: number, angle2: number): number {
+        let angle = angle1 - angle2;
+        angle += (angle > Math.PI) ? -(2 * Math.PI) : (angle < -Math.PI) ? (2 * Math.PI) : 0;
+        return Math.abs(angle);
+    }
+
+    private setupPosition() {
+        const bottom = 50 * Math.cos(this.targetDegree) + 50 + '%';
+        const left = 50 * Math.sin(this.targetDegree) + 50 + '%';
+        this.style.setProperty('--bottom', bottom);
+        this.style.setProperty('--left', left);
     }
 }
