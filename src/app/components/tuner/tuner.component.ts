@@ -5,6 +5,7 @@ import {OscillatorSource, PitchDetectorService} from '../../services/pitch-detec
 import {MathUtility} from '../../utilities/math-utility';
 import {CONFIG} from '../../../config';
 import {Logger} from '../../utilities/log-utility';
+import {SimpleBuffer} from '../../utilities/simple-buffer';
 
 @customElement('tn-tuner')
 export class TunerComponent extends LitElement {
@@ -14,6 +15,8 @@ export class TunerComponent extends LitElement {
      * @private
      */
     private pitchDetectorService = new PitchDetectorService();
+
+    private accuracyBuffer = new SimpleBuffer(10);
 
     /**
      * The note to display
@@ -51,20 +54,27 @@ export class TunerComponent extends LitElement {
             const expectedPitch = NoteUtility.noteToPitch(this.note);
             const nextLowestPitch = NoteUtility.noteToPitch(new Note(this.note.index - 1));
             const nextHighestPitch = NoteUtility.noteToPitch(new Note(this.note.index + 1));
+            let accuracy: number;
 
             // calculates the accuracy of the current frequency to the next closest note
             if (freq < expectedPitch) {
                 // the frequency is flat
                 this.pitchAccidental = ACCIDENTALS.flat;
-                this.accuracy = MathUtility.map(freq, nextLowestPitch, expectedPitch, -1, 1);
+                accuracy = MathUtility.map(freq, nextLowestPitch, expectedPitch, -1, 1);
             } else {
                 // the frequency is sharp
                 this.pitchAccidental = ACCIDENTALS.sharp;
-                this.accuracy = MathUtility.map(freq, nextHighestPitch, expectedPitch, -1, 1);
+                accuracy = MathUtility.map(freq, nextHighestPitch, expectedPitch, -1, 1);
             }
-            if (this.accuracy < 0) {
-                this.accuracy = 0;
+            if (accuracy < 0) {
+                accuracy = 0;
             }
+
+            // add the raw accuracy to the buffer
+            this.accuracyBuffer.add(accuracy);
+
+            // Rounds the accuracy to prevent unnecessary updates:
+            this.accuracy = MathUtility.round(this.accuracyBuffer.average, 3);
         });
 
         if (CONFIG.debugMode) {
@@ -122,7 +132,6 @@ export class TunerComponent extends LitElement {
                         </div>
                     ` : ''
             }
-            ${this.clarity}
             <div>
                 Audio Playback: <input type="checkbox" @input="${this.setPlayback}">
             </div>
