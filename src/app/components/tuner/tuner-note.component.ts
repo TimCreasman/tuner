@@ -90,7 +90,7 @@ export class TunerNoteComponent extends LitElement {
             this.heightAnimator.reference = this.heightAnimatorReference;
         }
 
-        const newHeight = MathUtility.map(this.accuracy, 0, 1, 90, 25);
+        const newHeight = MathUtility.map(this.accuracy, [0, 1], [90, 25]);
         this.heightAnimator.to = newHeight + '';
     }
 

@@ -2,6 +2,7 @@ import {customElement, property} from 'lit/decorators.js';
 import {css, html, LitElement} from 'lit';
 import {ACCIDENTALS} from '../../utilities/note-utility';
 import {MathUtility} from '../../utilities/math-utility';
+import bezier from 'bezier-easing';
 
 const TunerRingComponentStyles = css`
   :host {
@@ -38,6 +39,10 @@ const TunerRingComponentStyles = css`
     border-radius: 50%;
     outline: 0.5rem solid white;
     outline-offset: -0.25rem;
+  }
+
+  .circles {
+    outline: red;
   }
 `;
 
@@ -89,7 +94,9 @@ export class TunerRingComponent extends LitElement {
             <div class="tuner-ring">
                 <!--                <div class="tuner-needle"></div>-->
                 <div class="ring">
-                    ${circles}
+                    <span class="circles">
+                        ${circles}
+                    </span>
                 </div>
             </div>
         `;
@@ -100,10 +107,12 @@ const CircleComponentStyles = css`
   :host {
     --bottom: 0%;
     --left: 0%;
-    --circumference: 1;
+    --x-scale: 1;
+    --y-scale: 1;
     --z-index: 0;
     --inner-opacity: 1;
     --opacity: 1;
+    --angle: 0;
 
     bottom: var(--bottom);
     left: var(--left);
@@ -111,14 +120,15 @@ const CircleComponentStyles = css`
     border-radius: 50%;
     height: 1rem;
     width: 1rem;
-    outline: 0.35rem solid var(--primary-color);
-    outline-offset: -0.5rem;
-    background-color: var(--outline-color);
-    transform: translate(-50%, 50%) scale(var(--circumference));
+    //outline: 0.1rem solid var(--outline-color);
+    //outline-offset: -0.1rem;
+    border: 0.1rem solid var(--outline-color);
+    background-color: var(--primary-color);
+    transform: translate(-50%, 50%) rotate(var(--angle)) scaleX(var(--x-scale)) scaleY(var(--y-scale));
     z-index: var(--z-index);
     opacity: var(--opacity);
 
-    transition: transform ease 200ms, opacity ease 200ms;
+    transition: all cubic-bezier(0, 0, .2, 1.3) 300ms, z-index 0ms;
   }
 
 `;
@@ -146,11 +156,19 @@ export class CircleComponent extends LitElement {
         const difference = CircleComponent.angleDifference(this.targetDegree, this.frequencyDegree);
 
         // Map the difference in angles to other scales:
-        const circumference = MathUtility.map(difference, 0, Math.PI / 2, 3, 0);
-        const zIndex = Math.floor(MathUtility.map(difference, 0, Math.PI / 2, 20, 4));
-        const opacity = MathUtility.map(difference, 0, Math.PI / 2, 1.3, 0.5);
+        const quarterCircle: [number, number] = [0, Math.PI];
 
-        this.style.setProperty('--circumference', circumference + '');
+        const falloff = bezier(0, 0, 1, 0);
+        const scale = MathUtility.map(difference, quarterCircle, [1, 0]);
+        const inverseScale = MathUtility.map(difference, quarterCircle, [0, 1]);
+        const size = falloff(scale) * 5;
+        const squish = falloff(inverseScale) * 15;
+        const opacity = size;
+
+        const zIndex = Math.floor(MathUtility.map(difference, quarterCircle, [23, 4]));
+
+        this.style.setProperty('--x-scale', size + squish + '');
+        this.style.setProperty('--y-scale', size + '');
         // Ensure the biggest circle appears on top:
         this.style.setProperty('--z-index', zIndex + '');
         this.style.setProperty('--opacity', opacity + '');
@@ -173,5 +191,6 @@ export class CircleComponent extends LitElement {
         const left = 50 * Math.sin(this.targetDegree) + 50 + '%';
         this.style.setProperty('--bottom', bottom);
         this.style.setProperty('--left', left);
+        this.style.setProperty('--angle', this.targetDegree + 'rad');
     }
 }

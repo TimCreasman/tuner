@@ -38,7 +38,7 @@ export class Note {
      * @param index the midi index for the note (0 to 127)
      */
     public constructor(index: number) {
-        this.index = MathUtility.clamp(index, 0, 127);
+        this.index = MathUtility.clamp(index, [0, 127]);
         // subtract the octave by 1 to shift it down. The range is -1 to 9
         this.octave = Math.floor(index / NOTES_IN_OCTAVE) - 1;
     }

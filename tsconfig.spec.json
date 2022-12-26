@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Spec files should be allowed to be isolated modules:
+    "isolatedModules": false
+  },
+  "include": [
+    "src/**/__tests__/*"
+  ]
+}
