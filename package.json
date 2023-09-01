@@ -4,7 +4,8 @@
   "description": "A tuning app",
   "type": "module",
   "scripts": {
-    "build": "node esbuild.build.js",
+    "build": "node esbuild.build.js dist",
+    "build-pages": "node esbuild.build.js pages",
     "start": "npm run server & npm run build -- --watch",
     "server": "servor dist index.html 3000 --reload --secure",
     "lint": "eslint .",
