@@ -39,10 +39,11 @@ export class TunerComponent extends LitElement {
      * The accidental of the incoming pitch
      */
     @property()
-    pitchAccidental: ACCIDENTALS;
+    pitchAccidental: ACCIDENTALS | undefined;
 
     connectedCallback() {
         super.connectedCallback();
+        console.log('YOOOO');
 
         this.pitchDetectorService.setOnListen((freq, clarity) => {
             this.clarity = clarity;
@@ -130,17 +131,17 @@ export class TunerComponent extends LitElement {
                     html`
                         ${this.inTune}
                         ${this.accuracy}
-                        <div id="tuner.debug-info">
+                        <div data-test-id="tuner.debug-info">
                             <input type="range" min="400"
                                    max="1300"
                                    @input="${this.updateOscillatorFrequency}">
                         </div>
                     ` : ''
             }
-            <div id="tuner.audio-slider">
+            <div data-test-id="tuner.audio-slider">
                 Audio Playback: <input type="checkbox" @input="${this.setPlayback}">
             </div>
-            <div id="tuner.body" @click="${this.resumeContext}">
+            <div data-test-id="tuner.body" @click="${this.resumeContext}">
                 <tn-tuner-ring .accuracy="${this.accuracy}" .pitchAccidental="${this.pitchAccidental}"></tn-tuner-ring>
                 <tn-tuner-note .note="${this.note}" .accuracy="${this.accuracy}"
                                .clarity="${this.clarity}"></tn-tuner-note>

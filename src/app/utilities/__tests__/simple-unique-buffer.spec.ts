@@ -1,4 +1,4 @@
-import {SimpleUniqueBuffer} from '../simple-unique-buffer';
+import {SimpleUniqueBuffer} from '../simple-unique-buffer.js';
 import {expect} from 'chai';
 
 describe('SimpleBuffer', function () {
