@@ -1,7 +1,9 @@
 {
   "root": true,
   "ignorePatterns": [
-    "**/*spec.snap.js"
+    "**/*spec.snap.js",
+    "**/pages/**",
+    "**/esbuild.build.js"
   ],
   "rules": {
     "quotes": [
