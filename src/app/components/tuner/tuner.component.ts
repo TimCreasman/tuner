@@ -52,7 +52,6 @@ export class TunerComponent extends LitElement {
 
     connectedCallback() {
         super.connectedCallback();
-        console.log('YOOOO');
 
         this.pitchDetectorService.setOnListen((freq, clarity) => {
             this.clarity = clarity;
