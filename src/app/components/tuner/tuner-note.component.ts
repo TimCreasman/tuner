@@ -5,7 +5,8 @@ import {MathUtility} from '../../utilities/math-utility';
 
 const TunerNoteComponentStyles = css`
   .tuner-note-container {
-    width: 300px;
+    width: 100%;
+    height: 100%;
     text-align: center;
   }
 
@@ -105,7 +106,7 @@ export class TunerNoteComponent extends LitElement {
     render() {
         return html`
             <div class="tuner-note-container">
-                <svg id="view" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <svg id="view" viewBox="0 0 100 100" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg">
                     <use href="#note-letter" class="tuner-note-letter"/>
 
                     <use href="#liquid-effect" mask="url(#note-mask)"/>

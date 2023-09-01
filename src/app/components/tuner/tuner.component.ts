@@ -1,4 +1,4 @@
-import {html, LitElement} from 'lit';
+import {css, html, LitElement} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {ACCIDENTALS, Note, NoteUtility} from '../../utilities/note-utility';
 import {OscillatorSource, PitchDetectorService} from '../../services/pitch-detector.service';
@@ -7,8 +7,17 @@ import {CONFIG} from '../../../config';
 import {Logger} from '../../utilities/log-utility';
 import {SimpleUniqueBuffer} from '../../utilities/simple-unique-buffer';
 
+const TunerComponentStyles = css`
+  .tuner-body {
+    width: 100vw;
+    height: 100vh;
+  }
+`;
+
 @customElement('tn-tuner')
 export class TunerComponent extends LitElement {
+
+    static styles = TunerComponentStyles;
 
     /**
      * Reference to the pitch detector service
@@ -136,13 +145,14 @@ export class TunerComponent extends LitElement {
                                    max="1300"
                                    @input="${this.updateOscillatorFrequency}">
                         </div>
+                        <div data-test-id="tuner.audio-slider">
+                            Audio Playback: <input type="checkbox" @input="${this.setPlayback}">
+                        </div>
                     ` : ''
             }
-            <div data-test-id="tuner.audio-slider">
-                Audio Playback: <input type="checkbox" @input="${this.setPlayback}">
-            </div>
-            <div data-test-id="tuner.body" @click="${this.resumeContext}">
-                <tn-tuner-ring .accuracy="${this.accuracy}" .pitchAccidental="${this.pitchAccidental}"></tn-tuner-ring>
+            <div class="tuner-body" data-test-id="tuner.body" @click="${this.resumeContext}">
+                    <!--                <tn-tuner-ring .accuracy="${this.accuracy}
+                    " .pitchAccidental="${this.pitchAccidental}"></tn-tuner-ring>-->
                 <tn-tuner-note .note="${this.note}" .accuracy="${this.accuracy}"
                                .clarity="${this.clarity}"></tn-tuner-note>
             </div>

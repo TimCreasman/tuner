@@ -12,8 +12,8 @@ const TunerRingComponentStyles = css`
 
   .tuner-ring {
     position: absolute;
-    width: 300px;
-    height: 300px;
+    width: 100%;
+    height: 100%;
   }
 
   .tuner-needle {
