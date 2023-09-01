@@ -8,7 +8,8 @@
     "start": "npm run server & npm run build -- --watch",
     "server": "servor dist index.html 3000 --reload --secure",
     "lint": "eslint .",
-    "test": "wtr --node-resolve --watch"
+    "test": "wtr --node-resolve --watch --esbuild-target auto",
+    "ci-test": "wtr --node-resolve"
   },
   "author": "Tim Creasman",
   "license": "ISC",
@@ -20,6 +21,7 @@
   },
   "devDependencies": {
     "@open-wc/testing": "^3.0.0-next.5",
+    "@rollup/plugin-commonjs": "^25.0.4",
     "@types/chai": "^4.3.3",
     "@types/expect": "^24.3.0",
     "@types/mocha": "^10.0.1",
@@ -28,6 +30,7 @@
     "@typescript-eslint/parser": "^5.5.0",
     "@web/dev-server-esbuild": "^0.3.3",
     "@web/dev-server-legacy": "^1.0.1",
+    "@web/dev-server-rollup": "^0.5.2",
     "@web/test-runner": "^0.15.0",
     "chai": "npm:@esm-bundle/chai@^4.3.4-fix.0",
     "esbuild": "^0.13.7",

@@ -6,7 +6,7 @@ import {assert} from 'chai';
 
 describe('TunerComponent', function () {
 
-    test('is defined', () => {
+    it('is defined', () => {
         const el = document.createElement('tn-tuner');
         assert.instanceOf(el, TunerComponent);
     });
@@ -35,8 +35,8 @@ describe('TunerComponent', function () {
         });
 
         it('should resume audio context when clicked', async () => {
-            tunerBody.click();
             const resumeContextSpy = spy(component['pitchDetectorService'].audioSource.audioContext, 'resume');
+            tunerBody.click();
 
             expect(resumeContextSpy.called).to.be.true;
         });

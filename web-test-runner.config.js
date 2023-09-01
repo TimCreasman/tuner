@@ -1,5 +1,9 @@
 import {legacyPlugin} from '@web/dev-server-legacy';
 import {esbuildPlugin} from '@web/dev-server-esbuild';
+import {fromRollup} from '@web/dev-server-rollup';
+import rollupCommonjs from '@rollup/plugin-commonjs';
+
+const commonjs = fromRollup(rollupCommonjs);
 
 export default {
   nodeResolve: true,
@@ -16,6 +20,14 @@ export default {
   plugins: [
     esbuildPlugin({
       ts: true,
+    }),
+    // fix for the fft.js module
+    commonjs({
+      include: [
+        // the commonjs plugin is slow, list the required packages explicitly:
+        '**/node_modules/fft.js/**/*',
+        '**/node_modules/next-pow-2/**/*',
+      ],
     }),
     // make sure this plugin is always last
     legacyPlugin({
