@@ -1,17 +1,28 @@
 {
   "compilerOptions": {
     "experimentalDecorators": true,
-    "module": "system",
+    "outDir": "dist",
+    "noEmit": false,
+    "declaration": true,
+    "noEmitOnError": true,
+    "stripInternal": true,
+    "target": "es6",
+    "module": "esnext",
+    "moduleResolution": "node",
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
     "sourceMap": true,
+    "strict": true,
     "isolatedModules": true,
-    "moduleResolution": "Node",
-    "target": "es2015",
     "resolveJsonModule": true,
     "esModuleInterop": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "src/**/__tests__/*"
+  ]
 }

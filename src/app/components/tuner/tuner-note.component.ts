@@ -5,8 +5,10 @@ import {MathUtility} from '../../utilities/math-utility';
 
 const TunerNoteComponentStyles = css`
   .tuner-note-container {
-    width: 300px;
+    width: 100%;
+    height: 100%;
     text-align: center;
+    font-family: "Lalezar";
   }
 
   .tuner-note-border {
@@ -16,43 +18,50 @@ const TunerNoteComponentStyles = css`
   .tuner-note-letter {
     stroke: var(--outline-color);
     stroke-width: 3;
-    font: bold 4em sans-serif;
+    font-size: 4em;
   }
 
   .tuner-note-letter-mask {
     stroke: black;
     fill: white;
-    font: bold 4em sans-serif;
+    font-size: 4em;
   }
 
   .tuner-note-accidental {
     stroke: var(--outline-color);
     stroke-width: 1;
-    font: bold 2em sans-serif;
+    font-size: 2em;
   }
 
   .tuner-note-accidental-mask {
     stroke: black;
     stroke-width: 1;
     fill: white;
-    font: bold 2em sans-serif;
+    font-size: 2em;
   }
 
   .tuner-note-octave {
     stroke: var(--outline-color);
     stroke-width: 1;
-    font: bold 2em sans-serif;
+    font-size: 2em;
   }
 
   .tuner-note-octave-mask {
     stroke: black;
     stroke-width: 1;
     fill: white;
-    font: bold 2em sans-serif;
+    font-size: 2em;
   }
 
   .tuner-liquid {
     fill: var(--primary-color);
+  }
+
+  .test {
+    stroke: var(--outline-color);
+    stroke-width: 3;
+    fill: var(--primary-color);
+    font-weight: bold;
   }
 `;
 
@@ -90,7 +99,7 @@ export class TunerNoteComponent extends LitElement {
             this.heightAnimator.reference = this.heightAnimatorReference;
         }
 
-        const newHeight = MathUtility.map(this.accuracy, 0, 1, 90, 25);
+        const newHeight = MathUtility.map(this.accuracy, [0, 1], [90, 25]);
         this.heightAnimator.to = newHeight + '';
     }
 
@@ -105,7 +114,7 @@ export class TunerNoteComponent extends LitElement {
     render() {
         return html`
             <div class="tuner-note-container">
-                <svg id="view" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <svg id="view" viewBox="0 0 100 100" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg">
                     <use href="#note-letter" class="tuner-note-letter"/>
 
                     <use href="#liquid-effect" mask="url(#note-mask)"/>
@@ -123,7 +132,7 @@ export class TunerNoteComponent extends LitElement {
                               text-anchor="middle">
                             ${this.note.accidental}
                         </text>
-                        <text id="note-octave" x="65%" y="75%" dominant-baseline="central" text-anchor="middle">
+                        <text id="note-octave" x="65%" y="65%" dominant-baseline="central" text-anchor="middle">
                             ${this.note.octave}
                         </text>
 

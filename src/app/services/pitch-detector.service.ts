@@ -92,6 +92,7 @@ export class MicSource implements AudioSource {
     public async connect() {
         let stream: MediaStream;
         try {
+            console.log(navigator.mediaDevices);
             stream = await navigator.mediaDevices.getUserMedia({audio: true});
         } catch (err) {
             console.log(err);

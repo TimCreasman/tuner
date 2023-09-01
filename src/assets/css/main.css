@@ -13,11 +13,7 @@ body {
 
 .tuner-body .note {
     text-align: center;
-    height: 100%;
     color: var(--primary-color);
-    font-size: var(--font-size);
-    font-family: Tahoma;
-    /*-webkit-text-stroke: 10px var(--outline-color);*/
 }
 
 .center {

@@ -1,14 +1,23 @@
-import {html, LitElement} from 'lit';
+import {css, html, LitElement} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {ACCIDENTALS, Note, NoteUtility} from '../../utilities/note-utility';
 import {OscillatorSource, PitchDetectorService} from '../../services/pitch-detector.service';
 import {MathUtility} from '../../utilities/math-utility';
 import {CONFIG} from '../../../config';
 import {Logger} from '../../utilities/log-utility';
-import {SimpleBuffer} from '../../utilities/simple-buffer';
+import {SimpleUniqueBuffer} from '../../utilities/simple-unique-buffer';
+
+const TunerComponentStyles = css`
+  .tuner-body {
+    width: 100vw;
+    height: 100vh;
+  }
+`;
 
 @customElement('tn-tuner')
 export class TunerComponent extends LitElement {
+
+    static styles = TunerComponentStyles;
 
     /**
      * Reference to the pitch detector service
@@ -16,7 +25,7 @@ export class TunerComponent extends LitElement {
      */
     private pitchDetectorService = new PitchDetectorService();
 
-    private accuracyBuffer = new SimpleBuffer(10);
+    private accuracyBuffer = new SimpleUniqueBuffer(10);
 
     /**
      * The note to display
@@ -33,11 +42,13 @@ export class TunerComponent extends LitElement {
     @property()
     clarity = 1;
 
+    inTune = false;
+
     /**
      * The accidental of the incoming pitch
      */
     @property()
-    pitchAccidental: ACCIDENTALS;
+    pitchAccidental: ACCIDENTALS | undefined;
 
     connectedCallback() {
         super.connectedCallback();
@@ -60,21 +71,23 @@ export class TunerComponent extends LitElement {
             if (freq < expectedPitch) {
                 // the frequency is flat
                 this.pitchAccidental = ACCIDENTALS.flat;
-                accuracy = MathUtility.map(freq, nextLowestPitch, expectedPitch, -1, 1);
+                accuracy = MathUtility.map(freq, [nextLowestPitch, expectedPitch], [-1, 1]);
             } else {
                 // the frequency is sharp
                 this.pitchAccidental = ACCIDENTALS.sharp;
-                accuracy = MathUtility.map(freq, nextHighestPitch, expectedPitch, -1, 1);
+                accuracy = MathUtility.map(freq, [nextHighestPitch, expectedPitch], [-1, 1]);
             }
             if (accuracy < 0) {
                 accuracy = 0;
             }
 
+            this.inTune = accuracy > 0.95;
+
             // add the raw accuracy to the buffer
             this.accuracyBuffer.add(accuracy);
 
             // Rounds the accuracy to prevent unnecessary updates:
-            this.accuracy = MathUtility.round(this.accuracyBuffer.average, 3);
+            this.accuracy = MathUtility.round(this.accuracyBuffer.average, 2);
         });
 
         if (CONFIG.debugMode) {
@@ -124,19 +137,21 @@ export class TunerComponent extends LitElement {
         return html`
             ${CONFIG.debugMode ?
                     html`
+                        ${this.inTune}
                         ${this.accuracy}
-                        <div>
+                        <div data-test-id="tuner.debug-info">
                             <input type="range" min="400"
                                    max="1300"
                                    @input="${this.updateOscillatorFrequency}">
                         </div>
+                        <div data-test-id="tuner.audio-slider">
+                            Audio Playback: <input type="checkbox" @input="${this.setPlayback}">
+                        </div>
                     ` : ''
             }
-            <div>
-                Audio Playback: <input type="checkbox" @input="${this.setPlayback}">
-            </div>
-            <div @click="${this.resumeContext}">
-                <tn-tuner-ring .accuracy="${this.accuracy}" .pitchAccidental="${this.pitchAccidental}"></tn-tuner-ring>
+            <div class="tuner-body" data-test-id="tuner.body" @click="${this.resumeContext}">
+                    <!--                <tn-tuner-ring .accuracy="${this.accuracy}
+                    " .pitchAccidental="${this.pitchAccidental}"></tn-tuner-ring>-->
                 <tn-tuner-note .note="${this.note}" .accuracy="${this.accuracy}"
                                .clarity="${this.clarity}"></tn-tuner-note>
             </div>
