@@ -1,5 +1,8 @@
 {
   "root": true,
+  "ignorePatterns": [
+    "**/*spec.snap.js"
+  ],
   "rules": {
     "quotes": [
       "error",

@@ -20,7 +20,6 @@ describe('TunerComponent', function () {
 
     it('should equal snapshot', async () => {
         expect(component).dom.to.equalSnapshot();
-        debugger;
     });
 
     describe('tuner body', function () {
@@ -36,8 +35,6 @@ describe('TunerComponent', function () {
         });
 
         it('should resume audio context when clicked', async () => {
-            console.log(tunerBody);
-            debugger;
             tunerBody.click();
             const resumeContextSpy = spy(component['pitchDetectorService'].audioSource.audioContext, 'resume');
 

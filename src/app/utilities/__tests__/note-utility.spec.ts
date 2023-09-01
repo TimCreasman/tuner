@@ -29,19 +29,19 @@ describe('NotationUtility', function () {
         });
     });
 
-    describe('noteToPitch', function () {
+    /*    describe('noteToPitch', function () {
 
-        it('should find correct pitches within 2 significant figures', function () {
+            it('should find correct pitches within 2 significant figures', function () {
 
-            function round(num: number) {
-                return Math.round((num + Number.EPSILON) * 1000) / 1000;
-            }
+                function round(num: number) {
+                    return Math.round((num + Number.EPSILON) * 1000) / 1000;
+                }
 
-            // A440_NOTE_FREQUENCIES.forEach(function (actualFreq, i) {
-            //     const calculatedFreq = NoteUtility.noteToPitch(new Note(i));
-            //     const roundedFreq = round(calculatedFreq);
-            //     expect(roundedFreq).to.eq(actualFreq);
-            // });
-        });
-    });
+                A440_NOTE_FREQUENCIES.forEach(function (actualFreq, i) {
+                    const calculatedFreq = NoteUtility.noteToPitch(new Note(i));
+                    const roundedFreq = round(calculatedFreq);
+                    expect(roundedFreq).to.eq(actualFreq);
+                });
+            });
+        });*/
 });
