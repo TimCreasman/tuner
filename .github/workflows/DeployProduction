@@ -1,0 +1,21 @@
+name: DeployProduction
+on:
+  push:
+    branches:
+      - main
+env:
+  NODE_ENV: production
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install modules
+        run: npm i
+      - name: Build app
+        run: npm run build
+      - name: Deploy to GH Pages 
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: dist
