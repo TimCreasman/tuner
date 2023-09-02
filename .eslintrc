@@ -3,7 +3,8 @@
   "ignorePatterns": [
     "**/*spec.snap.js",
     "**/docs/**",
-    "**/esbuild.build.js"
+    "**/esbuild.build.js",
+    "**/web-test-runner.config.js"
   ],
   "rules": {
     "quotes": [

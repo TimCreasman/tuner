@@ -1,45 +1,48 @@
 #!/usr/bin/env node
 import {build} from 'esbuild';
-import {exec} from 'child_process';
 import importGlobPlugin from 'esbuild-plugin-import-glob';
+import packageJson from './package.json' assert {type: 'json'};
+import sh from 'shelljs';
+import minimist from 'minimist';
 
-var args = process.argv.slice(2);
+// Build constants
+const env = process.env.NODE_ENV ? process.env.NODE_ENV : 'development';
+const dir = 'dist';
+const debug = minimist(process.argv.slice(2))['debug'];
 
-const folder = args[0];
+console.log('Building ' + env + ' version ' + packageJson.version);
 
-const copyIndexHtml = {
-  name: 'copyIndex',
-  setup() {
-    exec('cp src/index.html ' + folder + '/index.html', (error, stdout, stderr) => {
-      if (error) {
-        // eslint-disable-next-line no-undef
-        console.log(`error: ${error.message}`);
-        return;
-      }
-      if (stderr) {
-        // eslint-disable-next-line no-undef
-        console.log(`stderr: ${stderr}`);
-        return;
-      }
-      // eslint-disable-next-line no-undef
-      console.log('copied index.html');
-    });
-  }
-};
+// Initial build setup:
 
+// Refresh the dist directory
+if (sh.test('-e', dir)) {
+  sh.rm('-rf', dir)
+}
+sh.mkdir(dir);
+
+// Copy over the index.html
+sh.cp('src/index.html', dir);
+
+// ES build
 export const buildOptions = {
   entryPoints: ['src/main.ts'],
   bundle: true,
-  outfile: folder + '/main.js',
-  sourcemap: true,
-  plugins: [copyIndexHtml, importGlobPlugin.default()],
+  outfile: 'dist/main.js',
+  define: {
+    'process.env.DEBUG': debug
+  },
+  plugins: [importGlobPlugin.default()],
 };
 
+if (env === 'production') {
+  buildOptions['minify'] = true;
+} else {
+  buildOptions['sourcemap'] = true;
+}
+
 build(buildOptions).catch(err => {
-  // eslint-disable-next-line no-undef
   process.stderr.write(err.stderr);
-  // eslint-disable-next-line no-undef
   process.exit(1);
+}).then(() => {
+  console.log('Finished building ' + env + ' version ' + packageJson.version);
 });
-
-
