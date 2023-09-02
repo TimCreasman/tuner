@@ -6,13 +6,13 @@ import sh from 'shelljs';
 import minimist from 'minimist';
 
 // Build constants
-const env = process.env.NODE_ENV ? process.env.NODE_ENV : 'development';
+const env = process.env.BUILD_ENV ? process.env.BUILD_ENV : 'development';
 const dir = 'dist';
 const debug = minimist(process.argv.slice(2))['debug'];
 
 console.log('Building ' + env + ' version ' + packageJson.version);
 
-// Initial build setup:
+// Initial build setup
 
 // Refresh the dist directory
 if (sh.test('-e', dir)) {
