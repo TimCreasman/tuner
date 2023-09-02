@@ -2,7 +2,7 @@
   "root": true,
   "ignorePatterns": [
     "**/*spec.snap.js",
-    "**/pages/**",
+    "**/docs/**",
     "**/esbuild.build.js"
   ],
   "rules": {
