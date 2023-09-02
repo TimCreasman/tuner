@@ -17,6 +17,14 @@ export default {
       timeout: '60000',
     },
   },
+  // Do this to expose environment variables to the test framework
+  testRunnerHtml: testFramework =>
+      `<html>
+      <body>
+        <script>window.process = { env: { NODE_ENV: "development", DEBUG: false } }</script>
+        <script type="module" src="${testFramework}"></script>
+      </body>
+    </html>`,
   plugins: [
     esbuildPlugin({
       ts: true,
