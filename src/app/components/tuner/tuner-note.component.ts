@@ -11,46 +11,42 @@ const TunerNoteComponentStyles = css`
     font-family: "Lalezar";
   }
 
-  .tuner-note-border {
-    stroke: var(--outline-color);
-  }
-
   .tuner-note-letter {
-    stroke: var(--outline-color);
-    stroke-width: 3;
-    font-size: 4em;
+    stroke: var(--highlight-color);
+    stroke-width: 2;
+    font-size: 3em;
   }
 
   .tuner-note-letter-mask {
     stroke: black;
     fill: white;
-    font-size: 4em;
+    font-size: 3em;
   }
 
   .tuner-note-accidental {
-    stroke: var(--outline-color);
+    stroke: var(--highlight-color);
     stroke-width: 1;
-    font-size: 2em;
+    font-size: 1.5em;
   }
 
   .tuner-note-accidental-mask {
     stroke: black;
     stroke-width: 1;
     fill: white;
-    font-size: 2em;
+    font-size: 1.5em;
   }
 
   .tuner-note-octave {
-    stroke: var(--outline-color);
+    stroke: var(--highlight-color);
     stroke-width: 1;
-    font-size: 2em;
+    font-size: 1.5em;
   }
 
   .tuner-note-octave-mask {
     stroke: black;
     stroke-width: 1;
     fill: white;
-    font-size: 2em;
+    font-size: 1.5em;
   }
 
   .tuner-liquid {
@@ -58,7 +54,7 @@ const TunerNoteComponentStyles = css`
   }
 
   .test {
-    stroke: var(--outline-color);
+    stroke: var(--highlight-color);
     stroke-width: 3;
     fill: var(--primary-color);
     font-weight: bold;
@@ -114,7 +110,7 @@ export class TunerNoteComponent extends LitElement {
     render() {
         return html`
             <div class="tuner-note-container">
-                <svg id="view" viewBox="0 0 100 100" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg">
+                <svg id="view" viewBox="1 0 100 100" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg">
                     <use href="#note-letter" class="tuner-note-letter"/>
 
                     <use href="#liquid-effect" mask="url(#note-mask)"/>
@@ -128,11 +124,11 @@ export class TunerNoteComponent extends LitElement {
                               text-anchor="middle">
                             ${this.note.letter}
                         </text>
-                        <text id="note-accidental" x="65%" y="25%" dominant-baseline="central"
+                        <text id="note-accidental" x="60%" y="35%" dominant-baseline="central"
                               text-anchor="middle">
                             ${this.note.accidental}
                         </text>
-                        <text id="note-octave" x="65%" y="65%" dominant-baseline="central" text-anchor="middle">
+                        <text id="note-octave" x="60%" y="60%" dominant-baseline="central" text-anchor="middle">
                             ${this.note.octave}
                         </text>
 
