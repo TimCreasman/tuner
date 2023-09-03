@@ -9,9 +9,10 @@ export class PitchDetectorService {
     private _pitch: number;
     private _audioSource: AudioSource;
     private _clarity: number;
+    private _volume: number;
 
     private intervalReference: number;
-    private onListen: (pitch: number, clarity: number) => void;
+    private onListen: (pitch: number, clarity: number, volume: number) => void;
 
     // defaults to 17 refreshes a millisecond (~60 refreshes a second) and the microphone source
     constructor(audioSource: AudioSource = new MicSource(), refreshRate = 17) {
@@ -30,7 +31,7 @@ export class PitchDetectorService {
         window.clearInterval(this.intervalReference);
     }
 
-    public setOnListen(newListen: (pitch: number, clarity: number) => void) {
+    public setOnListen(newListen: (pitch: number, clarity: number, volume: number) => void) {
         this.onListen = newListen;
     }
 
@@ -42,11 +43,17 @@ export class PitchDetectorService {
         return this._clarity;
     }
 
+    get volume(): number {
+        return this._volume;
+    }
+
     get audioSource(): AudioSource {
         return this._audioSource;
     }
 
     set audioSource(audioSource) {
+        // set maximum smoothing
+        audioSource.analyserNode.smoothingTimeConstant = 1;
         this._audioSource = audioSource;
     }
 
@@ -59,7 +66,10 @@ export class PitchDetectorService {
             Logger.debug('Pitch not detected.', this._pitch, this._clarity);
         }
 
-        this.onListen(this._pitch, this._clarity);
+        const squareSum = inputArray.reduce((a, value) => a + (value * value), 0);
+        this._volume = Math.sqrt(squareSum / inputArray.length);
+
+        this.onListen(this._pitch, this._clarity, this._volume);
     }
 }
 
@@ -92,10 +102,9 @@ export class MicSource implements AudioSource {
     public async connect() {
         let stream: MediaStream;
         try {
-            console.log(navigator.mediaDevices);
             stream = await navigator.mediaDevices.getUserMedia({audio: true});
         } catch (err) {
-            console.log(err);
+            Logger.error(err);
         }
 
         // the microphone source
