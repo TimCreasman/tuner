@@ -5,12 +5,16 @@ import {OscillatorSource, PitchDetectorService} from '../../services/pitch-detec
 import {MathUtility} from '../../utilities/math-utility';
 import {CONFIG} from '../../../config';
 import {Logger} from '../../utilities/log-utility';
-import {SimpleUniqueBuffer} from '../../utilities/simple-unique-buffer';
 
 const TunerComponentStyles = css`
+  :root {
+    --doc-height: 100%;
+  }
+
   .tuner-body {
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100vh; /* fallback for Js load */
+    height: var(--doc-height);
   }
 `;
 
@@ -24,8 +28,6 @@ export class TunerComponent extends LitElement {
      * @private
      */
     private pitchDetectorService = new PitchDetectorService();
-
-    private accuracyBuffer = new SimpleUniqueBuffer(10);
 
     /**
      * The note to display
@@ -53,15 +55,16 @@ export class TunerComponent extends LitElement {
     connectedCallback() {
         super.connectedCallback();
 
-        this.pitchDetectorService.setOnListen((freq, clarity) => {
+        this.calculateDocumentHeight();
+
+        this.pitchDetectorService.setOnListen((freq, clarity, volume) => {
             this.clarity = clarity;
-            // only update the note if we are confident about it
-            if (clarity > 0.98) {
-                this.note = NoteUtility.freqToNote(freq);
-            } else {
+            // only update if we are above the volume and clarity thresholds
+            if (volume < 0.1 && clarity < 0.99) {
                 return;
             }
 
+            this.note = NoteUtility.freqToNote(freq);
             const expectedPitch = NoteUtility.noteToPitch(this.note);
             const nextLowestPitch = NoteUtility.noteToPitch(new Note(this.note.index - 1));
             const nextHighestPitch = NoteUtility.noteToPitch(new Note(this.note.index + 1));
@@ -83,11 +86,8 @@ export class TunerComponent extends LitElement {
 
             this.inTune = accuracy > 0.95;
 
-            // add the raw accuracy to the buffer
-            this.accuracyBuffer.add(accuracy);
-
             // Rounds the accuracy to prevent unnecessary updates:
-            this.accuracy = MathUtility.round(this.accuracyBuffer.average, 2);
+            this.accuracy = accuracy;
         });
 
         if (CONFIG.debugMode) {
@@ -100,6 +100,19 @@ export class TunerComponent extends LitElement {
     disconnectedCallback() {
         super.disconnectedCallback();
         this.pitchDetectorService.stopListening();
+    }
+
+    /**
+     * Calculates the height of the document. We have to use this method as the vh css units are unreliable on mobile devices.
+     * @private
+     */
+    private calculateDocumentHeight(): void {
+        const documentHeight = () => {
+            const doc = document.documentElement;
+            doc.style.setProperty('--doc-height', `${window.innerHeight}px`);
+        };
+        window.addEventListener('resize', documentHeight);
+        documentHeight();
     }
 
     /**
@@ -135,26 +148,29 @@ export class TunerComponent extends LitElement {
 
     render() {
         return html`
-            ${CONFIG.debugMode ?
-                    html`
-                        ${this.inTune}
-                        ${this.accuracy}
-                        <div data-test-id="tuner.debug-info">
-                            <input type="range" min="400"
-                                   max="1300"
-                                   @input="${this.updateOscillatorFrequency}">
-                        </div>
-                        <div data-test-id="tuner.audio-slider">
-                            Audio Playback: <input type="checkbox" @input="${this.setPlayback}">
-                        </div>
-                    ` : ''
-            }
+
             <div class="tuner-body" data-test-id="tuner.body" @click="${this.resumeContext}">
-                    <!--                <tn-tuner-ring .accuracy="${this.accuracy}
-                    " .pitchAccidental="${this.pitchAccidental}"></tn-tuner-ring>-->
+                <tn-tuner-ring .accuracy="${this.accuracy}" .pitchAccidental="${this.pitchAccidental}"></tn-tuner-ring>
                 <tn-tuner-note .note="${this.note}" .accuracy="${this.accuracy}"
                                .clarity="${this.clarity}"></tn-tuner-note>
             </div>
+            ${CONFIG.debugMode ?
+                    html`
+                        <div style="z-index: 1000">
+                            <p>${this.pitchDetectorService.pitch}</p>
+                            <p>${this.pitchDetectorService.clarity}</p>
+                            <p>${this.pitchDetectorService.volume}</p>
+                            <div data-test-id="tuner.debug-info">
+                                <input type="range" min="400"
+                                       max="1300"
+                                       @input="${this.updateOscillatorFrequency}">
+                            </div>
+                            <div data-test-id="tuner.audio-slider">
+                                Audio Playback: <input type="checkbox" @input="${this.setPlayback}">
+                            </div>
+                        </div>
+                    ` : ''
+            }
         `;
     }
 }

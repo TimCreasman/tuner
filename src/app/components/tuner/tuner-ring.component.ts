@@ -10,39 +10,46 @@ const TunerRingComponentStyles = css`
     --opacity: 1;
   }
 
-  .tuner-ring {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-  }
-
   .tuner-needle {
-    --width: 5px;
+    --width: 2vmin;
 
-    background: white;
-
+    background: linear-gradient(0deg, transparent 70%, var(--primary-color) 30%);
     width: var(--width);
-    height: 50%;
-
+    height: 55%;
     position: absolute;
     left: calc(50% - (var(--width) / 2));
+    bottom: 55%;
+    border-radius: 25%;
 
     opacity: var(--opacity);
     transform: rotate(var(--needle-degree));
     transform-origin: bottom;
+    transition: all cubic-bezier(0, 0, .2, 1.3) 300ms
+  }
+
+  .tuner-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 75vw;
+    max-width: 75vh;
+  }
+
+  .tuner-ring:after {
+    content: "";
+    display: block;
+    padding-bottom: 100%;
   }
 
   .ring {
-    position: relative;
-    height: 100%;
-    width: 100%;
+    position: absolute;
+    height: 90%;
+    width: 90%;
+    left: 5%;
     border-radius: 50%;
-    outline: 0.5rem solid white;
-    outline-offset: -0.25rem;
-  }
 
-  .circles {
-    outline: red;
+    box-shadow: 0 2vmin 0 var(--primary-color);
   }
 `;
 
@@ -57,12 +64,9 @@ export class TunerRingComponent extends LitElement {
     @property()
     pitchAccidental: ACCIDENTALS;
 
-    frequencyDegree = 0;
-
     protected updated() {
         // Degree goes from -PI/2 to PI/2 with straight-up being 0
-        this.frequencyDegree = this.convertAccuracyToRadians();
-        this.style.setProperty('--needle-degree', this.frequencyDegree + 'rad');
+        this.style.setProperty('--needle-degree', this.convertAccuracyToRadians() + 'rad');
     }
 
     private convertAccuracyToRadians(): number {
@@ -77,27 +81,28 @@ export class TunerRingComponent extends LitElement {
     }
 
     render() {
-        const circles = [];
-        const circleCount = 16;
+        const rectangles = [];
+        const circleCount = 50;
 
         for (let i = 0; i < circleCount; i++) {
-            // divide the semicircle into even parts, and start placing circles from the left.
+            // divide the semicircle into even parts, and start placing rectangles from the left.
             const offsetDegree = ((Math.PI) / circleCount) * i;
+            const isMiddle = i <= ((circleCount / 2) + 1) && i >= ((circleCount / 2) - 1);
 
-            circles.push(html`
-                <tn-circle .index="${i}" .frequencyDegree="${this.frequencyDegree}"
-                           .targetDegree="${(offsetDegree - Math.PI / 2)}"></tn-circle>
+            rectangles.push(html`
+                <tn-circle .index="${i}" .frequencyDegree="${this.convertAccuracyToRadians()}"
+                           .targetDegree="${(offsetDegree - Math.PI / 2)}" .isMiddle="${isMiddle}"></tn-circle>
             `);
         }
 
         return html`
             <div class="tuner-ring">
-                <!--                <div class="tuner-needle"></div>-->
                 <div class="ring">
                     <span class="circles">
-                        ${circles}
+                        ${rectangles}
                     </span>
                 </div>
+                <div class="tuner-needle"></div>
             </div>
         `;
     }
@@ -117,18 +122,14 @@ const CircleComponentStyles = css`
     bottom: var(--bottom);
     left: var(--left);
     position: absolute;
-    border-radius: 50%;
-    height: 1rem;
-    width: 1rem;
-    //outline: 0.1rem solid var(--outline-color);
-    //outline-offset: -0.1rem;
-    border: 0.1rem solid var(--outline-color);
-    background-color: var(--primary-color);
+    height: 4vmin;
+    width: 0.4vmin;
+    background-color: var(--highlight-color);
+    border-radius: 25%;
     transform: translate(-50%, 50%) rotate(var(--angle)) scaleX(var(--x-scale)) scaleY(var(--y-scale));
     z-index: var(--z-index);
-    opacity: var(--opacity);
 
-    transition: all cubic-bezier(0, 0, .2, 1.3) 300ms, z-index 0ms;
+    transition: all cubic-bezier(0, 0, .2, 1.3) 600ms, z-index 0ms;
   }
 
 `;
@@ -147,6 +148,9 @@ export class CircleComponent extends LitElement {
     @property()
     index = 0;
 
+    @property()
+    isMiddle = false;
+
     connectedCallback() {
         super.connectedCallback();
         this.setupPosition();
@@ -164,13 +168,8 @@ export class CircleComponent extends LitElement {
         const size = falloff(scale) * 5;
         const squish = falloff(inverseScale) * 15;
         const opacity = size;
-
-        const zIndex = Math.floor(MathUtility.map(difference, quarterCircle, [23, 4]));
-
         this.style.setProperty('--x-scale', size + squish + '');
         this.style.setProperty('--y-scale', size + '');
-        // Ensure the biggest circle appears on top:
-        this.style.setProperty('--z-index', zIndex + '');
         this.style.setProperty('--opacity', opacity + '');
     }
 
@@ -187,6 +186,9 @@ export class CircleComponent extends LitElement {
     }
 
     private setupPosition() {
+        if (this.isMiddle) {
+            this.style.setProperty('background', 'var(--primary-color)');
+        }
         const bottom = 50 * Math.cos(this.targetDegree) + 50 + '%';
         const left = 50 * Math.sin(this.targetDegree) + 50 + '%';
         this.style.setProperty('--bottom', bottom);

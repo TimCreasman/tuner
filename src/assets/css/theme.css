@@ -2,7 +2,7 @@ body {
     --primary-color: #FF7A00;
     --primary-color-rgb: 255, 122, 0;
     --background-color: black;
-    --outline-color: white;
+    --highlight-color: white;
     --font-fanily: Tahoma;
 }
 
@@ -10,5 +10,5 @@ body.dark-theme {
     --primary-color: #FF7A00;
     --primary-color-rgb: 255, 122, 0;
     --background-color: black;
-    --outline-color: white;
+    --highlight-color: white;
 }
