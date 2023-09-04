@@ -27,7 +27,7 @@ export class TunerComponent extends LitElement {
      * Reference to the pitch detector service
      * @private
      */
-    private pitchDetectorService = new PitchDetectorService();
+    private pitchDetectorService = PitchDetectorService.Instance();
 
     /**
      * The note to display
