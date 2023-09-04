@@ -8,45 +8,49 @@ const TunerNoteComponentStyles = css`
     width: 100%;
     height: 100%;
     text-align: center;
-    font-family: "Lalezar";
+    font-family: "Rubik Mono One", sans-serif;
   }
 
   .tuner-note-letter {
     stroke: var(--highlight-color);
     stroke-width: 2;
-    font-size: 3em;
+    font-size: 2.5em;
   }
 
   .tuner-note-letter-mask {
     stroke: black;
+    stroke-width: 0.5;
     fill: white;
-    font-size: 3em;
+    font-size: 2.5em;
   }
 
   .tuner-note-accidental {
     stroke: var(--highlight-color);
     stroke-width: 1;
-    font-size: 1.5em;
+    stroke-linecap: round;
+    font-size: 1em;
   }
 
   .tuner-note-accidental-mask {
     stroke: black;
     stroke-width: 1;
     fill: white;
-    font-size: 1.5em;
+    stroke-linecap: round;
+    font-size: 1em;
   }
 
   .tuner-note-octave {
     stroke: var(--highlight-color);
     stroke-width: 1;
-    font-size: 1.5em;
+    stroke-linecap: round;
+    font-size: 1em;
   }
 
   .tuner-note-octave-mask {
     stroke: black;
     stroke-width: 1;
     fill: white;
-    font-size: 1.5em;
+    font-size: 1em;
   }
 
   .tuner-liquid {
@@ -110,7 +114,7 @@ export class TunerNoteComponent extends LitElement {
     render() {
         return html`
             <div class="tuner-note-container">
-                <svg id="view" viewBox="1 0 100 100" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg">
+                <svg id="view" viewBox="0 2 100 100" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg">
                     <use href="#note-letter" class="tuner-note-letter"/>
 
                     <use href="#liquid-effect" mask="url(#note-mask)"/>
