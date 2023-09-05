@@ -1,14 +1,18 @@
-# Tuner App
+# Chromatic Tuner
 
-![Tuner Design](./src/assets/images/tuner_design_1.png)
+![Tuner Design](./src/assets/images/tuner_design_2.png)
 
-## Overview
+![GitHub](https://img.shields.io/github/license/TimCreasman/tuner)
+![Website](https://img.shields.io/website/https/timcreasman.com/tuner)
+![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/TimCreasman/tuner)
+![GitHub last commit (branch)](https://img.shields.io/github/last-commit/TimCreasman/tuner/main)
+![GitHub top language](https://img.shields.io/github/languages/top/TimCreasman/tuner)
+![GitHub package.json version (branch)](https://img.shields.io/github/package-json/v/TimCreasman/tuner/main)
 
-![workflow status](https://github.com/TimCreasman/tuner/actions/workflows/ci.yml/badge.svg)
+## Try it out
 
-[![DeployProduction](https://github.com/TimCreasman/tuner/actions/workflows/deploy-production.yml/badge.svg)](https://github.com/TimCreasman/tuner/actions/workflows/deploy-production.yml)
-
-My goal with this app was to design and develop an easy to use and pleasant to look at tuning app.
+Visit my website to try it out for yourself:
+https://timcreasman.com/tuner
 
 ## Developer Instructions
 
@@ -21,3 +25,9 @@ My goal with this app was to design and develop an easy to use and pleasant to l
 ### Testing locally
 
 1. run this command `npm run test`
+
+### Job statuses
+
+![workflow status](https://github.com/TimCreasman/tuner/actions/workflows/ci.yml/badge.svg)
+
+[![DeployProduction](https://github.com/TimCreasman/tuner/actions/workflows/deploy-production.yml/badge.svg)](https://github.com/TimCreasman/tuner/actions/workflows/deploy-production.yml)
