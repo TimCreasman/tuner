@@ -44,6 +44,9 @@ export class TunerComponent extends LitElement {
     @property()
     clarity = 1;
 
+    @property()
+    volume = 0;
+
     inTune = false;
 
     /**
@@ -59,6 +62,7 @@ export class TunerComponent extends LitElement {
 
         this.pitchDetectorService.setOnListen((freq, clarity, volume) => {
             this.clarity = clarity;
+            this.volume = volume;
             // only update if we are above the volume and clarity thresholds
             if (volume < 0.1 && clarity < 0.99) {
                 return;
@@ -86,7 +90,6 @@ export class TunerComponent extends LitElement {
 
             this.inTune = accuracy > 0.95;
 
-            // Rounds the accuracy to prevent unnecessary updates:
             this.accuracy = accuracy;
         });
 
@@ -150,7 +153,8 @@ export class TunerComponent extends LitElement {
         return html`
 
             <div class="tuner-body" data-test-id="tuner.body" @click="${this.resumeContext}">
-                <tn-tuner-ring .accuracy="${this.accuracy}" .pitchAccidental="${this.pitchAccidental}"></tn-tuner-ring>
+                <tn-tuner-ring .accuracy="${this.accuracy}" .pitchAccidental="${this.pitchAccidental}"
+                               .volume="${this.volume}"></tn-tuner-ring>
                 <tn-tuner-note .note="${this.note}" .accuracy="${this.accuracy}"
                                .clarity="${this.clarity}"></tn-tuner-note>
             </div>
