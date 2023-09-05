@@ -14,11 +14,18 @@ export class PitchDetectorService {
     private intervalReference: number;
     private onListen: (pitch: number, clarity: number, volume: number) => void;
 
+    // Singleton
+    private static _instance: PitchDetectorService;
+
     // defaults to 17 refreshes a millisecond (~60 refreshes a second) and the microphone source
-    constructor(audioSource: AudioSource = new MicSource(), refreshRate = 17) {
+    private constructor(audioSource: AudioSource = new MicSource(), refreshRate = 17) {
         this.refreshRate = refreshRate;
         this._audioSource = audioSource;
         this.pitchDetector = PitchDetector.forFloat32Array(this._audioSource.analyserNode.fftSize);
+    }
+
+    public static Instance(audioSource: AudioSource = new MicSource(), refreshRate = 17) {
+        return this._instance || (this._instance = new this(audioSource, refreshRate));
     }
 
     public startListening(): void {

@@ -1,5 +1,5 @@
 import {customElement, property} from 'lit/decorators.js';
-import {css, html, LitElement} from 'lit';
+import {css, html, LitElement, TemplateResult} from 'lit';
 import {ACCIDENTALS} from '../../utilities/note-utility';
 import {MathUtility} from '../../utilities/math-utility';
 import bezier from 'bezier-easing';
@@ -15,7 +15,7 @@ const TunerRingComponentStyles = css`
 
     background: linear-gradient(0deg, transparent 70%, var(--primary-color) 30%);
     width: var(--width);
-    height: 55%;
+    height: 60%;
     position: absolute;
     left: calc(50% - (var(--width) / 2));
     bottom: 55%;
@@ -48,8 +48,14 @@ const TunerRingComponentStyles = css`
     width: 90%;
     left: 5%;
     border-radius: 50%;
+  }
 
-    box-shadow: 0 2vmin 0 var(--primary-color);
+  .top-spokes > tn-spoke {
+    background-color: var(--highlight-color);
+  }
+
+  .bottom-spokes > tn-spoke {
+    background-color: var(--primary-color);
   }
 `;
 
@@ -60,6 +66,9 @@ export class TunerRingComponent extends LitElement {
 
     @property()
     accuracy = 0;
+
+    @property()
+    volume = 0;
 
     @property()
     pitchAccidental: ACCIDENTALS;
@@ -80,99 +89,6 @@ export class TunerRingComponent extends LitElement {
         return radians;
     }
 
-    render() {
-        const rectangles = [];
-        const circleCount = 50;
-
-        for (let i = 0; i < circleCount; i++) {
-            // divide the semicircle into even parts, and start placing rectangles from the left.
-            const offsetDegree = ((Math.PI) / circleCount) * i;
-            const isMiddle = i <= ((circleCount / 2) + 1) && i >= ((circleCount / 2) - 1);
-
-            rectangles.push(html`
-                <tn-circle .index="${i}" .frequencyDegree="${this.convertAccuracyToRadians()}"
-                           .targetDegree="${(offsetDegree - Math.PI / 2)}" .isMiddle="${isMiddle}"></tn-circle>
-            `);
-        }
-
-        return html`
-            <div class="tuner-ring">
-                <div class="ring">
-                    <span class="circles">
-                        ${rectangles}
-                    </span>
-                </div>
-                <div class="tuner-needle"></div>
-            </div>
-        `;
-    }
-}
-
-const CircleComponentStyles = css`
-  :host {
-    --bottom: 0%;
-    --left: 0%;
-    --x-scale: 1;
-    --y-scale: 1;
-    --z-index: 0;
-    --inner-opacity: 1;
-    --opacity: 1;
-    --angle: 0;
-
-    bottom: var(--bottom);
-    left: var(--left);
-    position: absolute;
-    height: 4vmin;
-    width: 0.4vmin;
-    background-color: var(--highlight-color);
-    border-radius: 25%;
-    transform: translate(-50%, 50%) rotate(var(--angle)) scaleX(var(--x-scale)) scaleY(var(--y-scale));
-    z-index: var(--z-index);
-
-    transition: all cubic-bezier(0, 0, .2, 1.3) 600ms, z-index 0ms;
-  }
-
-`;
-
-@customElement('tn-circle')
-export class CircleComponent extends LitElement {
-
-    static styles = CircleComponentStyles;
-
-    @property()
-    frequencyDegree = 0;
-
-    @property()
-    targetDegree = 0;
-
-    @property()
-    index = 0;
-
-    @property()
-    isMiddle = false;
-
-    connectedCallback() {
-        super.connectedCallback();
-        this.setupPosition();
-    }
-
-    protected updated() {
-        const difference = CircleComponent.angleDifference(this.targetDegree, this.frequencyDegree);
-
-        // Map the difference in angles to other scales:
-        const quarterCircle: [number, number] = [0, Math.PI];
-
-        const falloff = bezier(0, 0, 1, 0);
-        const scale = MathUtility.map(difference, quarterCircle, [1, 0]);
-        const inverseScale = MathUtility.map(difference, quarterCircle, [0, 1]);
-        const size = falloff(scale) * 5;
-        const squish = falloff(inverseScale) * 15;
-        const opacity = size;
-        this.style.setProperty('--x-scale', size + squish + '');
-        this.style.setProperty('--y-scale', size + '');
-        this.style.setProperty('--opacity', opacity + '');
-    }
-
     /**
      * Calculates the true difference between two angles in radians
      * @param angle1
@@ -185,14 +101,108 @@ export class CircleComponent extends LitElement {
         return Math.abs(angle);
     }
 
-    private setupPosition() {
+    render() {
+        const topRing: TemplateResult[] = [];
+        const bottomRing: TemplateResult[] = [];
+        const spokeCount = 41;
+
+        // create ring of spokes
+        for (let i = 0; i < spokeCount; i++) {
+            // Where along the arc to place the spoke in radians
+            const spokeArcPosition = i * (Math.PI / (spokeCount - 1)) - Math.PI / 2;
+            // Select the three middle spokes
+            const middleSpokes = i >= (spokeCount - 3) / 2 && i <= (spokeCount + 1) / 2;
+            // Find the closeness between the spoke position and the note accuracy (in frequency)
+            const spokeAccuracy = TunerRingComponent.angleDifference(spokeArcPosition, this.convertAccuracyToRadians());
+            // Map the accuracy (which is in radians) to a value between 0 and 1
+            const topRingScaleFactor = MathUtility.map(spokeAccuracy, [Math.PI, 0], [0, 1]);
+            const bottomRingScaleFactor = MathUtility.clamp(this.volume * 8, [0.3, 0.9]);
+
+            topRing.push(html`
+                <tn-spoke .index="${i}" .scaleFactor="${topRingScaleFactor}"
+                          .arcPosition="${spokeArcPosition}" .isMiddle="${middleSpokes}"></tn-spoke>
+            `);
+            bottomRing.push(html`
+                <tn-spoke .index="${i}" .scaleFactor="${bottomRingScaleFactor}"
+                          .arcPosition="${spokeArcPosition + Math.PI}"></tn-spoke>
+            `);
+        }
+
+        return html`
+            <div class="tuner-ring">
+                <div class="ring">
+                    <span class="top-spokes">
+                        ${topRing}
+                    </span>
+                    <span class="bottom-spokes">
+                        ${bottomRing}
+                    </span>
+                </div>
+                <div class="tuner-needle"></div>
+            </div>
+        `;
+    }
+}
+
+const SpokeComponentStyles = css`
+  :host {
+    --x-scale: 1;
+    --y-scale: 1;
+    --angle: 0;
+
+    position: absolute;
+    height: 4vmin;
+    width: 0.4vmin;
+    border-radius: 25%;
+    transform: translate(-50%, 50%) rotate(var(--angle)) scaleX(var(--x-scale)) scaleY(var(--y-scale));
+
+    transition: all cubic-bezier(0, 0, .2, 1.3) 600ms;
+  }
+
+`;
+
+@customElement('tn-spoke')
+export class SpokeComponent extends LitElement {
+
+    static styles = SpokeComponentStyles;
+
+    // The amount to scale the spoke
+    @property()
+    scaleFactor = 0;
+
+    // The angle at which the spoke starts
+    @property()
+    arcPosition = 0;
+
+    @property()
+    index = 0;
+
+    @property()
+    isMiddle = false;
+
+    connectedCallback() {
+        super.connectedCallback();
         if (this.isMiddle) {
             this.style.setProperty('background', 'var(--primary-color)');
         }
-        const bottom = 50 * Math.cos(this.targetDegree) + 50 + '%';
-        const left = 50 * Math.sin(this.targetDegree) + 50 + '%';
-        this.style.setProperty('--bottom', bottom);
-        this.style.setProperty('--left', left);
-        this.style.setProperty('--angle', this.targetDegree + 'rad');
+        this.setupPosition();
+    }
+
+    protected updated() {
+        const falloff = bezier(0, 0, 1, 0);
+        const scale = this.scaleFactor;
+        const inverseScale = MathUtility.map(this.scaleFactor, [0, 1], [1, 0]);
+        const size = falloff(scale) * 5;
+        const squish = falloff(inverseScale) * 15;
+        this.style.setProperty('--x-scale', size + squish + '');
+        this.style.setProperty('--y-scale', size + '');
+    }
+
+    private setupPosition() {
+        const bottom = 50 * Math.cos(this.arcPosition) + 50 + '%';
+        const left = 50 * Math.sin(this.arcPosition) + 50 + '%';
+        this.style.setProperty('bottom', bottom);
+        this.style.setProperty('left', left);
+        this.style.setProperty('--angle', this.arcPosition + 'rad');
     }
 }
