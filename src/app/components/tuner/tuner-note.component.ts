@@ -4,10 +4,7 @@ import {Note} from '../../utilities/note-utility';
 import {MathUtility} from '../../utilities/math-utility';
 
 const TunerNoteComponentStyles = css`
-  .tuner-note-container {
-    width: 100%;
-    height: 100%;
-    text-align: center;
+  :host {
     font-family: "Rubik Mono One", sans-serif;
   }
 
@@ -55,13 +52,6 @@ const TunerNoteComponentStyles = css`
 
   .tuner-liquid {
     fill: var(--primary-color);
-  }
-
-  .test {
-    stroke: var(--highlight-color);
-    stroke-width: 3;
-    fill: var(--primary-color);
-    font-weight: bold;
   }
 `;
 
@@ -212,7 +202,6 @@ class HeightAnimatorComponent {
     public onEndEvent() {
         this.from = this.to;
     }
-
 }
 
 

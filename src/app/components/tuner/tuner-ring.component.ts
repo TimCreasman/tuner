@@ -27,21 +27,6 @@ const TunerRingComponentStyles = css`
     transition: all cubic-bezier(0, 0, .2, 1.3) 300ms
   }
 
-  .tuner-ring {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 75vw;
-    max-width: 75vh;
-  }
-
-  .tuner-ring:after {
-    content: "";
-    display: block;
-    padding-bottom: 100%;
-  }
-
   .ring {
     position: absolute;
     height: 90%;

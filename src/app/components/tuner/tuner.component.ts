@@ -1,4 +1,4 @@
-import {css, html, LitElement} from 'lit';
+import {html, LitElement} from 'lit';
 import {customElement, property} from 'lit/decorators.js';
 import {ACCIDENTALS, Note, NoteUtility} from '../../utilities/note-utility';
 import {OscillatorSource, PitchDetectorService} from '../../services/pitch-detector.service';
@@ -6,22 +6,8 @@ import {MathUtility} from '../../utilities/math-utility';
 import {CONFIG} from '../../../config';
 import {Logger} from '../../utilities/log-utility';
 
-const TunerComponentStyles = css`
-  :root {
-    --doc-height: 100%;
-  }
-
-  .tuner-body {
-    width: 100%;
-    height: 100vh; /* fallback for Js load */
-    height: var(--doc-height);
-  }
-`;
-
 @customElement('tn-tuner')
 export class TunerComponent extends LitElement {
-
-    static styles = TunerComponentStyles;
 
     /**
      * Reference to the pitch detector service
@@ -57,8 +43,6 @@ export class TunerComponent extends LitElement {
 
     connectedCallback() {
         super.connectedCallback();
-
-        this.calculateDocumentHeight();
 
         this.pitchDetectorService.setOnListen((freq, clarity, volume) => {
             this.clarity = clarity;
@@ -106,19 +90,6 @@ export class TunerComponent extends LitElement {
     }
 
     /**
-     * Calculates the height of the document. We have to use this method as the vh css units are unreliable on mobile devices.
-     * @private
-     */
-    private calculateDocumentHeight(): void {
-        const documentHeight = () => {
-            const doc = document.documentElement;
-            doc.style.setProperty('--doc-height', `${window.innerHeight}px`);
-        };
-        window.addEventListener('resize', documentHeight);
-        documentHeight();
-    }
-
-    /**
      * Updates the oscillator node frequency
      * @param inputEvent incoming input event
      * @private
@@ -152,7 +123,7 @@ export class TunerComponent extends LitElement {
     render() {
         return html`
 
-            <div class="tuner-body" data-test-id="tuner.body" @click="${this.resumeContext}">
+            <div data-test-id="tuner.body" @click="${this.resumeContext}">
                 <tn-tuner-ring .accuracy="${this.accuracy}" .pitchAccidental="${this.pitchAccidental}"
                                .volume="${this.volume}"></tn-tuner-ring>
                 <tn-tuner-note .note="${this.note}" .accuracy="${this.accuracy}"

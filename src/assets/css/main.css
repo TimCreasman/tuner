@@ -5,19 +5,3 @@ body {
     color: var(--primary-color);
     --font-size: 10em;
 }
-
-.tuner-body {
-    height: 400px;
-    width: 400px;
-}
-
-.tuner-body .note {
-    text-align: center;
-    color: var(--primary-color);
-}
-
-.center {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
