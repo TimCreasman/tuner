@@ -1,7 +1,7 @@
-@import "./theme.css";
+@import "./archivo-black.css";
+@import "../fontawesome/css/solid.css";
+@import "../fontawesome/css/regular.css";
 
 body {
-    background-color: var(--background-color);
-    color: var(--primary-color);
-    --font-size: 10em;
+    margin: 0;
 }
