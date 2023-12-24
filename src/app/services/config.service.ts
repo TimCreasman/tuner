@@ -32,8 +32,8 @@ export class ConfigService {
         background: '#000000',
     };
 
-    public static ALowerBoundFreq = 435;
-    public static AUpperBoundFreq = 460;
+    public static ALowerBoundFreq = 415; // Lowest Baroque pitch
+    public static AUpperBoundFreq = 466; // Highest Chorton baroque pitch
 
     // Singleton
     private static _instance: ConfigService;
