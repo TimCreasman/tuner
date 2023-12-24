@@ -1,12 +1,12 @@
 import {CN1_NOTE, G9_NOTE, Note, NoteUtility} from '../note-utility';
-import {CONFIG} from '../../../config';
 import {A440_NOTE_FREQUENCIES} from './A440_note_frequencies';
 import {expect} from 'chai';
+import {ConfigService} from '../../services/config.service';
 
 describe('NotationUtility', function () {
     /** Mock a few frequencies */
     // assume frequency of A to be 440
-    CONFIG.frequencyOfA = 440;
+    ConfigService.frequencyOfA = 440;
     const cn1Freq = 8.176;
     const g9Freq = 12543.854;
 

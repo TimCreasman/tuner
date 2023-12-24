@@ -11,14 +11,14 @@ const TunerRingComponentStyles = css`
   }
 
   .tuner-needle {
-    --width: 2vmin;
+    --width: 1.5vmin;
 
     background: linear-gradient(0deg, transparent 70%, var(--primary-color) 30%);
     width: var(--width);
-    height: 60%;
+    height: 52%;
     position: absolute;
     left: calc(50% - (var(--width) / 2));
-    bottom: 55%;
+    bottom: 50%;
     border-radius: 25%;
 
     opacity: var(--opacity);
@@ -27,27 +27,12 @@ const TunerRingComponentStyles = css`
     transition: all cubic-bezier(0, 0, .2, 1.3) 300ms
   }
 
-  .tuner-ring {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 75vw;
-    max-width: 75vh;
-  }
-
-  .tuner-ring:after {
-    content: "";
-    display: block;
-    padding-bottom: 100%;
-  }
-
   .ring {
     position: absolute;
-    height: 90%;
-    width: 90%;
-    left: 5%;
-    border-radius: 50%;
+    height: 80%;
+    width: 80%;
+    left: 10%;
+    top: 10%;
   }
 
   .top-spokes > tn-spoke {
@@ -152,7 +137,7 @@ const SpokeComponentStyles = css`
 
     position: absolute;
     height: 4vmin;
-    width: 0.4vmin;
+    width: 0.3vmin;
     border-radius: 25%;
     transform: translate(-50%, 50%) rotate(var(--angle)) scaleX(var(--x-scale)) scaleY(var(--y-scale));
 

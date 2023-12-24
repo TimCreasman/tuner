@@ -1,5 +1,5 @@
-import {CONFIG} from '../../config';
 import {MathUtility} from './math-utility';
+import {ConfigService} from '../services/config.service';
 
 export const NOTES_IN_OCTAVE = 12;
 
@@ -45,20 +45,20 @@ export class Note {
 
     /**
      * @private
-     * @returns {string} the note letter notation based on the accidental mode value set in the {@link CONFIG}
+     * @returns {string} the note letter notation based on the accidental mode value set in the {@link ConfigService}
      */
     private lookupLetter(): string {
-        return (CONFIG.accidentalMode ? NAMES_WITH_SHARPS[this.index % NOTES_IN_OCTAVE] : NAMES_WITH_FLATS[this.index % NOTES_IN_OCTAVE]);
+        return (ConfigService.accidentalMode ? NAMES_WITH_SHARPS[this.index % NOTES_IN_OCTAVE] : NAMES_WITH_FLATS[this.index % NOTES_IN_OCTAVE]);
     }
 
     /**
      * @private
-     * @returns {string} the note accidental based on the accidental mode value set in the {@link CONFIG} or an empty string if the note is not an accidental.
+     * @returns {string} the note accidental based on the accidental mode value set in the {@link ConfigService} or an empty string if the note is not an accidental.
      */
     private lookupAccidental(): string {
         // if the note is an accidental
         if (ACCIDENTAL_INDEXES.includes(this.index % NOTES_IN_OCTAVE)) {
-            return (CONFIG.accidentalMode ? '#' : 'b');
+            return (ConfigService.accidentalMode ? '#' : '♭');
         } else {
             return '';
         }
@@ -111,7 +111,6 @@ export class NoteUtility {
         const halfStepsFromA = note.index - A4_NOTE.index;
         // the frequency between each note in an octave
         const frequencyBetweenNotes = 2 ** (1 / NOTES_IN_OCTAVE);
-        return CONFIG.frequencyOfA * (frequencyBetweenNotes ** halfStepsFromA);
+        return ConfigService.frequencyOfA * (frequencyBetweenNotes ** halfStepsFromA);
     }
-
 }

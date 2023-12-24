@@ -4,65 +4,58 @@ import {Note} from '../../utilities/note-utility';
 import {MathUtility} from '../../utilities/math-utility';
 
 const TunerNoteComponentStyles = css`
-  .tuner-note-container {
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    font-family: "Rubik Mono One", sans-serif;
-  }
+    :host {
+        font-family: var(--font-family);
+    }
 
-  .tuner-note-letter {
-    stroke: var(--highlight-color);
-    stroke-width: 2;
-    font-size: 2.5em;
-  }
+    .tuner-note-letter {
+        stroke: var(--highlight-color);
+        stroke-width: 1;
+        fill: var(--background-color);
+        font-size: 2.5em;
+    }
 
-  .tuner-note-letter-mask {
-    stroke: black;
-    stroke-width: 0.5;
-    fill: white;
-    font-size: 2.5em;
-  }
+    .tuner-note-letter-mask {
+        stroke: black;
+        stroke-width: 0.5;
+        fill: white;
+        font-size: 2.5em;
+    }
 
-  .tuner-note-accidental {
-    stroke: var(--highlight-color);
-    stroke-width: 1;
-    stroke-linecap: round;
-    font-size: 1em;
-  }
+    .tuner-note-accidental {
+        stroke: var(--highlight-color);
+        stroke-width: 0.5;
+        stroke-linecap: round;
+        fill: var(--background-color);
+        font-size: 1em;
+    }
 
-  .tuner-note-accidental-mask {
-    stroke: black;
-    stroke-width: 1;
-    fill: white;
-    stroke-linecap: round;
-    font-size: 1em;
-  }
+    .tuner-note-accidental-mask {
+        stroke: black;
+        stroke-width: 0.5;
+        fill: white;
+        stroke-linecap: round;
+        font-size: 1em;
+    }
 
-  .tuner-note-octave {
-    stroke: var(--highlight-color);
-    stroke-width: 1;
-    stroke-linecap: round;
-    font-size: 1em;
-  }
+    .tuner-note-octave {
+        stroke: var(--highlight-color);
+        stroke-width: 0.5;
+        stroke-linecap: round;
+        fill: var(--background-color);
+        font-size: 1em;
+    }
 
-  .tuner-note-octave-mask {
-    stroke: black;
-    stroke-width: 1;
-    fill: white;
-    font-size: 1em;
-  }
+    .tuner-note-octave-mask {
+        stroke: black;
+        stroke-width: 0.5;
+        fill: white;
+        font-size: 1em;
+    }
 
-  .tuner-liquid {
-    fill: var(--primary-color);
-  }
-
-  .test {
-    stroke: var(--highlight-color);
-    stroke-width: 3;
-    fill: var(--primary-color);
-    font-weight: bold;
-  }
+    .tuner-liquid {
+        fill: var(--primary-color);
+    }
 `;
 
 @customElement('tn-tuner-note')
@@ -212,7 +205,6 @@ class HeightAnimatorComponent {
     public onEndEvent() {
         this.from = this.to;
     }
-
 }
 
 

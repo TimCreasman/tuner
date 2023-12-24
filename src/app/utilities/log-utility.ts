@@ -1,9 +1,9 @@
-import {CONFIG} from '../../config';
+import {ConfigService} from '../services/config.service';
 
 export class Logger {
-    
+
     static debug(...params: unknown[]) {
-        if (CONFIG.debugMode) {
+        if (ConfigService.debugMode) {
             console.debug(params);
         }
     }
