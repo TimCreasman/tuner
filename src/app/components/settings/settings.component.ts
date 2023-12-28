@@ -115,56 +115,14 @@ const SettingsComponentStyles = css`
         font-family: var(--font-family);
     }
 
-    i {
-        cursor: pointer;
-    }
-
-    .modal {
-        width: 110%;
-        height: 110%;
-        right: -5%;
-        top: -5%;
-        position: absolute;
-        z-index: 1;
-        backdrop-filter: blur(3em);
-        overflow-y: scroll;
-
-        -ms-overflow-style: none; /* IE and Edge */
-        scrollbar-width: none; /* Firefox */
-
-        -webkit-user-select: none; /* Safari */
-        -ms-user-select: none; /* IE 10 and IE 11 */
-        user-select: none; /* Standard syntax */
-    }
-
-    .scroll-shadow {
-        width: 110%;
-        height: 111%;
-        right: -5%;
-        top: -5%;
-        position: absolute;
-        z-index: 1;
-        box-shadow: inset 0 0 0 2em var(--background-color);
-        pointer-events: none;
-    }
-
-    .modal .header {
-        font-size: 3em;
-    }
-
-    .modal .row {
+    .row {
         display: flex;
         margin-block: 1em;
         margin-inline: 1em;
     }
 
-    .modal .setting {
-        padding: 1em;
-        border-radius: 1em;
-        backdrop-filter: blur(25px);
-        background-color: rgba(255, 255, 255, 0.3);
-        color: var(--highlight-color);
-        font-size: 2em;
+    i {
+        cursor: pointer;
     }
 
     .setting .content {
@@ -180,10 +138,6 @@ const SettingsComponentStyles = css`
     }
 
     /* Hide scrollbar for Chrome, Safari and Opera */
-
-    .modal::-webkit-scrollbar {
-        display: none;
-    }
 
     .color-row {
         align-items: center;
@@ -287,72 +241,73 @@ export class SettingsComponent extends LitElement {
 
     protected render() {
         return html`
-            <div class="modal">
-                <div class="header row">Settings</div>
-                <tn-accordion>
-                    <div slot="header">General</div>
-                    <div slot="content">
-                        <div class="row">
-                            <label for="flats" class="switch">
-                                <input id="flats"
-                                       type="checkbox"
-                                       .checked="${(this.accidentalMode === 0)}"
-                                       @click=${this.updateAccidentalMode}>
-                                <span class="slider round"></span>
-                            </label>
-                            <span>Use Flats</span>
+            <tn-modal>
+                <div slot="header">Settings</div>
+                <div slot="content">
+                    <tn-accordion>
+                        <div slot="header">General</div>
+                        <div slot="content">
+                            <div class="row">
+                                <label for="flats" class="switch">
+                                    <input id="flats"
+                                           type="checkbox"
+                                           .checked="${(this.accidentalMode === 0)}"
+                                           @click=${this.updateAccidentalMode}>
+                                    <span class="slider round"></span>
+                                </label>
+                                <span>Use Flats</span>
+                            </div>
+                            <div class="row">
+                                <input id="frequencyOfA"
+                                       type="range"
+                                       max="${ConfigService.AUpperBoundFreq}"
+                                       min="${ConfigService.ALowerBoundFreq}"
+                                       .value="${this.frequencyOfA}"
+                                       @input=${this.updateFrequencyOfA}>
+                                <label style="flex: 1" for="frequencyOfA">
+                                    A = ${this.frequencyOfA}HZ
+                                </label>
+                                ${this.frequencyOfA !== ConfigService.defaultConfig.frequencyOfA ? html`
+                                    <i class="fa fa-undo" @click=${(this.resetFrequencyOfA)}></i>` : nothing}
+                            </div>
                         </div>
-                        <div class="row">
-                            <input id="frequencyOfA"
-                                   type="range"
-                                   max="${ConfigService.AUpperBoundFreq}"
-                                   min="${ConfigService.ALowerBoundFreq}"
-                                   .value="${this.frequencyOfA}"
-                                   @input=${this.updateFrequencyOfA}>
-                            <label style="flex: 1" for="frequencyOfA">
-                                A = ${this.frequencyOfA}HZ
-                            </label>
-                            ${this.frequencyOfA !== ConfigService.defaultConfig.frequencyOfA ? html`
-                                <i class="fa fa-undo" @click=${(this.resetFrequencyOfA)}></i>` : nothing}
+                    </tn-accordion>
+                    <tn-accordion>
+                        <div slot="header">Theme</div>
+                        <div slot="content">
+                            <div class="row color-row">
+                                <div class="color-ball primary"></div>
+                                <input id="primary-color" type="text" maxlength="7" size="7"
+                                       .value="${this.primaryColor}"
+                                       @input="${(e: InputEvent) => this.updateColor(e, 'primary')}">
+                                <label for="primary-color" class="color-label">Primary</label>
+                                ${this.primaryColor !== ConfigService.defaultConfig.primary ? html`
+                                    <i class="fa fa-undo" @click=${() => this.resetColor('primary')}></i>` : nothing}
+                            </div>
+                            <div class="row color-row">
+                                <div class="color-ball highlight"></div>
+                                <input id="highlight-color" type="text" maxlength="7" size="7"
+                                       .value="${this.highlightColor}"
+                                       @input="${(e: InputEvent) => this.updateColor(e, 'highlight')}"
+                                >
+                                <label for="highlight-color" class="color-label">Highlight</label>
+                                ${this.highlightColor !== ConfigService.defaultConfig.highlight ? html`
+                                    <i class="fa fa-undo" @click=${() => this.resetColor('highlight')}></i>` : nothing}
+                            </div>
+                            <div class="row color-row">
+                                <div class="color-ball background"></div>
+                                <input id="background-color" type="text" maxlength="7" size="7"
+                                       .value="${this.backgroundColor}"
+                                       @input="${(e: InputEvent) => this.updateColor(e, 'background')}"
+                                >
+                                <label for="background-color" class="color-label">Background</label>
+                                ${this.backgroundColor !== ConfigService.defaultConfig.background ? html`
+                                    <i class="fa fa-undo" @click=${() => this.resetColor('background')}></i>` : nothing}
+                            </div>
                         </div>
-                    </div>
-                </tn-accordion>
-                <tn-accordion>
-                    <div slot="header">Theme</div>
-                    <div slot="content">
-                        <div class="row color-row">
-                            <div class="color-ball primary"></div>
-                            <input id="primary-color" type="text" maxlength="7" size="7"
-                                   .value="${this.primaryColor}"
-                                   @input="${(e: InputEvent) => this.updateColor(e, 'primary')}">
-                            <label for="primary-color" class="color-label">Primary</label>
-                            ${this.primaryColor !== ConfigService.defaultConfig.primary ? html`
-                                <i class="fa fa-undo" @click=${() => this.resetColor('primary')}></i>` : nothing}
-                        </div>
-                        <div class="row color-row">
-                            <div class="color-ball highlight"></div>
-                            <input id="highlight-color" type="text" maxlength="7" size="7"
-                                   .value="${this.highlightColor}"
-                                   @input="${(e: InputEvent) => this.updateColor(e, 'highlight')}"
-                            >
-                            <label for="highlight-color" class="color-label">Highlight</label>
-                            ${this.highlightColor !== ConfigService.defaultConfig.highlight ? html`
-                                <i class="fa fa-undo" @click=${() => this.resetColor('highlight')}></i>` : nothing}
-                        </div>
-                        <div class="row color-row">
-                            <div class="color-ball background"></div>
-                            <input id="background-color" type="text" maxlength="7" size="7"
-                                   .value="${this.backgroundColor}"
-                                   @input="${(e: InputEvent) => this.updateColor(e, 'background')}"
-                            >
-                            <label for="background-color" class="color-label">Background</label>
-                            ${this.backgroundColor !== ConfigService.defaultConfig.background ? html`
-                                <i class="fa fa-undo" @click=${() => this.resetColor('background')}></i>` : nothing}
-                        </div>
-                    </div>
-                </tn-accordion>
-            </div>
-            <div class="scroll-shadow"></div>
+                    </tn-accordion>
+                </div>
+            </tn-modal>
         `;
     }
 }
