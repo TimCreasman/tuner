@@ -1,23 +1,11 @@
-import {MathUtility} from '../utilities/math-utility';
-
-export type AllowedColor = 'primary' | 'highlight' | 'background'
+import { AllowedColor } from '../events/theme-event';
+import { MathUtility } from '../utilities/math-utility';
 
 type AppConfig = {
     accidentalMode: 0 | 1,
     frequencyOfA: number,
     debugMode: string,
 } & { [key in AllowedColor]: string }
-
-export class ThemeEvent extends Event {
-    color: AllowedColor;
-    value: string;
-
-    constructor(color: AllowedColor, value: string) {
-        super('theme-changed');
-        this.color = color;
-        this.value = value;
-    }
-}
 
 export class ConfigService {
 

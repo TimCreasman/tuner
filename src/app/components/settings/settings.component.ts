@@ -1,7 +1,8 @@
-import {customElement, state} from 'lit/decorators.js';
-import {css, html, LitElement, nothing} from 'lit';
+import { customElement, state } from 'lit/decorators.js';
+import { css, html, LitElement, nothing } from 'lit';
 import Fontawesome from '../../utilities/fontawesome';
-import {AllowedColor, ConfigService, ThemeEvent} from '../../services/config.service';
+import { ConfigService } from '../../services/config.service';
+import { AllowedColor, ThemeEvent } from '../../events/theme-event';
 
 const SettingsComponentStyles = css`
     input {
