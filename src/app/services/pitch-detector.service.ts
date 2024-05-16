@@ -1,16 +1,51 @@
 import { PitchDetector } from 'pitchy';
 import { AudioSource, MicSource } from '../models/audio.model';
 import { Logger } from '../utilities/log-utility';
+import { ConfigService } from './config.service';
+
+export type AllowedAlgorithm = 'McLeod' | 'YIN' | 'AMDF' | 'Dynamic Wavelet'
+
+type AlgorithmResult = {
+    pitch: number;
+    volume: number;
+    clarity?: number;
+}
+
+interface Algorithm {
+    detector: any;
+    detect(source: AudioSource): AlgorithmResult;
+}
+
+class McLeod implements Algorithm {
+
+    detector: PitchDetector<Float32Array>;
+
+    constructor(source: AudioSource){
+        this.detector = PitchDetector.forFloat32Array(source.analyserNode.fftSize);
+    }
+
+    detect(source: AudioSource): AlgorithmResult {
+        const inputArray = new Float32Array(this.detector.inputLength);
+        source.analyserNode.getFloatTimeDomainData(inputArray);
+        const result: AlgorithmResult = null;
+
+        [result.pitch, result.clarity] = this.detector.findPitch(inputArray, source.audioContext.sampleRate);
+        const squareSum = inputArray.reduce((a, value) => a + (value * value), 0);
+        result.volume = Math.sqrt(squareSum / inputArray.length);
+
+        return result;
+    }
+}
 
 export class PitchDetectorService {
     // the rate at which to update the pitch
     private readonly refreshRate: number;
-    private pitchDetector: PitchDetector<Float32Array>;
-
+    private algorithms:{ [key in AllowedAlgorithm]: Algorithm} ;
+    private _algorithmResult: AlgorithmResult;
+        
     private _pitch: number;
     private _audioSource: AudioSource;
     private _clarity: number;
-    private _volume: number;
 
     private intervalReference: number;
     private onListen: (pitch: number, clarity: number, volume: number) => void;
@@ -22,7 +57,7 @@ export class PitchDetectorService {
     private constructor(audioSource: AudioSource = new MicSource(), refreshRate = 17) {
         this.refreshRate = refreshRate;
         this._audioSource = audioSource;
-        this.pitchDetector = PitchDetector.forFloat32Array(this._audioSource.analyserNode.fftSize);
+        this.algorithms['McLeod'] = new McLeod(this._audioSource);
     }
 
     public static Instance(audioSource: AudioSource = new MicSource(), refreshRate = 17) {
@@ -44,15 +79,15 @@ export class PitchDetectorService {
     }
 
     get pitch(): number {
-        return this._pitch;
+        return this._algorithmResult.pitch;
     }
 
     get clarity(): number {
-        return this._clarity;
+        return this._algorithmResult.clarity;
     }
 
     get volume(): number {
-        return this._volume;
+        return this._algorithmResult.volume;
     }
 
     get audioSource(): AudioSource {
@@ -66,18 +101,13 @@ export class PitchDetectorService {
     }
 
     private listen(): void {
-        const inputArray = new Float32Array(this.pitchDetector.inputLength);
-        this._audioSource.analyserNode.getFloatTimeDomainData(inputArray);
-        [this._pitch, this._clarity] = this.pitchDetector.findPitch(inputArray, this._audioSource.audioContext.sampleRate);
+        this._algorithmResult = this.algorithms[ConfigService.algorithm].detect(this._audioSource);
 
         if (this.pitch === 0) {
-            Logger.debug('Pitch not detected.', this._pitch, this._clarity);
+            Logger.debug('Pitch not detected.', this._algorithmResult.pitch, this._algorithmResult.clarity);
         }
 
-        const squareSum = inputArray.reduce((a, value) => a + (value * value), 0);
-        this._volume = Math.sqrt(squareSum / inputArray.length);
-
-        this.onListen(this._pitch, this._clarity, this._volume);
+        this.onListen(this._algorithmResult.pitch, this._algorithmResult.clarity, this._algorithmResult.volume);
     }
 }
 

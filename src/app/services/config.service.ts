@@ -1,10 +1,12 @@
 import { AllowedColor } from '../events/theme-event';
 import { MathUtility } from '../utilities/math-utility';
+import { AllowedAlgorithm } from './pitch-detector.service';
 
 type AppConfig = {
     accidentalMode: 0 | 1,
     frequencyOfA: number,
     debugMode: string,
+    algorithm: AllowedAlgorithm,
 } & { [key in AllowedColor]: string }
 
 export class ConfigService {
@@ -18,6 +20,8 @@ export class ConfigService {
         primary: '#FF7A00',
         highlight: '#FFFFFF',
         background: '#000000',
+        // Algorithm
+        algorithm: 'McLeod',
     };
 
     public static ALowerBoundFreq = 415; // Lowest Baroque pitch
@@ -57,7 +61,8 @@ export class ConfigService {
             debugMode: 'false',
             primary: this.getColor('primary'),
             highlight: this.getColor('highlight'),
-            background: this.getColor('background')
+            background: this.getColor('background'),
+            algorithm: this.algorithm 
         };
     }
 
@@ -94,5 +99,13 @@ export class ConfigService {
 
     static getColor(type: AllowedColor): string {
         return this.getStoredValueOrDefault(type);
+    }
+
+    static set algorithm(algorithm: string) {
+        localStorage.setItem(this.getPropertyName(this.defaultConfig, a => a.algorithm), algorithm);
+    }
+
+    static get algorithm(): AllowedAlgorithm {
+        return this.getStoredValueOrDefault('algorithm') as AllowedAlgorithm;
     }
 }
