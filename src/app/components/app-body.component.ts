@@ -1,8 +1,7 @@
-import { customElement, property } from 'lit/decorators.js';
-import { css, html, LitElement, nothing, unsafeCSS } from 'lit';
+import {customElement, property} from 'lit/decorators.js';
+import {css, html, LitElement, nothing, unsafeCSS} from 'lit';
 import Fontawesome from '../utilities/fontawesome';
-import { ConfigService } from '../services/config.service';
-import { ThemeEvent } from '../events/theme-event';
+import {ConfigService, ThemeEvent} from '../services/config.service';
 
 const AppBodyComponentStyles = css`
     :root {

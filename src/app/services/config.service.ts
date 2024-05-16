@@ -15,7 +15,7 @@ export class ConfigService {
         // 0 for flats, 1 for sharps
         accidentalMode: 1,
         frequencyOfA: 440,
-        debugMode: process.env.DEBUG,
+        debugMode: 'true',
         // Theme
         primary: '#FF7A00',
         highlight: '#FFFFFF',
