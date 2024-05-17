@@ -23,13 +23,21 @@ export class MicSource implements AudioSource {
 
     public constructor() {
         this.audioContext = new AudioContext();
+
         this.analyserNode = new AnalyserNode(this.audioContext);
     }
 
     public async connect() {
         let stream: MediaStream;
         try {
-            stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            stream = await navigator.mediaDevices.getUserMedia({
+                audio: {
+                    echoCancellation: false,
+                    autoGainControl: false,
+                    noiseSuppression: false,
+                    latency: 0
+                }
+            });
         } catch (err) {
             Logger.error(err);
         }
