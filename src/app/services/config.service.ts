@@ -1,23 +1,13 @@
-import {MathUtility} from '../utilities/math-utility';
-
-export type AllowedColor = 'primary' | 'highlight' | 'background'
+import { AllowedColor } from '../events/theme-event';
+import { AllowedAlgorithmTypes } from '../models/algorithm.model';
+import { MathUtility } from '../utilities/math-utility';
 
 type AppConfig = {
     accidentalMode: 0 | 1,
     frequencyOfA: number,
     debugMode: string,
+    algorithm: AllowedAlgorithmTypes,
 } & { [key in AllowedColor]: string }
-
-export class ThemeEvent extends Event {
-    color: AllowedColor;
-    value: string;
-
-    constructor(color: AllowedColor, value: string) {
-        super('theme-changed');
-        this.color = color;
-        this.value = value;
-    }
-}
 
 export class ConfigService {
 
@@ -25,11 +15,13 @@ export class ConfigService {
         // 0 for flats, 1 for sharps
         accidentalMode: 1,
         frequencyOfA: 440,
-        debugMode: process.env.DEBUG,
+        debugMode: 'true',
         // Theme
         primary: '#FF7A00',
         highlight: '#FFFFFF',
         background: '#000000',
+        // Algorithm
+        algorithm: 'McLeod',
     };
 
     public static ALowerBoundFreq = 415; // Lowest Baroque pitch
@@ -69,7 +61,8 @@ export class ConfigService {
             debugMode: 'false',
             primary: this.getColor('primary'),
             highlight: this.getColor('highlight'),
-            background: this.getColor('background')
+            background: this.getColor('background'),
+            algorithm: this.algorithm
         };
     }
 
@@ -107,4 +100,13 @@ export class ConfigService {
     static getColor(type: AllowedColor): string {
         return this.getStoredValueOrDefault(type);
     }
+
+    static set algorithm(algorithm: string) {
+        localStorage.setItem(this.getPropertyName(this.defaultConfig, a => a.algorithm), algorithm);
+    }
+
+    static get algorithm(): AllowedAlgorithmTypes {
+        return this.getStoredValueOrDefault('algorithm') as AllowedAlgorithmTypes;
+    }
 }
+

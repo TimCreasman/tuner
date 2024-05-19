@@ -1,15 +1,15 @@
-import {PitchDetector} from 'pitchy';
-import {Logger} from '../utilities/log-utility';
+import { AlgorithmResult, AllowedAlgorithmTypes, Algorithm, McLeod, YIN, AMDF, DynamicWavelet } from '../models/algorithm.model';
+import { AudioSource, MicSource } from '../models/audio.model';
+import { Logger } from '../utilities/log-utility';
+import { ConfigService } from './config.service';
 
 export class PitchDetectorService {
     // the rate at which to update the pitch
     private readonly refreshRate: number;
-    private pitchDetector: PitchDetector<Float32Array>;
-
-    private _pitch: number;
+    private algorithms: Map<AllowedAlgorithmTypes, Algorithm>;
+    private _algorithmResult: AlgorithmResult;
+        
     private _audioSource: AudioSource;
-    private _clarity: number;
-    private _volume: number;
 
     private intervalReference: number;
     private onListen: (pitch: number, clarity: number, volume: number) => void;
@@ -21,7 +21,12 @@ export class PitchDetectorService {
     private constructor(audioSource: AudioSource = new MicSource(), refreshRate = 17) {
         this.refreshRate = refreshRate;
         this._audioSource = audioSource;
-        this.pitchDetector = PitchDetector.forFloat32Array(this._audioSource.analyserNode.fftSize);
+
+        this.algorithms = new Map();
+        this.algorithms.set('McLeod', new McLeod(this._audioSource));
+        this.algorithms.set('YIN', new YIN());
+        this.algorithms.set('AMDF', new AMDF());
+        this.algorithms.set('Dynamic Wavelet', new DynamicWavelet());
     }
 
     public static Instance(audioSource: AudioSource = new MicSource(), refreshRate = 17) {
@@ -43,15 +48,15 @@ export class PitchDetectorService {
     }
 
     get pitch(): number {
-        return this._pitch;
+        return this._algorithmResult.pitch;
     }
 
     get clarity(): number {
-        return this._clarity;
+        return this._algorithmResult.clarity;
     }
 
     get volume(): number {
-        return this._volume;
+        return this._algorithmResult.volume;
     }
 
     get audioSource(): AudioSource {
@@ -65,94 +70,13 @@ export class PitchDetectorService {
     }
 
     private listen(): void {
-        const inputArray = new Float32Array(this.pitchDetector.inputLength);
-        this._audioSource.analyserNode.getFloatTimeDomainData(inputArray);
-        [this._pitch, this._clarity] = this.pitchDetector.findPitch(inputArray, this._audioSource.audioContext.sampleRate);
+        this._algorithmResult = this.algorithms.get(ConfigService.algorithm).detect(this._audioSource);
 
-        if (this.pitch === 0) {
-            Logger.debug('Pitch not detected.', this._pitch, this._clarity);
+        if (this.pitch === -1) {
+            Logger.debug('Pitch not detected.', this._algorithmResult.pitch, this._algorithmResult.clarity);
         }
 
-        const squareSum = inputArray.reduce((a, value) => a + (value * value), 0);
-        this._volume = Math.sqrt(squareSum / inputArray.length);
-
-        this.onListen(this._pitch, this._clarity, this._volume);
+        this.onListen(this._algorithmResult.pitch, this._algorithmResult.clarity, this._algorithmResult.volume);
     }
 }
 
-interface AudioSource {
-    // window.AudioContext
-    get audioContext(): AudioContext;
-
-    // window.AnalyserNode
-    get analyserNode(): AnalyserNode;
-
-    get sourceNode(): MediaStreamAudioSourceNode | OscillatorNode;
-
-    connect(): Promise<AudioSource>;
-}
-
-export class MicSource implements AudioSource {
-
-    // window.AudioContext
-    readonly audioContext: AudioContext;
-    // window.AnalyserNode
-    readonly analyserNode: AnalyserNode;
-
-    sourceNode: MediaStreamAudioSourceNode;
-
-    public constructor() {
-        this.audioContext = new AudioContext();
-        this.analyserNode = new AnalyserNode(this.audioContext);
-    }
-
-    public async connect() {
-        let stream: MediaStream;
-        try {
-            stream = await navigator.mediaDevices.getUserMedia({audio: true});
-        } catch (err) {
-            Logger.error(err);
-        }
-
-        // the microphone source
-        this.sourceNode = this.audioContext.createMediaStreamSource(stream);
-        // pipe the media source to the analyser
-        this.sourceNode.connect(this.analyserNode);
-        // in most browsers the audio context gets automatically suspended, so it needs to be resumed here
-        await this.audioContext.resume();
-        return this;
-    }
-}
-
-export class OscillatorSource implements AudioSource {
-    // window.AudioContext
-    readonly audioContext: AudioContext;
-    // window.AnalyserNode
-    readonly analyserNode: AnalyserNode;
-
-    sourceNode: OscillatorNode;
-
-    public constructor() {
-        this.audioContext = new AudioContext();
-        this.analyserNode = new AnalyserNode(this.audioContext);
-    }
-
-    public async connect() {
-
-        this.sourceNode = this.audioContext.createOscillator();
-
-        // value in hertz
-        this.sourceNode.type = 'sine';
-        this.sourceNode.frequency.setValueAtTime(440, this.audioContext.currentTime);
-        this.sourceNode.start();
-        this.sourceNode.connect(this.analyserNode);
-
-        // in most browsers the audio context gets automatically suspended, so it needs to be resumed here
-        await this.audioContext.resume();
-        return this;
-    }
-
-    set frequency(_frequency: number) {
-        this.sourceNode.frequency.setValueAtTime(_frequency, this.audioContext.currentTime);
-    }
-}

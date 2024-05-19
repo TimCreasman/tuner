@@ -8,7 +8,7 @@
     "start": "npm run server & npm run build -- --watch",
     "server": "servor dist index.html 7000 --reload --secure",
     "lint": "eslint .",
-    "test": "wtr --node-resolve --watch --esbuild-target auto",
+    "test": "wtr --node-resolve --watch --esbuild-target auto --config ./web-test-runner-local.config.js",
     "ci-test": "wtr --node-resolve"
   },
   "author": "Tim Creasman",
@@ -16,7 +16,8 @@
   "dependencies": {
     "bezier-easing": "^2.1.0",
     "lit": "^2.0.2",
-    "pitchy": "^2.0.3"
+    "pitchfinder": "^2.3.2",
+    "pitchy": "^4.0.7"
   },
   "devDependencies": {
     "@open-wc/testing": "^3.0.0-next.5",

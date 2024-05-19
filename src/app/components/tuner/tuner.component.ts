@@ -1,9 +1,10 @@
-import {html, LitElement} from 'lit';
-import {customElement, property} from 'lit/decorators.js';
-import {ACCIDENTALS, Note, NoteUtility} from '../../utilities/note-utility';
-import {OscillatorSource, PitchDetectorService} from '../../services/pitch-detector.service';
-import {MathUtility} from '../../utilities/math-utility';
-import {Logger} from '../../utilities/log-utility';
+import { html, LitElement } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
+import { ACCIDENTALS, Note, NoteUtility } from '../../utilities/note-utility';
+import { PitchDetectorService } from '../../services/pitch-detector.service';
+import { MathUtility } from '../../utilities/math-utility';
+import { Logger } from '../../utilities/log-utility';
+import { OscillatorSource } from '../../models/audio.model';
 
 @customElement('tn-tuner')
 export class TunerComponent extends LitElement {
@@ -75,12 +76,7 @@ export class TunerComponent extends LitElement {
 
             this.accuracy = accuracy;
         });
-        /*
-
-                if (CONFIG.debugMode) {
-                    this.pitchDetectorService.audioSource = new OscillatorSource();
-                }
-        */
+                    // this.pitchDetectorService.audioSource = new OscillatorSource();
 
         this.pitchDetectorService.startListening();
     }
@@ -123,6 +119,14 @@ export class TunerComponent extends LitElement {
 
     render() {
         return html`
+            <!-- <div>
+                <input type="range" min="200"
+                                   max="300"
+                                   @input="${this.updateOscillatorFrequency}">
+                        </div>
+ <div>
+                Audio Playback: <input type="checkbox" @input="${this.setPlayback}">
+            </div> -->
             <div data-test-id="tuner.body" @click="${this.resumeContext}">
                 <tn-tuner-ring .accuracy="${this.accuracy}" .pitchAccidental="${this.pitchAccidental}"
                                .volume="${this.volume}"></tn-tuner-ring>

@@ -6,6 +6,10 @@ const AccordionComponentStyles = css`
     details > summary {
         list-style: none;
         padding: 1em;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     summary::-webkit-details-marker {
@@ -28,7 +32,7 @@ const AccordionComponentStyles = css`
         content: "\\f106";
     }
 
-    .accordion {
+    details {
         border-radius: 1em;
         backdrop-filter: blur(25px);
         background-color: rgba(255, 255, 255, 0.3);
@@ -46,16 +50,6 @@ const AccordionComponentStyles = css`
         border-radius: 1em;
         color: var(--highlight-color);
     }
-
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .icon {
-        margin-left: auto;
-    }
 `;
 
 @customElement('tn-accordion')
@@ -65,7 +59,7 @@ export class AccordionComponent extends LitElement {
 
     protected render() {
         return html`
-            <details class="accordion" open>
+            <details>
                 <summary class="header">
                     <slot name="header"></slot>
                 </summary>
