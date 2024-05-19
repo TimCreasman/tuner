@@ -8,7 +8,7 @@
     "start": "npm run server & npm run build -- --watch",
     "server": "servor dist index.html 7000 --reload --secure",
     "lint": "eslint .",
-    "test": "wtr --node-resolve --watch --esbuild-target auto",
+    "test": "wtr --node-resolve --watch --esbuild-target auto --config ./web-test-runner-local.config.js",
     "ci-test": "wtr --node-resolve"
   },
   "author": "Tim Creasman",
