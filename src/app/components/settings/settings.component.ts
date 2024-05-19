@@ -1,10 +1,8 @@
-import { customElement, state } from 'lit/decorators.js';
-import { css, html, LitElement, nothing } from 'lit';
+import { customElement } from 'lit/decorators.js';
+import { css, html, LitElement } from 'lit';
 import Fontawesome from '../../utilities/fontawesome';
-import { ConfigService } from '../../services/config.service';
-import { AllowedColor, ThemeEvent } from '../../events/theme-event';
 
-const SettingsComponentStyles = css`
+export const SettingsComponentStyles = css`
     input {
         margin-inline-end: 1em;
     }
@@ -116,6 +114,15 @@ const SettingsComponentStyles = css`
         font-family: var(--font-family);
     }
 
+    select {
+        border: none;
+        background: var(--background-color);
+        color: var(--highlight-color);
+        align-self: stretch;
+        border-radius: 1em;
+        font-family: var(--font-family);
+    }
+
     .row {
         display: flex;
         margin-block: 1em;
@@ -140,38 +147,8 @@ const SettingsComponentStyles = css`
 
     /* Hide scrollbar for Chrome, Safari and Opera */
 
-    .color-row {
-        align-items: center;
-    }
-
-    .color-row input {
+    .row input, select {
         margin-inline: 1em;
-    }
-
-    .color-ball {
-        display: inline-block;
-        border-radius: 100%;
-        width: 1.5em;
-        height: 1.5em;
-        -webkit-box-shadow: inset 0.3em -0.3em 0 0 rgba(0, 0, 0, 0.5);
-        -moz-box-shadow: inset 0.3em -0.3em 0 0 rgba(0, 0, 0, 0.5);
-        box-shadow: inset 0.3em -0.3em 0 0 rgba(0, 0, 0, 0.5);
-    }
-
-    .color-ball.primary {
-        background-color: var(--primary-color);
-    }
-
-    .color-ball.highlight {
-        background-color: var(--highlight-color);
-    }
-
-    .color-ball.background {
-        background-color: var(--background-color);
-    }
-
-    .color-label {
-        flex: 1;
     }
 `;
 
@@ -180,64 +157,8 @@ export class SettingsComponent extends LitElement {
 
     static styles = [SettingsComponentStyles, Fontawesome];
 
-    @state()
-    private frequencyOfA = ConfigService.frequencyOfA;
-    @state()
-    private accidentalMode = ConfigService.accidentalMode;
-
-    @state()
-    private primaryColor = ConfigService.getColor('primary');
-    @state()
-    private highlightColor = ConfigService.getColor('highlight');
-    @state()
-    private backgroundColor = ConfigService.getColor('background');
-
     constructor() {
         super();
-    }
-
-    private resetFrequencyOfA() {
-        this.frequencyOfA = ConfigService.defaultConfig.frequencyOfA;
-        ConfigService.frequencyOfA = ConfigService.defaultConfig.frequencyOfA;
-    }
-
-    private updateAccidentalMode(inputEvent: InputEvent): void {
-        const value = (<HTMLInputElement>inputEvent.target).checked === false ? 1 : 0;
-        this.accidentalMode = value;
-        ConfigService.accidentalMode = value;
-    }
-
-    private updateFrequencyOfA(inputEvent: InputEvent): void {
-        const value = Number((<HTMLInputElement>inputEvent.target).value);
-        this.frequencyOfA = value;
-        ConfigService.frequencyOfA = value;
-    }
-
-    private updateColor(inputEvent: InputEvent, color: AllowedColor): void {
-        const value = (<HTMLInputElement>inputEvent.target).value;
-        ConfigService.setColor(color, value);
-        this.updateLocalColor(color, value);
-        this.dispatchEvent(new ThemeEvent(color, value));
-    }
-
-    private resetColor(color: AllowedColor) {
-        ConfigService.setColor(color, ConfigService.defaultConfig[color]);
-        this.updateLocalColor(color, ConfigService.defaultConfig[color]);
-        this.dispatchEvent(new ThemeEvent(color, ConfigService.defaultConfig[color]));
-    }
-
-    private updateLocalColor(color: AllowedColor, value: string) {
-        switch (color) {
-            case 'primary':
-                this.primaryColor = value;
-                break;
-            case 'background':
-                this.backgroundColor = value;
-                break;
-            case 'highlight':
-                this.highlightColor = value;
-                break;
-        }
     }
 
     protected render() {
@@ -245,68 +166,9 @@ export class SettingsComponent extends LitElement {
             <tn-modal>
                 <div slot="header">Settings</div>
                 <div slot="content">
-                    <tn-accordion>
-                        <div slot="header">General</div>
-                        <div slot="content">
-                            <div class="row">
-                                <label for="flats" class="switch">
-                                    <input id="flats"
-                                           type="checkbox"
-                                           .checked="${(this.accidentalMode === 0)}"
-                                           @click=${this.updateAccidentalMode}>
-                                    <span class="slider round"></span>
-                                </label>
-                                <span>Use Flats</span>
-                            </div>
-                            <div class="row">
-                                <input id="frequencyOfA"
-                                       type="range"
-                                       max="${ConfigService.AUpperBoundFreq}"
-                                       min="${ConfigService.ALowerBoundFreq}"
-                                       .value="${this.frequencyOfA}"
-                                       @input=${this.updateFrequencyOfA}>
-                                <label style="flex: 1" for="frequencyOfA">
-                                    A = ${this.frequencyOfA}HZ
-                                </label>
-                                ${this.frequencyOfA !== ConfigService.defaultConfig.frequencyOfA ? html`
-                                    <i class="fa fa-undo" @click=${(this.resetFrequencyOfA)}></i>` : nothing}
-                            </div>
-                        </div>
-                    </tn-accordion>
-                    <tn-accordion>
-                        <div slot="header">Theme</div>
-                        <div slot="content">
-                            <div class="row color-row">
-                                <div class="color-ball primary"></div>
-                                <input id="primary-color" type="text" maxlength="7" size="7"
-                                       .value="${this.primaryColor}"
-                                       @input="${(e: InputEvent) => this.updateColor(e, 'primary')}">
-                                <label for="primary-color" class="color-label">Primary</label>
-                                ${this.primaryColor !== ConfigService.defaultConfig.primary ? html`
-                                    <i class="fa fa-undo" @click=${() => this.resetColor('primary')}></i>` : nothing}
-                            </div>
-                            <div class="row color-row">
-                                <div class="color-ball highlight"></div>
-                                <input id="highlight-color" type="text" maxlength="7" size="7"
-                                       .value="${this.highlightColor}"
-                                       @input="${(e: InputEvent) => this.updateColor(e, 'highlight')}"
-                                >
-                                <label for="highlight-color" class="color-label">Highlight</label>
-                                ${this.highlightColor !== ConfigService.defaultConfig.highlight ? html`
-                                    <i class="fa fa-undo" @click=${() => this.resetColor('highlight')}></i>` : nothing}
-                            </div>
-                            <div class="row color-row">
-                                <div class="color-ball background"></div>
-                                <input id="background-color" type="text" maxlength="7" size="7"
-                                       .value="${this.backgroundColor}"
-                                       @input="${(e: InputEvent) => this.updateColor(e, 'background')}"
-                                >
-                                <label for="background-color" class="color-label">Background</label>
-                                ${this.backgroundColor !== ConfigService.defaultConfig.background ? html`
-                                    <i class="fa fa-undo" @click=${() => this.resetColor('background')}></i>` : nothing}
-                            </div>
-                        </div>
-                    </tn-accordion>
+                    <tn-general-settings></tn-general-settings>
+                    <tn-theme-settings></tn-theme-settings>
+                    <tn-experimental-settings></tn-experiemental-settings>
                 </div>
             </tn-modal>
         `;
