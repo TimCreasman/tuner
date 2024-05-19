@@ -1,4 +1,4 @@
-(()=>{var Ro=Object.create;var Ne=Object.defineProperty;var jt=Object.getOwnPropertyDescriptor;var Lo=Object.getOwnPropertyNames;var Ho=Object.getPrototypeOf,Bo=Object.prototype.hasOwnProperty;var ft=Math.pow;var Ot=r=>Ne(r,"__esModule",{value:!0});var ct=(r,e)=>()=>(e||r((e={exports:{}}).exports,e),e.exports),Q=(r,e)=>{Ot(r);for(var t in e)Ne(r,t,{get:e[t],enumerable:!0})},Do=(r,e,t)=>{if(e&&typeof e=="object"||typeof e=="function")for(let o of Lo(e))!Bo.call(r,o)&&o!=="default"&&Ne(r,o,{get:()=>e[o],enumerable:!(t=jt(e,o))||t.enumerable});return r},it=r=>Do(Ot(Ne(r!=null?Ro(Ho(r)):{},"default",r&&r.__esModule&&"default"in r?{get:()=>r.default,enumerable:!0}:{value:r,enumerable:!0})),r),h=(r,e,t,o)=>{for(var n=o>1?void 0:o?jt(e,t):e,a=r.length-1,f;a>=0;a--)(f=r[a])&&(n=(o?f(e,t,n):f(n))||n);return o&&n&&Ne(e,t,n),n};var Rt=(r,e,t)=>new Promise((o,n)=>{var a=i=>{try{c(t.next(i))}catch(s){n(s)}},f=i=>{try{c(t.throw(i))}catch(s){n(s)}},c=i=>i.done?o(i.value):Promise.resolve(i.value).then(a,f);c((t=t.apply(r,e)).next())});var go=ct((Vr,po)=>{var rn=4,an=.001,fn=1e-7,cn=10,Le=11,Ke=1/(Le-1),sn=typeof Float32Array=="function";function bo(r,e){return 1-3*e+3*r}function uo(r,e){return 3*e-6*r}function ho(r){return 3*r}function Ze(r,e,t){return((bo(e,t)*r+uo(e,t))*r+ho(e))*r}function mo(r,e,t){return 3*bo(e,t)*r*r+2*uo(e,t)*r+ho(e)}function ln(r,e,t,o,n){var a,f,c=0;do f=e+(t-e)/2,a=Ze(f,o,n)-r,a>0?t=f:e=f;while(Math.abs(a)>fn&&++c<cn);return f}function bn(r,e,t,o){for(var n=0;n<rn;++n){var a=mo(e,t,o);if(a===0)return e;var f=Ze(e,t,o)-r;e-=f/a}return e}function dn(r){return r}po.exports=function(e,t,o,n){if(!(0<=e&&e<=1&&0<=o&&o<=1))throw new Error("bezier x values must be in [0, 1] range");if(e===t&&o===n)return dn;for(var a=sn?new Float32Array(Le):new Array(Le),f=0;f<Le;++f)a[f]=Ze(f*Ke,e,o);function c(i){for(var s=0,d=1,l=Le-1;d!==l&&a[d]<=i;++d)s+=Ke;--d;var b=(i-a[d])/(a[d+1]-a[d]),m=s+b*Ke,p=mo(m,e,o);return p>=an?bn(i,m,e,o):p===0?m:ln(i,s,s+Ke,e,o)}return function(s){return s===0?0:s===1?1:Ze(c(s),t,n)}}});var ko=ct((ka,wo)=>{"use strict";function C(r){if(this.size=r|0,this.size<=1||(this.size&this.size-1)!=0)throw new Error("FFT size must be a power of two and bigger than 1");this._csize=r<<1;for(var e=new Array(this.size*2),t=0;t<e.length;t+=2){let i=Math.PI*t/this.size;e[t]=Math.cos(i),e[t+1]=-Math.sin(i)}this.table=e;for(var o=0,n=1;this.size>n;n<<=1)o++;this._width=o%2==0?o-1:o,this._bitrev=new Array(1<<this._width);for(var a=0;a<this._bitrev.length;a++){this._bitrev[a]=0;for(var f=0;f<this._width;f+=2){var c=this._width-f-2;this._bitrev[a]|=(a>>>f&3)<<c}}this._out=null,this._data=null,this._inv=0}wo.exports=C;C.prototype.fromComplexArray=function(e,t){for(var o=t||new Array(e.length>>>1),n=0;n<e.length;n+=2)o[n>>>1]=e[n];return o};C.prototype.createComplexArray=function(){let e=new Array(this._csize);for(var t=0;t<e.length;t++)e[t]=0;return e};C.prototype.toComplexArray=function(e,t){for(var o=t||this.createComplexArray(),n=0;n<o.length;n+=2)o[n]=e[n>>>1],o[n+1]=0;return o};C.prototype.completeSpectrum=function(e){for(var t=this._csize,o=t>>>1,n=2;n<o;n+=2)e[t-n]=e[n],e[t-n+1]=-e[n+1]};C.prototype.transform=function(e,t){if(e===t)throw new Error("Input and output buffers must be different");this._out=e,this._data=t,this._inv=0,this._transform4(),this._out=null,this._data=null};C.prototype.realTransform=function(e,t){if(e===t)throw new Error("Input and output buffers must be different");this._out=e,this._data=t,this._inv=0,this._realTransform4(),this._out=null,this._data=null};C.prototype.inverseTransform=function(e,t){if(e===t)throw new Error("Input and output buffers must be different");this._out=e,this._data=t,this._inv=1,this._transform4();for(var o=0;o<e.length;o++)e[o]/=this.size;this._out=null,this._data=null};C.prototype._transform4=function(){var e=this._out,t=this._csize,o=this._width,n=1<<o,a=t/n<<1,f,c,i=this._bitrev;if(a===4)for(f=0,c=0;f<t;f+=a,c++){let g=i[c];this._singleTransform2(f,g,n)}else for(f=0,c=0;f<t;f+=a,c++){let g=i[c];this._singleTransform4(f,g,n)}var s=this._inv?-1:1,d=this.table;for(n>>=2;n>=2;n>>=2){a=t/n<<1;var l=a>>>2;for(f=0;f<t;f+=a)for(var b=f+l,m=f,p=0;m<b;m+=2,p+=n){let g=m,x=g+l,A=x+l,$=A+l,I=e[g],R=e[g+1],F=e[x],M=e[x+1],L=e[A],H=e[A+1],U=e[$],Y=e[$+1],V=I,W=R,K=d[p],Z=s*d[p+1],G=F*K-M*Z,J=F*Z+M*K,xe=d[2*p],_e=s*d[2*p+1],Ae=L*xe-H*_e,$e=L*_e+H*xe,Se=d[3*p],Ce=s*d[3*p+1],Ee=U*Se-Y*Ce,qe=U*Ce+Y*Se,Te=V+Ae,ne=W+$e,re=V-Ae,ze=W-$e,Me=G+Ee,ae=J+qe,fe=s*(G-Ee),Pe=s*(J-qe),Be=Te+Me,Qe=ne+ae,Xe=Te-Me,et=ne-ae,tt=re+Pe,ot=ze-fe,nt=re-Pe,rt=ze+fe;e[g]=Be,e[g+1]=Qe,e[x]=tt,e[x+1]=ot,e[A]=Xe,e[A+1]=et,e[$]=nt,e[$+1]=rt}}};C.prototype._singleTransform2=function(e,t,o){let n=this._out,a=this._data,f=a[t],c=a[t+1],i=a[t+o],s=a[t+o+1],d=f+i,l=c+s,b=f-i,m=c-s;n[e]=d,n[e+1]=l,n[e+2]=b,n[e+3]=m};C.prototype._singleTransform4=function(e,t,o){let n=this._out,a=this._data,f=this._inv?-1:1,c=o*2,i=o*3,s=a[t],d=a[t+1],l=a[t+o],b=a[t+o+1],m=a[t+c],p=a[t+c+1],g=a[t+i],x=a[t+i+1],A=s+m,$=d+p,I=s-m,R=d-p,F=l+g,M=b+x,L=f*(l-g),H=f*(b-x),U=A+F,Y=$+M,V=I+H,W=R-L,K=A-F,Z=$-M,G=I-H,J=R+L;n[e]=U,n[e+1]=Y,n[e+2]=V,n[e+3]=W,n[e+4]=K,n[e+5]=Z,n[e+6]=G,n[e+7]=J};C.prototype._realTransform4=function(){var e=this._out,t=this._csize,o=this._width,n=1<<o,a=t/n<<1,f,c,i=this._bitrev;if(a===4)for(f=0,c=0;f<t;f+=a,c++){let at=i[c];this._singleRealTransform2(f,at>>>1,n>>>1)}else for(f=0,c=0;f<t;f+=a,c++){let at=i[c];this._singleRealTransform4(f,at>>>1,n>>>1)}var s=this._inv?-1:1,d=this.table;for(n>>=2;n>=2;n>>=2){a=t/n<<1;var l=a>>>1,b=l>>>1,m=b>>>1;for(f=0;f<t;f+=a)for(var p=0,g=0;p<=m;p+=2,g+=n){var x=f+p,A=x+b,$=A+b,I=$+b,R=e[x],F=e[x+1],M=e[A],L=e[A+1],H=e[$],U=e[$+1],Y=e[I],V=e[I+1],W=R,K=F,Z=d[g],G=s*d[g+1],J=M*Z-L*G,xe=M*G+L*Z,_e=d[2*g],Ae=s*d[2*g+1],$e=H*_e-U*Ae,Se=H*Ae+U*_e,Ce=d[3*g],Ee=s*d[3*g+1],qe=Y*Ce-V*Ee,Te=Y*Ee+V*Ce,ne=W+$e,re=K+Se,ze=W-$e,Me=K-Se,ae=J+qe,fe=xe+Te,Pe=s*(J-qe),Be=s*(xe-Te),Qe=ne+ae,Xe=re+fe,et=ze+Be,tt=Me-Pe;if(e[x]=Qe,e[x+1]=Xe,e[A]=et,e[A+1]=tt,p===0){var ot=ne-ae,nt=re-fe;e[$]=ot,e[$+1]=nt;continue}if(p!==m){var rt=ze,Eo=-Me,qo=ne,To=-re,zo=-s*Be,Mo=-s*Pe,Po=-s*fe,No=-s*ae,Io=rt+zo,Fo=Eo+Mo,jo=qo+No,Oo=To-Po,It=f+b-p,Ft=f+l-p;e[It]=Io,e[It+1]=Fo,e[Ft]=jo,e[Ft+1]=Oo}}}};C.prototype._singleRealTransform2=function(e,t,o){let n=this._out,a=this._data,f=a[t],c=a[t+o],i=f+c,s=f-c;n[e]=i,n[e+1]=0,n[e+2]=s,n[e+3]=0};C.prototype._singleRealTransform4=function(e,t,o){let n=this._out,a=this._data,f=this._inv?-1:1,c=o*2,i=o*3,s=a[t],d=a[t+o],l=a[t+c],b=a[t+i],m=s+l,p=s-l,g=d+b,x=f*(d-b),A=m+g,$=p,I=-x,R=m-g,F=p,M=x;n[e]=A,n[e+1]=0,n[e+2]=$,n[e+3]=I,n[e+4]=R,n[e+5]=0,n[e+6]=F,n[e+7]=M}});var _o=ct((xa,xo)=>{xo.exports=function(r){return r+=r===0,--r,r|=r>>>1,r|=r>>>2,r|=r>>>4,r|=r>>>8,r|=r>>>16,r+1}});var gt={};Q(gt,{AppBodyComponent:()=>ge});var E=r=>e=>typeof e=="function"?((t,o)=>(window.customElements.define(t,o),o))(r,e):((t,o)=>{let{kind:n,elements:a}=o;return{kind:n,elements:a,finisher(f){window.customElements.define(t,f)}}})(r,e);var Uo=(r,e)=>e.kind==="method"&&e.descriptor&&!("value"in e.descriptor)?{...e,finisher(t){t.createProperty(e.key,r)}}:{kind:"field",key:Symbol(),placement:"own",descriptor:{},originalKey:e.key,initializer(){typeof e.initializer=="function"&&(this[e.key]=e.initializer.call(this))},finisher(t){t.createProperty(e.key,r)}};function y(r){return(e,t)=>t!==void 0?((o,n,a)=>{n.constructor.createProperty(a,o)})(r,e,t):Uo(r,e)}function ce(r){return y({...r,state:!0})}var ie=({finisher:r,descriptor:e})=>(t,o)=>{var n;if(o===void 0){let a=(n=t.originalKey)!==null&&n!==void 0?n:t.key,f=e!=null?{kind:"method",placement:"prototype",key:a,descriptor:e(t.key)}:{...t,key:a};return r!=null&&(f.finisher=function(c){r(c,a)}),f}{let a=t.constructor;e!==void 0&&Object.defineProperty(t,o,e(o)),r==null||r(a,o)}};function Lt(r,e){return ie({descriptor:t=>{let o={get(){var n,a;return(a=(n=this.renderRoot)===null||n===void 0?void 0:n.querySelector(r))!==null&&a!==void 0?a:null},enumerable:!0,configurable:!0};if(e){let n=typeof t=="symbol"?Symbol():"__"+t;o.get=function(){var a,f;return this[n]===void 0&&(this[n]=(f=(a=this.renderRoot)===null||a===void 0?void 0:a.querySelector(r))!==null&&f!==void 0?f:null),this[n]}}return o}})}var De=window.ShadowRoot&&(window.ShadyCSS===void 0||window.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,st=Symbol(),Ht=new Map,Ue=class{constructor(e,t){if(this._$cssResult$=!0,t!==st)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=e}get styleSheet(){let e=Ht.get(this.cssText);return De&&e===void 0&&(Ht.set(this.cssText,e=new CSSStyleSheet),e.replaceSync(this.cssText)),e}toString(){return this.cssText}},se=r=>new Ue(typeof r=="string"?r:r+"",st),S=(r,...e)=>{let t=r.length===1?r[0]:e.reduce((o,n,a)=>o+(f=>{if(f._$cssResult$===!0)return f.cssText;if(typeof f=="number")return f;throw Error("Value passed to 'css' function must be a 'css' function result: "+f+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(n)+r[a+1],r[0]);return new Ue(t,st)},lt=(r,e)=>{De?r.adoptedStyleSheets=e.map(t=>t instanceof CSSStyleSheet?t:t.styleSheet):e.forEach(t=>{let o=document.createElement("style"),n=window.litNonce;n!==void 0&&o.setAttribute("nonce",n),o.textContent=t.cssText,r.appendChild(o)})},Ye=De?r=>r:r=>r instanceof CSSStyleSheet?(e=>{let t="";for(let o of e.cssRules)t+=o.cssText;return se(t)})(r):r;var bt,Bt=window.trustedTypes,Yo=Bt?Bt.emptyScript:"",Dt=window.reactiveElementPolyfillSupport,dt={toAttribute(r,e){switch(e){case Boolean:r=r?Yo:null;break;case Object:case Array:r=r==null?r:JSON.stringify(r)}return r},fromAttribute(r,e){let t=r;switch(e){case Boolean:t=r!==null;break;case Number:t=r===null?null:Number(r);break;case Object:case Array:try{t=JSON.parse(r)}catch{t=null}}return t}},Ut=(r,e)=>e!==r&&(e==e||r==r),ut={attribute:!0,type:String,converter:dt,reflect:!1,hasChanged:Ut},B=class extends HTMLElement{constructor(){super(),this._$Et=new Map,this.isUpdatePending=!1,this.hasUpdated=!1,this._$Ei=null,this.o()}static addInitializer(e){var t;(t=this.l)!==null&&t!==void 0||(this.l=[]),this.l.push(e)}static get observedAttributes(){this.finalize();let e=[];return this.elementProperties.forEach((t,o)=>{let n=this._$Eh(o,t);n!==void 0&&(this._$Eu.set(n,o),e.push(n))}),e}static createProperty(e,t=ut){if(t.state&&(t.attribute=!1),this.finalize(),this.elementProperties.set(e,t),!t.noAccessor&&!this.prototype.hasOwnProperty(e)){let o=typeof e=="symbol"?Symbol():"__"+e,n=this.getPropertyDescriptor(e,o,t);n!==void 0&&Object.defineProperty(this.prototype,e,n)}}static getPropertyDescriptor(e,t,o){return{get(){return this[t]},set(n){let a=this[e];this[t]=n,this.requestUpdate(e,a,o)},configurable:!0,enumerable:!0}}static getPropertyOptions(e){return this.elementProperties.get(e)||ut}static finalize(){if(this.hasOwnProperty("finalized"))return!1;this.finalized=!0;let e=Object.getPrototypeOf(this);if(e.finalize(),this.elementProperties=new Map(e.elementProperties),this._$Eu=new Map,this.hasOwnProperty("properties")){let t=this.properties,o=[...Object.getOwnPropertyNames(t),...Object.getOwnPropertySymbols(t)];for(let n of o)this.createProperty(n,t[n])}return this.elementStyles=this.finalizeStyles(this.styles),!0}static finalizeStyles(e){let t=[];if(Array.isArray(e)){let o=new Set(e.flat(1/0).reverse());for(let n of o)t.unshift(Ye(n))}else e!==void 0&&t.push(Ye(e));return t}static _$Eh(e,t){let o=t.attribute;return o===!1?void 0:typeof o=="string"?o:typeof e=="string"?e.toLowerCase():void 0}o(){var e;this._$Ep=new Promise(t=>this.enableUpdating=t),this._$AL=new Map,this._$Em(),this.requestUpdate(),(e=this.constructor.l)===null||e===void 0||e.forEach(t=>t(this))}addController(e){var t,o;((t=this._$Eg)!==null&&t!==void 0?t:this._$Eg=[]).push(e),this.renderRoot!==void 0&&this.isConnected&&((o=e.hostConnected)===null||o===void 0||o.call(e))}removeController(e){var t;(t=this._$Eg)===null||t===void 0||t.splice(this._$Eg.indexOf(e)>>>0,1)}_$Em(){this.constructor.elementProperties.forEach((e,t)=>{this.hasOwnProperty(t)&&(this._$Et.set(t,this[t]),delete this[t])})}createRenderRoot(){var e;let t=(e=this.shadowRoot)!==null&&e!==void 0?e:this.attachShadow(this.constructor.shadowRootOptions);return lt(t,this.constructor.elementStyles),t}connectedCallback(){var e;this.renderRoot===void 0&&(this.renderRoot=this.createRenderRoot()),this.enableUpdating(!0),(e=this._$Eg)===null||e===void 0||e.forEach(t=>{var o;return(o=t.hostConnected)===null||o===void 0?void 0:o.call(t)})}enableUpdating(e){}disconnectedCallback(){var e;(e=this._$Eg)===null||e===void 0||e.forEach(t=>{var o;return(o=t.hostDisconnected)===null||o===void 0?void 0:o.call(t)})}attributeChangedCallback(e,t,o){this._$AK(e,o)}_$ES(e,t,o=ut){var n,a;let f=this.constructor._$Eh(e,o);if(f!==void 0&&o.reflect===!0){let c=((a=(n=o.converter)===null||n===void 0?void 0:n.toAttribute)!==null&&a!==void 0?a:dt.toAttribute)(t,o.type);this._$Ei=e,c==null?this.removeAttribute(f):this.setAttribute(f,c),this._$Ei=null}}_$AK(e,t){var o,n,a;let f=this.constructor,c=f._$Eu.get(e);if(c!==void 0&&this._$Ei!==c){let i=f.getPropertyOptions(c),s=i.converter,d=(a=(n=(o=s)===null||o===void 0?void 0:o.fromAttribute)!==null&&n!==void 0?n:typeof s=="function"?s:null)!==null&&a!==void 0?a:dt.fromAttribute;this._$Ei=c,this[c]=d(t,i.type),this._$Ei=null}}requestUpdate(e,t,o){let n=!0;e!==void 0&&(((o=o||this.constructor.getPropertyOptions(e)).hasChanged||Ut)(this[e],t)?(this._$AL.has(e)||this._$AL.set(e,t),o.reflect===!0&&this._$Ei!==e&&(this._$E_===void 0&&(this._$E_=new Map),this._$E_.set(e,o))):n=!1),!this.isUpdatePending&&n&&(this._$Ep=this._$EC())}async _$EC(){this.isUpdatePending=!0;try{await this._$Ep}catch(t){Promise.reject(t)}let e=this.scheduleUpdate();return e!=null&&await e,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){var e;if(!this.isUpdatePending)return;this.hasUpdated,this._$Et&&(this._$Et.forEach((n,a)=>this[a]=n),this._$Et=void 0);let t=!1,o=this._$AL;try{t=this.shouldUpdate(o),t?(this.willUpdate(o),(e=this._$Eg)===null||e===void 0||e.forEach(n=>{var a;return(a=n.hostUpdate)===null||a===void 0?void 0:a.call(n)}),this.update(o)):this._$EU()}catch(n){throw t=!1,this._$EU(),n}t&&this._$AE(o)}willUpdate(e){}_$AE(e){var t;(t=this._$Eg)===null||t===void 0||t.forEach(o=>{var n;return(n=o.hostUpdated)===null||n===void 0?void 0:n.call(o)}),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(e)),this.updated(e)}_$EU(){this._$AL=new Map,this.isUpdatePending=!1}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$Ep}shouldUpdate(e){return!0}update(e){this._$E_!==void 0&&(this._$E_.forEach((t,o)=>this._$ES(o,this[o],t)),this._$E_=void 0),this._$EU()}updated(e){}firstUpdated(e){}};B.finalized=!0,B.elementProperties=new Map,B.elementStyles=[],B.shadowRootOptions={mode:"open"},Dt==null||Dt({ReactiveElement:B}),((bt=globalThis.reactiveElementVersions)!==null&&bt!==void 0?bt:globalThis.reactiveElementVersions=[]).push("1.0.2");var ht,le=globalThis.trustedTypes,Yt=le?le.createPolicy("lit-html",{createHTML:r=>r}):void 0,D=`lit$${(Math.random()+"").slice(9)}$`,Vt="?"+D,Vo=`<${Vt}>`,be=document,Ie=(r="")=>be.createComment(r),Fe=r=>r===null||typeof r!="object"&&typeof r!="function",Wt=Array.isArray,Wo=r=>{var e;return Wt(r)||typeof((e=r)===null||e===void 0?void 0:e[Symbol.iterator])=="function"},je=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,Kt=/-->/g,Zt=/>/g,X=/>|[ 	\n\r](?:([^\s"'>=/]+)([ 	\n\r]*=[ 	\n\r]*(?:[^ 	\n\r"'`<>=]|("|')|))|$)/g,Gt=/'/g,Jt=/"/g,Qt=/^(?:script|style|textarea)$/i,Xt=r=>(e,...t)=>({_$litType$:r,strings:e,values:t}),w=Xt(1),Kn=Xt(2),ee=Symbol.for("lit-noChange"),v=Symbol.for("lit-nothing"),eo=new WeakMap,to=(r,e,t)=>{var o,n;let a=(o=t==null?void 0:t.renderBefore)!==null&&o!==void 0?o:e,f=a._$litPart$;if(f===void 0){let c=(n=t==null?void 0:t.renderBefore)!==null&&n!==void 0?n:null;a._$litPart$=f=new me(e.insertBefore(Ie(),c),c,void 0,t??{})}return f._$AI(r),f},de=be.createTreeWalker(be,129,null,!1),Ko=(r,e)=>{let t=r.length-1,o=[],n,a=e===2?"<svg>":"",f=je;for(let i=0;i<t;i++){let s=r[i],d,l,b=-1,m=0;for(;m<s.length&&(f.lastIndex=m,l=f.exec(s),l!==null);)m=f.lastIndex,f===je?l[1]==="!--"?f=Kt:l[1]!==void 0?f=Zt:l[2]!==void 0?(Qt.test(l[2])&&(n=RegExp("</"+l[2],"g")),f=X):l[3]!==void 0&&(f=X):f===X?l[0]===">"?(f=n??je,b=-1):l[1]===void 0?b=-2:(b=f.lastIndex-l[2].length,d=l[1],f=l[3]===void 0?X:l[3]==='"'?Jt:Gt):f===Jt||f===Gt?f=X:f===Kt||f===Zt?f=je:(f=X,n=void 0);let p=f===X&&r[i+1].startsWith("/>")?" ":"";a+=f===je?s+Vo:b>=0?(o.push(d),s.slice(0,b)+"$lit$"+s.slice(b)+D+p):s+D+(b===-2?(o.push(void 0),i):p)}let c=a+(r[t]||"<?>")+(e===2?"</svg>":"");return[Yt!==void 0?Yt.createHTML(c):c,o]},ue=class{constructor({strings:e,_$litType$:t},o){let n;this.parts=[];let a=0,f=0,c=e.length-1,i=this.parts,[s,d]=Ko(e,t);if(this.el=ue.createElement(s,o),de.currentNode=this.el.content,t===2){let l=this.el.content,b=l.firstChild;b.remove(),l.append(...b.childNodes)}for(;(n=de.nextNode())!==null&&i.length<c;){if(n.nodeType===1){if(n.hasAttributes()){let l=[];for(let b of n.getAttributeNames())if(b.endsWith("$lit$")||b.startsWith(D)){let m=d[f++];if(l.push(b),m!==void 0){let p=n.getAttribute(m.toLowerCase()+"$lit$").split(D),g=/([.?@])?(.*)/.exec(m);i.push({type:1,index:a,name:g[2],strings:p,ctor:g[1]==="."?no:g[1]==="?"?ro:g[1]==="@"?ao:Oe})}else i.push({type:6,index:a})}for(let b of l)n.removeAttribute(b)}if(Qt.test(n.tagName)){let l=n.textContent.split(D),b=l.length-1;if(b>0){n.textContent=le?le.emptyScript:"";for(let m=0;m<b;m++)n.append(l[m],Ie()),de.nextNode(),i.push({type:2,index:++a});n.append(l[b],Ie())}}}else if(n.nodeType===8)if(n.data===Vt)i.push({type:2,index:a});else{let l=-1;for(;(l=n.data.indexOf(D,l+1))!==-1;)i.push({type:7,index:a}),l+=D.length-1}a++}}static createElement(e,t){let o=be.createElement("template");return o.innerHTML=e,o}};function he(r,e,t=r,o){var n,a,f,c;if(e===ee)return e;let i=o!==void 0?(n=t._$Cl)===null||n===void 0?void 0:n[o]:t._$Cu,s=Fe(e)?void 0:e._$litDirective$;return(i==null?void 0:i.constructor)!==s&&((a=i==null?void 0:i._$AO)===null||a===void 0||a.call(i,!1),s===void 0?i=void 0:(i=new s(r),i._$AT(r,t,o)),o!==void 0?((f=(c=t)._$Cl)!==null&&f!==void 0?f:c._$Cl=[])[o]=i:t._$Cu=i),i!==void 0&&(e=he(r,i._$AS(r,e.values),i,o)),e}var oo=class{constructor(e,t){this.v=[],this._$AN=void 0,this._$AD=e,this._$AM=t}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}p(e){var t;let{el:{content:o},parts:n}=this._$AD,a=((t=e==null?void 0:e.creationScope)!==null&&t!==void 0?t:be).importNode(o,!0);de.currentNode=a;let f=de.nextNode(),c=0,i=0,s=n[0];for(;s!==void 0;){if(c===s.index){let d;s.type===2?d=new me(f,f.nextSibling,this,e):s.type===1?d=new s.ctor(f,s.name,s.strings,this,e):s.type===6&&(d=new fo(f,this,e)),this.v.push(d),s=n[++i]}c!==(s==null?void 0:s.index)&&(f=de.nextNode(),c++)}return a}m(e){let t=0;for(let o of this.v)o!==void 0&&(o.strings!==void 0?(o._$AI(e,o,t),t+=o.strings.length-2):o._$AI(e[t])),t++}},me=class{constructor(e,t,o,n){var a;this.type=2,this._$AH=v,this._$AN=void 0,this._$AA=e,this._$AB=t,this._$AM=o,this.options=n,this._$Cg=(a=n==null?void 0:n.isConnected)===null||a===void 0||a}get _$AU(){var e,t;return(t=(e=this._$AM)===null||e===void 0?void 0:e._$AU)!==null&&t!==void 0?t:this._$Cg}get parentNode(){let e=this._$AA.parentNode,t=this._$AM;return t!==void 0&&e.nodeType===11&&(e=t.parentNode),e}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(e,t=this){e=he(this,e,t),Fe(e)?e===v||e==null||e===""?(this._$AH!==v&&this._$AR(),this._$AH=v):e!==this._$AH&&e!==ee&&this.$(e):e._$litType$!==void 0?this.T(e):e.nodeType!==void 0?this.S(e):Wo(e)?this.M(e):this.$(e)}A(e,t=this._$AB){return this._$AA.parentNode.insertBefore(e,t)}S(e){this._$AH!==e&&(this._$AR(),this._$AH=this.A(e))}$(e){this._$AH!==v&&Fe(this._$AH)?this._$AA.nextSibling.data=e:this.S(be.createTextNode(e)),this._$AH=e}T(e){var t;let{values:o,_$litType$:n}=e,a=typeof n=="number"?this._$AC(e):(n.el===void 0&&(n.el=ue.createElement(n.h,this.options)),n);if(((t=this._$AH)===null||t===void 0?void 0:t._$AD)===a)this._$AH.m(o);else{let f=new oo(a,this),c=f.p(this.options);f.m(o),this.S(c),this._$AH=f}}_$AC(e){let t=eo.get(e.strings);return t===void 0&&eo.set(e.strings,t=new ue(e)),t}M(e){Wt(this._$AH)||(this._$AH=[],this._$AR());let t=this._$AH,o,n=0;for(let a of e)n===t.length?t.push(o=new me(this.A(Ie()),this.A(Ie()),this,this.options)):o=t[n],o._$AI(a),n++;n<t.length&&(this._$AR(o&&o._$AB.nextSibling,n),t.length=n)}_$AR(e=this._$AA.nextSibling,t){var o;for((o=this._$AP)===null||o===void 0||o.call(this,!1,!0,t);e&&e!==this._$AB;){let n=e.nextSibling;e.remove(),e=n}}setConnected(e){var t;this._$AM===void 0&&(this._$Cg=e,(t=this._$AP)===null||t===void 0||t.call(this,e))}},Oe=class{constructor(e,t,o,n,a){this.type=1,this._$AH=v,this._$AN=void 0,this.element=e,this.name=t,this._$AM=n,this.options=a,o.length>2||o[0]!==""||o[1]!==""?(this._$AH=Array(o.length-1).fill(new String),this.strings=o):this._$AH=v}get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}_$AI(e,t=this,o,n){let a=this.strings,f=!1;if(a===void 0)e=he(this,e,t,0),f=!Fe(e)||e!==this._$AH&&e!==ee,f&&(this._$AH=e);else{let c=e,i,s;for(e=a[0],i=0;i<a.length-1;i++)s=he(this,c[o+i],t,i),s===ee&&(s=this._$AH[i]),f||(f=!Fe(s)||s!==this._$AH[i]),s===v?e=v:e!==v&&(e+=(s??"")+a[i+1]),this._$AH[i]=s}f&&!n&&this.k(e)}k(e){e===v?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,e??"")}},no=class extends Oe{constructor(){super(...arguments),this.type=3}k(e){this.element[this.name]=e===v?void 0:e}},Zo=le?le.emptyScript:"",ro=class extends Oe{constructor(){super(...arguments),this.type=4}k(e){e&&e!==v?this.element.setAttribute(this.name,Zo):this.element.removeAttribute(this.name)}},ao=class extends Oe{constructor(e,t,o,n,a){super(e,t,o,n,a),this.type=5}_$AI(e,t=this){var o;if((e=(o=he(this,e,t,0))!==null&&o!==void 0?o:v)===ee)return;let n=this._$AH,a=e===v&&n!==v||e.capture!==n.capture||e.once!==n.once||e.passive!==n.passive,f=e!==v&&(n===v||a);a&&this.element.removeEventListener(this.name,this,n),f&&this.element.addEventListener(this.name,this,e),this._$AH=e}handleEvent(e){var t,o;typeof this._$AH=="function"?this._$AH.call((o=(t=this.options)===null||t===void 0?void 0:t.host)!==null&&o!==void 0?o:this.element,e):this._$AH.handleEvent(e)}},fo=class{constructor(e,t,o){this.element=e,this.type=6,this._$AN=void 0,this._$AM=t,this.options=o}get _$AU(){return this._$AM._$AU}_$AI(e){he(this,e)}};var co=window.litHtmlPolyfillSupport;co==null||co(ue,me),((ht=globalThis.litHtmlVersions)!==null&&ht!==void 0?ht:globalThis.litHtmlVersions=[]).push("2.0.2");var mt,pt;var k=class extends B{constructor(){super(...arguments),this.renderOptions={host:this},this._$Dt=void 0}createRenderRoot(){var e,t;let o=super.createRenderRoot();return(e=(t=this.renderOptions).renderBefore)!==null&&e!==void 0||(t.renderBefore=o.firstChild),o}update(e){let t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Dt=to(t,this.renderRoot,this.renderOptions)}connectedCallback(){var e;super.connectedCallback(),(e=this._$Dt)===null||e===void 0||e.setConnected(!0)}disconnectedCallback(){var e;super.disconnectedCallback(),(e=this._$Dt)===null||e===void 0||e.setConnected(!1)}render(){return ee}};k.finalized=!0,k._$litElement$=!0,(mt=globalThis.litElementHydrateSupport)===null||mt===void 0||mt.call(globalThis,{LitElement:k});var io=globalThis.litElementPolyfillSupport;io==null||io({LitElement:k});((pt=globalThis.litElementVersions)!==null&&pt!==void 0?pt:globalThis.litElementVersions=[]).push("3.0.2");console.warn("The main 'lit-element' module entrypoint is deprecated. Please update your imports to use the 'lit' package: 'lit' and 'lit/decorators.ts' or import from 'lit-element/lit-element.ts'. See https://lit.dev/msg/deprecated-import-path for more information.");var pe=S`
+(()=>{var mn=Object.create;var De=Object.defineProperty;var oo=Object.getOwnPropertyDescriptor;var pn=Object.getOwnPropertyNames;var gn=Object.getPrototypeOf,vn=Object.prototype.hasOwnProperty;var St=Math.pow;var no=r=>De(r,"__esModule",{value:!0});var ee=(r,e)=>()=>(e||r((e={exports:{}}).exports,e),e.exports),B=(r,e)=>{no(r);for(var t in e)De(r,t,{get:e[t],enumerable:!0})},yn=(r,e,t)=>{if(e&&typeof e=="object"||typeof e=="function")for(let n of pn(e))!vn.call(r,n)&&n!=="default"&&De(r,n,{get:()=>e[n],enumerable:!(t=oo(e,n))||t.enumerable});return r},$t=r=>yn(no(De(r!=null?mn(gn(r)):{},"default",r&&r.__esModule&&"default"in r?{get:()=>r.default,enumerable:!0}:{value:r,enumerable:!0})),r),x=(r,e,t,n)=>{for(var o=n>1?void 0:n?oo(e,t):e,a=r.length-1,f;a>=0;a--)(f=r[a])&&(o=(n?f(e,t,o):f(o))||o);return n&&o&&De(e,t,o),o};var ro=(r,e,t)=>new Promise((n,o)=>{var a=s=>{try{c(t.next(s))}catch(i){o(i)}},f=s=>{try{c(t.throw(s))}catch(i){o(i)}},c=s=>s.done?n(s.value):Promise.resolve(s.value).then(a,f);c((t=t.apply(r,e)).next())});var Co=ee((xa,Mo)=>{"use strict";function O(r){if(this.size=r|0,this.size<=1||(this.size&this.size-1)!=0)throw new Error("FFT size must be a power of two and bigger than 1");this._csize=r<<1;for(var e=new Array(this.size*2),t=0;t<e.length;t+=2){let s=Math.PI*t/this.size;e[t]=Math.cos(s),e[t+1]=-Math.sin(s)}this.table=e;for(var n=0,o=1;this.size>o;o<<=1)n++;this._width=n%2==0?n-1:n,this._bitrev=new Array(1<<this._width);for(var a=0;a<this._bitrev.length;a++){this._bitrev[a]=0;for(var f=0;f<this._width;f+=2){var c=this._width-f-2;this._bitrev[a]|=(a>>>f&3)<<c}}this._out=null,this._data=null,this._inv=0}Mo.exports=O;O.prototype.fromComplexArray=function(e,t){for(var n=t||new Array(e.length>>>1),o=0;o<e.length;o+=2)n[o>>>1]=e[o];return n};O.prototype.createComplexArray=function(){let e=new Array(this._csize);for(var t=0;t<e.length;t++)e[t]=0;return e};O.prototype.toComplexArray=function(e,t){for(var n=t||this.createComplexArray(),o=0;o<n.length;o+=2)n[o]=e[o>>>1],n[o+1]=0;return n};O.prototype.completeSpectrum=function(e){for(var t=this._csize,n=t>>>1,o=2;o<n;o+=2)e[t-o]=e[o],e[t-o+1]=-e[o+1]};O.prototype.transform=function(e,t){if(e===t)throw new Error("Input and output buffers must be different");this._out=e,this._data=t,this._inv=0,this._transform4(),this._out=null,this._data=null};O.prototype.realTransform=function(e,t){if(e===t)throw new Error("Input and output buffers must be different");this._out=e,this._data=t,this._inv=0,this._realTransform4(),this._out=null,this._data=null};O.prototype.inverseTransform=function(e,t){if(e===t)throw new Error("Input and output buffers must be different");this._out=e,this._data=t,this._inv=1,this._transform4();for(var n=0;n<e.length;n++)e[n]/=this.size;this._out=null,this._data=null};O.prototype._transform4=function(){var e=this._out,t=this._csize,n=this._width,o=1<<n,a=t/o<<1,f,c,s=this._bitrev;if(a===4)for(f=0,c=0;f<t;f+=a,c++){let w=s[c];this._singleTransform2(f,w,o)}else for(f=0,c=0;f<t;f+=a,c++){let w=s[c];this._singleTransform4(f,w,o)}var i=this._inv?-1:1,h=this.table;for(o>>=2;o>=2;o>>=2){a=t/o<<1;var b=a>>>2;for(f=0;f<t;f+=a)for(var l=f+b,g=f,y=0;g<l;g+=2,y+=o){let w=g,k=w+b,d=k+b,u=d+b,m=e[w],p=e[w+1],v=e[k],A=e[k+1],E=e[d],F=e[d+1],R=e[u],I=e[u+1],L=m,z=p,Y=h[y],W=i*h[y+1],j=v*Y-A*W,M=v*W+A*Y,D=h[2*y],Q=i*h[2*y+1],K=E*D-F*Q,Z=E*Q+F*D,ae=h[3*y],G=i*h[3*y+1],X=R*ae-I*G,Ie=R*G+I*ae,Re=L+K,ge=z+Z,ve=L-K,Oe=z-Z,Le=j+X,ye=M+Ie,we=i*(j-X),je=i*(M-Ie),ot=Re+Le,gt=ge+ye,vt=Re-Le,yt=ge-ye,wt=ve+je,kt=Oe-we,_t=ve-je,xt=Oe+we;e[w]=ot,e[w+1]=gt,e[k]=wt,e[k+1]=kt,e[d]=vt,e[d+1]=yt,e[u]=_t,e[u+1]=xt}}};O.prototype._singleTransform2=function(e,t,n){let o=this._out,a=this._data,f=a[t],c=a[t+1],s=a[t+n],i=a[t+n+1],h=f+s,b=c+i,l=f-s,g=c-i;o[e]=h,o[e+1]=b,o[e+2]=l,o[e+3]=g};O.prototype._singleTransform4=function(e,t,n){let o=this._out,a=this._data,f=this._inv?-1:1,c=n*2,s=n*3,i=a[t],h=a[t+1],b=a[t+n],l=a[t+n+1],g=a[t+c],y=a[t+c+1],w=a[t+s],k=a[t+s+1],d=i+g,u=h+y,m=i-g,p=h-y,v=b+w,A=l+k,E=f*(b-w),F=f*(l-k),R=d+v,I=u+A,L=m+F,z=p-E,Y=d-v,W=u-A,j=m-F,M=p+E;o[e]=R,o[e+1]=I,o[e+2]=L,o[e+3]=z,o[e+4]=Y,o[e+5]=W,o[e+6]=j,o[e+7]=M};O.prototype._realTransform4=function(){var e=this._out,t=this._csize,n=this._width,o=1<<n,a=t/o<<1,f,c,s=this._bitrev;if(a===4)for(f=0,c=0;f<t;f+=a,c++){let At=s[c];this._singleRealTransform2(f,At>>>1,o>>>1)}else for(f=0,c=0;f<t;f+=a,c++){let At=s[c];this._singleRealTransform4(f,At>>>1,o>>>1)}var i=this._inv?-1:1,h=this.table;for(o>>=2;o>=2;o>>=2){a=t/o<<1;var b=a>>>1,l=b>>>1,g=l>>>1;for(f=0;f<t;f+=a)for(var y=0,w=0;y<=g;y+=2,w+=o){var k=f+y,d=k+l,u=d+l,m=u+l,p=e[k],v=e[k+1],A=e[d],E=e[d+1],F=e[u],R=e[u+1],I=e[m],L=e[m+1],z=p,Y=v,W=h[w],j=i*h[w+1],M=A*W-E*j,D=A*j+E*W,Q=h[2*w],K=i*h[2*w+1],Z=F*Q-R*K,ae=F*K+R*Q,G=h[3*w],X=i*h[3*w+1],Ie=I*G-L*X,Re=I*X+L*G,ge=z+Z,ve=Y+ae,Oe=z-Z,Le=Y-ae,ye=M+Ie,we=D+Re,je=i*(M-Ie),ot=i*(D-Re),gt=ge+ye,vt=ve+we,yt=Oe+ot,wt=Le-je;if(e[k]=gt,e[k+1]=vt,e[d]=yt,e[d+1]=wt,y===0){var kt=ge-ye,_t=ve-we;e[u]=kt,e[u+1]=_t;continue}if(y!==g){var xt=Oe,nn=-Le,rn=ge,an=-ve,fn=-i*ot,cn=-i*je,sn=-i*we,ln=-i*ye,bn=xt+fn,dn=nn+cn,hn=rn+ln,un=an-sn,eo=f+l-y,to=f+b-y;e[eo]=bn,e[eo+1]=dn,e[to]=hn,e[to+1]=un}}}};O.prototype._singleRealTransform2=function(e,t,n){let o=this._out,a=this._data,f=a[t],c=a[t+n],s=f+c,i=f-c;o[e]=s,o[e+1]=0,o[e+2]=i,o[e+3]=0};O.prototype._singleRealTransform4=function(e,t,n){let o=this._out,a=this._data,f=this._inv?-1:1,c=n*2,s=n*3,i=a[t],h=a[t+n],b=a[t+c],l=a[t+s],g=i+b,y=i-b,w=h+l,k=f*(h-l),d=g+w,u=y,m=-k,p=g-w,v=y,A=k;o[e]=d,o[e+1]=0,o[e+2]=u,o[e+3]=m,o[e+4]=p,o[e+5]=0,o[e+6]=v,o[e+7]=A}});var Fo=ee(We=>{"use strict";var ft=We&&We.__assign||function(){return ft=Object.assign||function(r){for(var e,t=1,n=arguments.length;t<n;t++){e=arguments[t];for(var o in e)Object.prototype.hasOwnProperty.call(e,o)&&(r[o]=e[o])}return r},ft.apply(this,arguments)};Object.defineProperty(We,"__esModule",{value:!0});var Cn={threshold:.1,sampleRate:44100,probabilityThreshold:.1};function Pn(r){r===void 0&&(r={});var e=ft(ft({},Cn),r),t=e.threshold,n=e.sampleRate,o=e.probabilityThreshold;return function(f){var c;for(c=1;c<f.length;c*=2);c/=2;for(var s=c/2,i=new Float32Array(s),h=0,b,l=0;l<s;l++)i[l]=0;for(var l=1;l<s;l++)for(var g=0;g<s;g++){var y=f[g]-f[g+l];i[l]+=y*y}i[0]=1,i[1]=1;for(var w=0,l=1;l<s;l++)w+=i[l],i[l]*=l/w;for(b=2;b<s;b++)if(i[b]<t){for(;b+1<s&&i[b+1]<i[b];)b++;h=1-i[b];break}if(b===s||i[b]>=t||h<o)return null;var k,d,u;if(b<1?d=b:d=b-1,b+1<s?u=b+1:u=b,d===b)i[b]<=i[u]?k=b:k=u;else if(u===b)i[b]<=i[d]?k=b:k=d;else{var m=i[d],p=i[b],v=i[u];k=b+(v-m)/(2*(2*p-v-m))}return n/k}}We.YIN=Pn});var To=ee(Ke=>{"use strict";var ct=Ke&&Ke.__assign||function(){return ct=Object.assign||function(r){for(var e,t=1,n=arguments.length;t<n;t++){e=arguments[t];for(var o in e)Object.prototype.hasOwnProperty.call(e,o)&&(r[o]=e[o])}return r},ct.apply(this,arguments)};Object.defineProperty(Ke,"__esModule",{value:!0});var Fn={sampleRate:44100,minFrequency:82,maxFrequency:1e3,ratio:5,sensitivity:.1};function Tn(r){r===void 0&&(r={});var e=ct(ct({},Fn),r),t=e.sampleRate,n=e.minFrequency,o=e.maxFrequency,a=e.sensitivity,f=e.ratio,c=[],s=Math.ceil(t/n),i=Math.floor(t/o);return function(b){var l=b.length,g=0,y=1/0,w=-1/0,k,d,u,m,p,v,A,E;for(m=0;m<l;m++)if(i<=m&&m<=s){for(A=0,E=m,g=0,k=[],d=[];A<l-m;g++,E++,A++)k[g]=b[A],d[g]=b[E];var F=k.length;for(u=[],v=0;v<F;v++)u[v]=k[v]-d[v];var R=0;for(v=0;v<F;v++)R+=Math.abs(u[v]);c[m]=R}for(p=i;p<s;p++)c[p]<y&&(y=c[p]),c[p]>w&&(w=c[p]);var I=Math.round(a*(w-y)+y);for(p=i;p<=s&&c[p]>I;p++);var L=i/2;y=c[p];var z=p;for(m=p-1;m<p+L&&m<=s;m++)c[m]<y&&(y=c[m],z=m);return Math.round(c[z]*f)<w?t/z:null}}Ke.AMDF=Tn});var No=ee(Ze=>{"use strict";var it=Ze&&Ze.__assign||function(){return it=Object.assign||function(r){for(var e,t=1,n=arguments.length;t<n;t++){e=arguments[t];for(var o in e)Object.prototype.hasOwnProperty.call(e,o)&&(r[o]=e[o])}return r},it.apply(this,arguments)};Object.defineProperty(Ze,"__esModule",{value:!0});var zo={sampleRate:44100};function zn(r){r===void 0&&(r=zo);var e=it(it({},zo),r),t=e.sampleRate;return function(o){var a=o.length,f=0,c,s,i,h;for(c=0;c<a;c++)h=o[c],f+=h*h;if(f=Math.sqrt(f/a),f<.01)return-1;var b=0,l=a-1,g=.2;for(c=0;c<a/2;c++)if(Math.abs(o[c])<g){b=c;break}for(c=1;c<a/2;c++)if(Math.abs(o[a-c])<g){l=a-c;break}var y=o.slice(b,l),w=y.length,k=new Array(w).fill(0);for(c=0;c<w;c++)for(s=0;s<w-c;s++)k[c]=k[c]+y[s]*y[s+c];for(i=0;k[i]>k[i+1];)i++;var d=-1,u=-1;for(c=i;c<w;c++)k[c]>d&&(d=k[c],u=c);var m=u,p=k[m-1],v=k[m],A=k[m+1],E=(p+A-2*v)/2,F=(A-p)/2;return E&&(m=m-F/(2*E)),t/m}}Ze.ACF2PLUS=zn});var Io=ee(Je=>{"use strict";var st=Je&&Je.__assign||function(){return st=Object.assign||function(r){for(var e,t=1,n=arguments.length;t<n;t++){e=arguments[t];for(var o in e)Object.prototype.hasOwnProperty.call(e,o)&&(r[o]=e[o])}return r},st.apply(this,arguments)};Object.defineProperty(Je,"__esModule",{value:!0});var Nn=6,In=3e3,Rn=3,On=.75,Ln={sampleRate:44100};function jn(r){r===void 0&&(r={});var e=st(st({},Ln),r),t=e.sampleRate;return function(o){for(var a=[],f=[],c=o.length,s=null,i=0,h=0,b=0,l=0;l<c;l++){var g=o[l];i=i+g,b=Math.max(b,g),h=Math.min(h,g)}i/=c,h-=i,b-=i;for(var y=b>-1*h?b:-1*h,w=y*On,k=0,d=-1,u=o.length,m,p,v;m=~~(t/(Math.pow(2,k)*In)),!(u<2);){var A=void 0,E=-1e3,F=-1e6,R=-1e6,I=!1,L=!1;v=0,p=0;for(var l=2;l<u;l++){var z=o[l]-i,Y=o[l-1]-i;Y<=0&&z>0&&(I=!0),Y>=0&&z<0&&(L=!0),A=z-Y,E>-1e3&&(L&&E<0&&A>=0&&Math.abs(z)>=w&&l>F+m&&(a[v++]=l,F=l,L=!1),I&&E>0&&A<=0&&Math.abs(z)>=w&&l>R+m&&(f[p++]=l,R=l,I=!1)),E=A}if(v===0&&p===0)break;for(var W=void 0,j=[],l=0;l<u;l++)j[l]=0;for(var l=0;l<v;l++)for(var M=1;M<Rn;M++)l+M<v&&(W=Math.abs(a[l]-a[l+M]),j[W]+=1);for(var D=-1,Q=-1,l=0;l<u;l++){for(var K=0,M=-1*m;M<=m;M++)l+M>=0&&l+M<u&&(K+=j[l+M]);K===Q?l===2*D&&(D=l):K>Q&&(Q=K,D=l)}for(var Z=0,ae=0,M=-m;M<=m;M++)if(D+M>=0&&D+M<c){var G=j[D+M];G>0&&(ae+=G,Z+=(D+M)*G)}if(Z/=ae,d>-1&&Math.abs(Z*2-d)<=2*m){s=t/(Math.pow(2,k-1)*d);break}if(d=Z,k++,k>=Nn||u<2)break;var X=o.subarray(0);u===j.length&&(X=new Float32Array(u/2));for(var l=0;l<u/2;l++)X[l]=(o[2*l]+o[2*l+1])/2;o=X,u/=2}return s}}Je.DynamicWavelet=jn});var Ro=ee(Qe=>{"use strict";var lt=Qe&&Qe.__assign||function(){return lt=Object.assign||function(r){for(var e,t=1,n=arguments.length;t<n;t++){e=arguments[t];for(var o in e)Object.prototype.hasOwnProperty.call(e,o)&&(r[o]=e[o])}return r},lt.apply(this,arguments)};Object.defineProperty(Qe,"__esModule",{value:!0});var Dn={bufferSize:1024,cutoff:.97,sampleRate:44100};function Un(r){r===void 0&&(r={});var e=lt(lt({},Dn),r),t=e.bufferSize,n=e.cutoff,o=e.sampleRate,a=.5,f=80,c=new Float32Array(t),s=new Float32Array(t),i,h,b=[],l=[],g=[];function y(d){var u,m;s[0]=d[0]*d[0];for(var p=1;p<d.length;p+=1)s[p]=d[p]*d[p]+s[p-1];for(var v=0;v<d.length;v++){u=0,m=s[d.length-1-v]+s[d.length-1]-s[v];for(var p=0;p<d.length-v;p++)u+=d[p]*d[p+v];c[v]=2*u/m}}function w(d){var u=c[d-1],m=c[d],p=c[d+1],v=d,A=p+u-2*m;if(A===0)i=v,h=m;else{var E=u-p;i=v+E/(2*A),h=m-E*E/(8*A)}}function k(){for(var d=0,u=0;d<(c.length-1)/3&&c[d]>0;)d++;for(;d<c.length-1&&c[d]<=0;)d++;for(d==0&&(d=1);d<c.length-1;)if(c[d]>c[d-1]&&c[d]>=c[d+1]&&(u==0||c[d]>c[u])&&(u=d),d++,d<c.length-1&&c[d]<=0)for(u>0&&(b.push(u),u=0);d<c.length-1&&c[d]<=0;)d++;u>0&&b.push(u)}return function(u){var m;b=[],l=[],g=[],y(u),k();for(var p=-1/0,v=0;v<b.length;v++){var A=b[v];p=Math.max(p,c[A]),c[A]>a&&(w(A),g.push(h),l.push(i),p=Math.max(p,h))}if(l.length){for(var E=n*p,F=0,v=0;v<g.length;v++)if(g[v]>=E){F=v;break}var R=l[F],I=o/R;I>f?m=I:m=-1}else m=-1;return{probability:p,freq:m}}}Qe.Macleod=Un});var Oo=ee(ue=>{"use strict";var bt=ue&&ue.__assign||function(){return bt=Object.assign||function(r){for(var e,t=1,n=arguments.length;t<n;t++){e=arguments[t];for(var o in e)Object.prototype.hasOwnProperty.call(e,o)&&(r[o]=e[o])}return r},bt.apply(this,arguments)};Object.defineProperty(ue,"__esModule",{value:!0});ue.DEFAULT_FREQUENCIES_PARAMS={tempo:120,quantization:4,sampleRate:44100};function Hn(r,e){var t=r.map(function(i){return i(e)}).filter(function(i){return i!==null}).sort(function(i,h){return i-h});if(t.length===1)return t[0];if(t.length===2){var n=t[0],o=t[1];return n*2>o?Math.sqrt(n*o):n}else{var n=t[0],o=t[1],a=t[t.length-2],f=t[t.length-1],c=n*2>o?t:t.slice(1),s=a*2>f?c:c.slice(0,-1);return Math.pow(s.reduce(function(b,l){return b*l},1),1/s.length)}}function Yn(r,e,t){t===void 0&&(t={});var n=bt(bt({},ue.DEFAULT_FREQUENCIES_PARAMS),t),o=n.tempo,a=n.quantization,f=n.sampleRate,c=e.length,s=Math.round(f*60/(a*o)),i;Array.isArray(r)?i=Hn.bind(null,r):i=r;for(var h=[],b=0,l=c-s;b<=l;b+=s){var g=e.slice(b,b+s),y=i(g);h.push(y)}return h}ue.frequencies=Yn});var Bo=ee(oe=>{"use strict";Object.defineProperty(oe,"__esModule",{value:!0});var Lo=Fo();oe.YIN=Lo.YIN;var jo=To();oe.AMDF=jo.AMDF;var Do=No();oe.ACF2PLUS=Do.ACF2PLUS;var Uo=Io();oe.DynamicWavelet=Uo.DynamicWavelet;var Ho=Ro();oe.Macleod=Ho.Macleod;var Yo=Oo();oe.frequencies=Yo.frequencies;oe.default={YIN:Lo.YIN,AMDF:jo.AMDF,ACF2PLUS:Do.ACF2PLUS,DynamicWavelet:Uo.DynamicWavelet,Macleod:Ho.Macleod,frequencies:Yo.frequencies}});var en=ee((bf,Xo)=>{var Xn=4,er=.001,tr=1e-7,or=10,et=11,mt=1/(et-1),nr=typeof Float32Array=="function";function Zo(r,e){return 1-3*e+3*r}function Jo(r,e){return 3*e-6*r}function Qo(r){return 3*r}function pt(r,e,t){return((Zo(e,t)*r+Jo(e,t))*r+Qo(e))*r}function Go(r,e,t){return 3*Zo(e,t)*r*r+2*Jo(e,t)*r+Qo(e)}function rr(r,e,t,n,o){var a,f,c=0;do f=e+(t-e)/2,a=pt(f,n,o)-r,a>0?t=f:e=f;while(Math.abs(a)>tr&&++c<or);return f}function ar(r,e,t,n){for(var o=0;o<Xn;++o){var a=Go(e,t,n);if(a===0)return e;var f=pt(e,t,n)-r;e-=f/a}return e}function fr(r){return r}Xo.exports=function(e,t,n,o){if(!(0<=e&&e<=1&&0<=n&&n<=1))throw new Error("bezier x values must be in [0, 1] range");if(e===t&&n===o)return fr;for(var a=nr?new Float32Array(et):new Array(et),f=0;f<et;++f)a[f]=pt(f*mt,e,n);function c(s){for(var i=0,h=1,b=et-1;h!==b&&a[h]<=s;++h)i+=mt;--h;var l=(s-a[h])/(a[h+1]-a[h]),g=i+l*mt,y=Go(g,e,n);return y>=er?ar(s,g,e,n):y===0?g:rr(s,i,i+mt,e,n)}return function(i){return i===0?0:i===1?1:pt(c(i),t,o)}}});var Nt={};B(Nt,{AppBodyComponent:()=>Me});var P=r=>e=>typeof e=="function"?((t,n)=>(window.customElements.define(t,n),n))(r,e):((t,n)=>{let{kind:o,elements:a}=n;return{kind:o,elements:a,finisher(f){window.customElements.define(t,f)}}})(r,e);var wn=(r,e)=>e.kind==="method"&&e.descriptor&&!("value"in e.descriptor)?{...e,finisher(t){t.createProperty(e.key,r)}}:{kind:"field",key:Symbol(),placement:"own",descriptor:{},originalKey:e.key,initializer(){typeof e.initializer=="function"&&(this[e.key]=e.initializer.call(this))},finisher(t){t.createProperty(e.key,r)}};function C(r){return(e,t)=>t!==void 0?((n,o,a)=>{o.constructor.createProperty(a,n)})(r,e,t):wn(r,e)}function te(r){return C({...r,state:!0})}var ke=({finisher:r,descriptor:e})=>(t,n)=>{var o;if(n===void 0){let a=(o=t.originalKey)!==null&&o!==void 0?o:t.key,f=e!=null?{kind:"method",placement:"prototype",key:a,descriptor:e(t.key)}:{...t,key:a};return r!=null&&(f.finisher=function(c){r(c,a)}),f}{let a=t.constructor;e!==void 0&&Object.defineProperty(t,n,e(n)),r==null||r(a,n)}};function ao(r,e){return ke({descriptor:t=>{let n={get(){var o,a;return(a=(o=this.renderRoot)===null||o===void 0?void 0:o.querySelector(r))!==null&&a!==void 0?a:null},enumerable:!0,configurable:!0};if(e){let o=typeof t=="symbol"?Symbol():"__"+t;n.get=function(){var a,f;return this[o]===void 0&&(this[o]=(f=(a=this.renderRoot)===null||a===void 0?void 0:a.querySelector(r))!==null&&f!==void 0?f:null),this[o]}}return n}})}var nt=window.ShadowRoot&&(window.ShadyCSS===void 0||window.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,Et=Symbol(),fo=new Map,rt=class{constructor(e,t){if(this._$cssResult$=!0,t!==Et)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=e}get styleSheet(){let e=fo.get(this.cssText);return nt&&e===void 0&&(fo.set(this.cssText,e=new CSSStyleSheet),e.replaceSync(this.cssText)),e}toString(){return this.cssText}},_e=r=>new rt(typeof r=="string"?r:r+"",Et),T=(r,...e)=>{let t=r.length===1?r[0]:e.reduce((n,o,a)=>n+(f=>{if(f._$cssResult$===!0)return f.cssText;if(typeof f=="number")return f;throw Error("Value passed to 'css' function must be a 'css' function result: "+f+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(o)+r[a+1],r[0]);return new rt(t,Et)},qt=(r,e)=>{nt?r.adoptedStyleSheets=e.map(t=>t instanceof CSSStyleSheet?t:t.styleSheet):e.forEach(t=>{let n=document.createElement("style"),o=window.litNonce;o!==void 0&&n.setAttribute("nonce",o),n.textContent=t.cssText,r.appendChild(n)})},at=nt?r=>r:r=>r instanceof CSSStyleSheet?(e=>{let t="";for(let n of e.cssRules)t+=n.cssText;return _e(t)})(r):r;var Mt,co=window.trustedTypes,kn=co?co.emptyScript:"",io=window.reactiveElementPolyfillSupport,Ct={toAttribute(r,e){switch(e){case Boolean:r=r?kn:null;break;case Object:case Array:r=r==null?r:JSON.stringify(r)}return r},fromAttribute(r,e){let t=r;switch(e){case Boolean:t=r!==null;break;case Number:t=r===null?null:Number(r);break;case Object:case Array:try{t=JSON.parse(r)}catch{t=null}}return t}},so=(r,e)=>e!==r&&(e==e||r==r),Pt={attribute:!0,type:String,converter:Ct,reflect:!1,hasChanged:so},fe=class extends HTMLElement{constructor(){super(),this._$Et=new Map,this.isUpdatePending=!1,this.hasUpdated=!1,this._$Ei=null,this.o()}static addInitializer(e){var t;(t=this.l)!==null&&t!==void 0||(this.l=[]),this.l.push(e)}static get observedAttributes(){this.finalize();let e=[];return this.elementProperties.forEach((t,n)=>{let o=this._$Eh(n,t);o!==void 0&&(this._$Eu.set(o,n),e.push(o))}),e}static createProperty(e,t=Pt){if(t.state&&(t.attribute=!1),this.finalize(),this.elementProperties.set(e,t),!t.noAccessor&&!this.prototype.hasOwnProperty(e)){let n=typeof e=="symbol"?Symbol():"__"+e,o=this.getPropertyDescriptor(e,n,t);o!==void 0&&Object.defineProperty(this.prototype,e,o)}}static getPropertyDescriptor(e,t,n){return{get(){return this[t]},set(o){let a=this[e];this[t]=o,this.requestUpdate(e,a,n)},configurable:!0,enumerable:!0}}static getPropertyOptions(e){return this.elementProperties.get(e)||Pt}static finalize(){if(this.hasOwnProperty("finalized"))return!1;this.finalized=!0;let e=Object.getPrototypeOf(this);if(e.finalize(),this.elementProperties=new Map(e.elementProperties),this._$Eu=new Map,this.hasOwnProperty("properties")){let t=this.properties,n=[...Object.getOwnPropertyNames(t),...Object.getOwnPropertySymbols(t)];for(let o of n)this.createProperty(o,t[o])}return this.elementStyles=this.finalizeStyles(this.styles),!0}static finalizeStyles(e){let t=[];if(Array.isArray(e)){let n=new Set(e.flat(1/0).reverse());for(let o of n)t.unshift(at(o))}else e!==void 0&&t.push(at(e));return t}static _$Eh(e,t){let n=t.attribute;return n===!1?void 0:typeof n=="string"?n:typeof e=="string"?e.toLowerCase():void 0}o(){var e;this._$Ep=new Promise(t=>this.enableUpdating=t),this._$AL=new Map,this._$Em(),this.requestUpdate(),(e=this.constructor.l)===null||e===void 0||e.forEach(t=>t(this))}addController(e){var t,n;((t=this._$Eg)!==null&&t!==void 0?t:this._$Eg=[]).push(e),this.renderRoot!==void 0&&this.isConnected&&((n=e.hostConnected)===null||n===void 0||n.call(e))}removeController(e){var t;(t=this._$Eg)===null||t===void 0||t.splice(this._$Eg.indexOf(e)>>>0,1)}_$Em(){this.constructor.elementProperties.forEach((e,t)=>{this.hasOwnProperty(t)&&(this._$Et.set(t,this[t]),delete this[t])})}createRenderRoot(){var e;let t=(e=this.shadowRoot)!==null&&e!==void 0?e:this.attachShadow(this.constructor.shadowRootOptions);return qt(t,this.constructor.elementStyles),t}connectedCallback(){var e;this.renderRoot===void 0&&(this.renderRoot=this.createRenderRoot()),this.enableUpdating(!0),(e=this._$Eg)===null||e===void 0||e.forEach(t=>{var n;return(n=t.hostConnected)===null||n===void 0?void 0:n.call(t)})}enableUpdating(e){}disconnectedCallback(){var e;(e=this._$Eg)===null||e===void 0||e.forEach(t=>{var n;return(n=t.hostDisconnected)===null||n===void 0?void 0:n.call(t)})}attributeChangedCallback(e,t,n){this._$AK(e,n)}_$ES(e,t,n=Pt){var o,a;let f=this.constructor._$Eh(e,n);if(f!==void 0&&n.reflect===!0){let c=((a=(o=n.converter)===null||o===void 0?void 0:o.toAttribute)!==null&&a!==void 0?a:Ct.toAttribute)(t,n.type);this._$Ei=e,c==null?this.removeAttribute(f):this.setAttribute(f,c),this._$Ei=null}}_$AK(e,t){var n,o,a;let f=this.constructor,c=f._$Eu.get(e);if(c!==void 0&&this._$Ei!==c){let s=f.getPropertyOptions(c),i=s.converter,h=(a=(o=(n=i)===null||n===void 0?void 0:n.fromAttribute)!==null&&o!==void 0?o:typeof i=="function"?i:null)!==null&&a!==void 0?a:Ct.fromAttribute;this._$Ei=c,this[c]=h(t,s.type),this._$Ei=null}}requestUpdate(e,t,n){let o=!0;e!==void 0&&(((n=n||this.constructor.getPropertyOptions(e)).hasChanged||so)(this[e],t)?(this._$AL.has(e)||this._$AL.set(e,t),n.reflect===!0&&this._$Ei!==e&&(this._$E_===void 0&&(this._$E_=new Map),this._$E_.set(e,n))):o=!1),!this.isUpdatePending&&o&&(this._$Ep=this._$EC())}async _$EC(){this.isUpdatePending=!0;try{await this._$Ep}catch(t){Promise.reject(t)}let e=this.scheduleUpdate();return e!=null&&await e,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){var e;if(!this.isUpdatePending)return;this.hasUpdated,this._$Et&&(this._$Et.forEach((o,a)=>this[a]=o),this._$Et=void 0);let t=!1,n=this._$AL;try{t=this.shouldUpdate(n),t?(this.willUpdate(n),(e=this._$Eg)===null||e===void 0||e.forEach(o=>{var a;return(a=o.hostUpdate)===null||a===void 0?void 0:a.call(o)}),this.update(n)):this._$EU()}catch(o){throw t=!1,this._$EU(),o}t&&this._$AE(n)}willUpdate(e){}_$AE(e){var t;(t=this._$Eg)===null||t===void 0||t.forEach(n=>{var o;return(o=n.hostUpdated)===null||o===void 0?void 0:o.call(n)}),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(e)),this.updated(e)}_$EU(){this._$AL=new Map,this.isUpdatePending=!1}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$Ep}shouldUpdate(e){return!0}update(e){this._$E_!==void 0&&(this._$E_.forEach((t,n)=>this._$ES(n,this[n],t)),this._$E_=void 0),this._$EU()}updated(e){}firstUpdated(e){}};fe.finalized=!0,fe.elementProperties=new Map,fe.elementStyles=[],fe.shadowRootOptions={mode:"open"},io==null||io({ReactiveElement:fe}),((Mt=globalThis.reactiveElementVersions)!==null&&Mt!==void 0?Mt:globalThis.reactiveElementVersions=[]).push("1.0.2");var Ft,xe=globalThis.trustedTypes,lo=xe?xe.createPolicy("lit-html",{createHTML:r=>r}):void 0,ce=`lit$${(Math.random()+"").slice(9)}$`,bo="?"+ce,_n=`<${bo}>`,Ae=document,Ue=(r="")=>Ae.createComment(r),He=r=>r===null||typeof r!="object"&&typeof r!="function",ho=Array.isArray,xn=r=>{var e;return ho(r)||typeof((e=r)===null||e===void 0?void 0:e[Symbol.iterator])=="function"},Ye=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,uo=/-->/g,mo=/>/g,be=/>|[ 	\n\r](?:([^\s"'>=/]+)([ 	\n\r]*=[ 	\n\r]*(?:[^ 	\n\r"'`<>=]|("|')|))|$)/g,po=/'/g,go=/"/g,vo=/^(?:script|style|textarea)$/i,yo=r=>(e,...t)=>({_$litType$:r,strings:e,values:t}),S=yo(1),Lr=yo(2),de=Symbol.for("lit-noChange"),q=Symbol.for("lit-nothing"),wo=new WeakMap,ko=(r,e,t)=>{var n,o;let a=(n=t==null?void 0:t.renderBefore)!==null&&n!==void 0?n:e,f=a._$litPart$;if(f===void 0){let c=(o=t==null?void 0:t.renderBefore)!==null&&o!==void 0?o:null;a._$litPart$=f=new qe(e.insertBefore(Ue(),c),c,void 0,t??{})}return f._$AI(r),f},Se=Ae.createTreeWalker(Ae,129,null,!1),An=(r,e)=>{let t=r.length-1,n=[],o,a=e===2?"<svg>":"",f=Ye;for(let s=0;s<t;s++){let i=r[s],h,b,l=-1,g=0;for(;g<i.length&&(f.lastIndex=g,b=f.exec(i),b!==null);)g=f.lastIndex,f===Ye?b[1]==="!--"?f=uo:b[1]!==void 0?f=mo:b[2]!==void 0?(vo.test(b[2])&&(o=RegExp("</"+b[2],"g")),f=be):b[3]!==void 0&&(f=be):f===be?b[0]===">"?(f=o??Ye,l=-1):b[1]===void 0?l=-2:(l=f.lastIndex-b[2].length,h=b[1],f=b[3]===void 0?be:b[3]==='"'?go:po):f===go||f===po?f=be:f===uo||f===mo?f=Ye:(f=be,o=void 0);let y=f===be&&r[s+1].startsWith("/>")?" ":"";a+=f===Ye?i+_n:l>=0?(n.push(h),i.slice(0,l)+"$lit$"+i.slice(l)+ce+y):i+ce+(l===-2?(n.push(void 0),s):y)}let c=a+(r[t]||"<?>")+(e===2?"</svg>":"");return[lo!==void 0?lo.createHTML(c):c,n]},$e=class{constructor({strings:e,_$litType$:t},n){let o;this.parts=[];let a=0,f=0,c=e.length-1,s=this.parts,[i,h]=An(e,t);if(this.el=$e.createElement(i,n),Se.currentNode=this.el.content,t===2){let b=this.el.content,l=b.firstChild;l.remove(),b.append(...l.childNodes)}for(;(o=Se.nextNode())!==null&&s.length<c;){if(o.nodeType===1){if(o.hasAttributes()){let b=[];for(let l of o.getAttributeNames())if(l.endsWith("$lit$")||l.startsWith(ce)){let g=h[f++];if(b.push(l),g!==void 0){let y=o.getAttribute(g.toLowerCase()+"$lit$").split(ce),w=/([.?@])?(.*)/.exec(g);s.push({type:1,index:a,name:w[2],strings:y,ctor:w[1]==="."?xo:w[1]==="?"?Ao:w[1]==="@"?So:Be})}else s.push({type:6,index:a})}for(let l of b)o.removeAttribute(l)}if(vo.test(o.tagName)){let b=o.textContent.split(ce),l=b.length-1;if(l>0){o.textContent=xe?xe.emptyScript:"";for(let g=0;g<l;g++)o.append(b[g],Ue()),Se.nextNode(),s.push({type:2,index:++a});o.append(b[l],Ue())}}}else if(o.nodeType===8)if(o.data===bo)s.push({type:2,index:a});else{let b=-1;for(;(b=o.data.indexOf(ce,b+1))!==-1;)s.push({type:7,index:a}),b+=ce.length-1}a++}}static createElement(e,t){let n=Ae.createElement("template");return n.innerHTML=e,n}};function Ee(r,e,t=r,n){var o,a,f,c;if(e===de)return e;let s=n!==void 0?(o=t._$Cl)===null||o===void 0?void 0:o[n]:t._$Cu,i=He(e)?void 0:e._$litDirective$;return(s==null?void 0:s.constructor)!==i&&((a=s==null?void 0:s._$AO)===null||a===void 0||a.call(s,!1),i===void 0?s=void 0:(s=new i(r),s._$AT(r,t,n)),n!==void 0?((f=(c=t)._$Cl)!==null&&f!==void 0?f:c._$Cl=[])[n]=s:t._$Cu=s),s!==void 0&&(e=Ee(r,s._$AS(r,e.values),s,n)),e}var _o=class{constructor(e,t){this.v=[],this._$AN=void 0,this._$AD=e,this._$AM=t}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}p(e){var t;let{el:{content:n},parts:o}=this._$AD,a=((t=e==null?void 0:e.creationScope)!==null&&t!==void 0?t:Ae).importNode(n,!0);Se.currentNode=a;let f=Se.nextNode(),c=0,s=0,i=o[0];for(;i!==void 0;){if(c===i.index){let h;i.type===2?h=new qe(f,f.nextSibling,this,e):i.type===1?h=new i.ctor(f,i.name,i.strings,this,e):i.type===6&&(h=new $o(f,this,e)),this.v.push(h),i=o[++s]}c!==(i==null?void 0:i.index)&&(f=Se.nextNode(),c++)}return a}m(e){let t=0;for(let n of this.v)n!==void 0&&(n.strings!==void 0?(n._$AI(e,n,t),t+=n.strings.length-2):n._$AI(e[t])),t++}},qe=class{constructor(e,t,n,o){var a;this.type=2,this._$AH=q,this._$AN=void 0,this._$AA=e,this._$AB=t,this._$AM=n,this.options=o,this._$Cg=(a=o==null?void 0:o.isConnected)===null||a===void 0||a}get _$AU(){var e,t;return(t=(e=this._$AM)===null||e===void 0?void 0:e._$AU)!==null&&t!==void 0?t:this._$Cg}get parentNode(){let e=this._$AA.parentNode,t=this._$AM;return t!==void 0&&e.nodeType===11&&(e=t.parentNode),e}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(e,t=this){e=Ee(this,e,t),He(e)?e===q||e==null||e===""?(this._$AH!==q&&this._$AR(),this._$AH=q):e!==this._$AH&&e!==de&&this.$(e):e._$litType$!==void 0?this.T(e):e.nodeType!==void 0?this.S(e):xn(e)?this.M(e):this.$(e)}A(e,t=this._$AB){return this._$AA.parentNode.insertBefore(e,t)}S(e){this._$AH!==e&&(this._$AR(),this._$AH=this.A(e))}$(e){this._$AH!==q&&He(this._$AH)?this._$AA.nextSibling.data=e:this.S(Ae.createTextNode(e)),this._$AH=e}T(e){var t;let{values:n,_$litType$:o}=e,a=typeof o=="number"?this._$AC(e):(o.el===void 0&&(o.el=$e.createElement(o.h,this.options)),o);if(((t=this._$AH)===null||t===void 0?void 0:t._$AD)===a)this._$AH.m(n);else{let f=new _o(a,this),c=f.p(this.options);f.m(n),this.S(c),this._$AH=f}}_$AC(e){let t=wo.get(e.strings);return t===void 0&&wo.set(e.strings,t=new $e(e)),t}M(e){ho(this._$AH)||(this._$AH=[],this._$AR());let t=this._$AH,n,o=0;for(let a of e)o===t.length?t.push(n=new qe(this.A(Ue()),this.A(Ue()),this,this.options)):n=t[o],n._$AI(a),o++;o<t.length&&(this._$AR(n&&n._$AB.nextSibling,o),t.length=o)}_$AR(e=this._$AA.nextSibling,t){var n;for((n=this._$AP)===null||n===void 0||n.call(this,!1,!0,t);e&&e!==this._$AB;){let o=e.nextSibling;e.remove(),e=o}}setConnected(e){var t;this._$AM===void 0&&(this._$Cg=e,(t=this._$AP)===null||t===void 0||t.call(this,e))}},Be=class{constructor(e,t,n,o,a){this.type=1,this._$AH=q,this._$AN=void 0,this.element=e,this.name=t,this._$AM=o,this.options=a,n.length>2||n[0]!==""||n[1]!==""?(this._$AH=Array(n.length-1).fill(new String),this.strings=n):this._$AH=q}get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}_$AI(e,t=this,n,o){let a=this.strings,f=!1;if(a===void 0)e=Ee(this,e,t,0),f=!He(e)||e!==this._$AH&&e!==de,f&&(this._$AH=e);else{let c=e,s,i;for(e=a[0],s=0;s<a.length-1;s++)i=Ee(this,c[n+s],t,s),i===de&&(i=this._$AH[s]),f||(f=!He(i)||i!==this._$AH[s]),i===q?e=q:e!==q&&(e+=(i??"")+a[s+1]),this._$AH[s]=i}f&&!o&&this.k(e)}k(e){e===q?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,e??"")}},xo=class extends Be{constructor(){super(...arguments),this.type=3}k(e){this.element[this.name]=e===q?void 0:e}},Sn=xe?xe.emptyScript:"",Ao=class extends Be{constructor(){super(...arguments),this.type=4}k(e){e&&e!==q?this.element.setAttribute(this.name,Sn):this.element.removeAttribute(this.name)}},So=class extends Be{constructor(e,t,n,o,a){super(e,t,n,o,a),this.type=5}_$AI(e,t=this){var n;if((e=(n=Ee(this,e,t,0))!==null&&n!==void 0?n:q)===de)return;let o=this._$AH,a=e===q&&o!==q||e.capture!==o.capture||e.once!==o.once||e.passive!==o.passive,f=e!==q&&(o===q||a);a&&this.element.removeEventListener(this.name,this,o),f&&this.element.addEventListener(this.name,this,e),this._$AH=e}handleEvent(e){var t,n;typeof this._$AH=="function"?this._$AH.call((n=(t=this.options)===null||t===void 0?void 0:t.host)!==null&&n!==void 0?n:this.element,e):this._$AH.handleEvent(e)}},$o=class{constructor(e,t,n){this.element=e,this.type=6,this._$AN=void 0,this._$AM=t,this.options=n}get _$AU(){return this._$AM._$AU}_$AI(e){Ee(this,e)}};var Eo=window.litHtmlPolyfillSupport;Eo==null||Eo($e,qe),((Ft=globalThis.litHtmlVersions)!==null&&Ft!==void 0?Ft:globalThis.litHtmlVersions=[]).push("2.0.2");var Tt,zt;var $=class extends fe{constructor(){super(...arguments),this.renderOptions={host:this},this._$Dt=void 0}createRenderRoot(){var e,t;let n=super.createRenderRoot();return(e=(t=this.renderOptions).renderBefore)!==null&&e!==void 0||(t.renderBefore=n.firstChild),n}update(e){let t=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(e),this._$Dt=ko(t,this.renderRoot,this.renderOptions)}connectedCallback(){var e;super.connectedCallback(),(e=this._$Dt)===null||e===void 0||e.setConnected(!0)}disconnectedCallback(){var e;super.disconnectedCallback(),(e=this._$Dt)===null||e===void 0||e.setConnected(!1)}render(){return de}};$.finalized=!0,$._$litElement$=!0,(Tt=globalThis.litElementHydrateSupport)===null||Tt===void 0||Tt.call(globalThis,{LitElement:$});var qo=globalThis.litElementPolyfillSupport;qo==null||qo({LitElement:$});((zt=globalThis.litElementVersions)!==null&&zt!==void 0?zt:globalThis.litElementVersions=[]).push("3.0.2");console.warn("The main 'lit-element' module entrypoint is deprecated. Please update your imports to use the 'lit' package: 'lit' and 'lit/decorators.ts' or import from 'lit-element/lit-element.ts'. See https://lit.dev/msg/deprecated-import-path for more information.");var U=T`
   /*!
  * Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
@@ -8438,15 +8438,15 @@ readers do not read off random characters that represent icons */
     white-space: nowrap;
     border-width: 0;
   }
-`;var _=class{};_.map=(e,t,o)=>(e-t[0])*(o[1]-o[0])/(t[1]-t[0])+o[0],_.clamp=(e,t)=>Math.min(Math.max(e,t[0]),t[1]),_.round=(e,t)=>Number(Math.round(Number(e+"e"+t))+"e-"+t);var Ve=class extends Event{constructor(e,t){super("theme-changed");this.color=e,this.value=t}},u=class{static Instance(){return this._instance||(this._instance=new this)}static isHexCode(e){return e.match(/^#[0-9a-f]{6}/i)}static getPropertyName(e,t){let o={};return Object.keys(e).map(n=>o[n]=n),t(o)}static getStoredValueOrDefault(e){var t;return(t=localStorage.getItem(e))!=null?t:this.defaultConfig[e]}static set config(e){Object.keys(e).forEach(t=>{localStorage.setItem(t,e[t].toString())})}static get config(){return{accidentalMode:this.accidentalMode,frequencyOfA:this.frequencyOfA,debugMode:"false",primary:this.getColor("primary"),highlight:this.getColor("highlight"),background:this.getColor("background")}}static get debugMode(){return Boolean(this.getStoredValueOrDefault("debugMode"))}static set debugMode(e){localStorage.setItem(this.getPropertyName(this.defaultConfig,t=>t.debugMode),e.toString())}static set accidentalMode(e){localStorage.setItem(this.getPropertyName(this.defaultConfig,t=>t.accidentalMode),e.toString())}static get accidentalMode(){return Number(this.getStoredValueOrDefault("accidentalMode"))}static set frequencyOfA(e){e=_.clamp(e,[this.ALowerBoundFreq,this.AUpperBoundFreq]),localStorage.setItem(this.getPropertyName(this.defaultConfig,t=>t.frequencyOfA),e.toString())}static get frequencyOfA(){return Number(this.getStoredValueOrDefault("frequencyOfA"))}static setColor(e,t){this.isHexCode(t)&&localStorage.setItem(this.getPropertyName(this.defaultConfig,o=>o[e]),t)}static getColor(e){return this.getStoredValueOrDefault(e)}};u.defaultConfig={accidentalMode:1,frequencyOfA:440,debugMode:undefined,primary:"#FF7A00",highlight:"#FFFFFF",background:"#000000"},u.ALowerBoundFreq=415,u.AUpperBoundFreq=466;var Go=S`
+`;var N=class{};N.map=(e,t,n)=>(e-t[0])*(n[1]-n[0])/(t[1]-t[0])+n[0],N.clamp=(e,t)=>Math.min(Math.max(e,t[0]),t[1]),N.round=(e,t)=>Number(Math.round(Number(e+"e"+t))+"e-"+t);var _=class{static Instance(){return this._instance||(this._instance=new this)}static isHexCode(e){return e.match(/^#[0-9a-f]{6}/i)}static getPropertyName(e,t){let n={};return Object.keys(e).map(o=>n[o]=o),t(n)}static getStoredValueOrDefault(e){var t;return(t=localStorage.getItem(e))!=null?t:this.defaultConfig[e]}static set config(e){Object.keys(e).forEach(t=>{localStorage.setItem(t,e[t].toString())})}static get config(){return{accidentalMode:this.accidentalMode,frequencyOfA:this.frequencyOfA,debugMode:"false",primary:this.getColor("primary"),highlight:this.getColor("highlight"),background:this.getColor("background"),algorithm:this.algorithm}}static get debugMode(){return Boolean(this.getStoredValueOrDefault("debugMode"))}static set debugMode(e){localStorage.setItem(this.getPropertyName(this.defaultConfig,t=>t.debugMode),e.toString())}static set accidentalMode(e){localStorage.setItem(this.getPropertyName(this.defaultConfig,t=>t.accidentalMode),e.toString())}static get accidentalMode(){return Number(this.getStoredValueOrDefault("accidentalMode"))}static set frequencyOfA(e){e=N.clamp(e,[this.ALowerBoundFreq,this.AUpperBoundFreq]),localStorage.setItem(this.getPropertyName(this.defaultConfig,t=>t.frequencyOfA),e.toString())}static get frequencyOfA(){return Number(this.getStoredValueOrDefault("frequencyOfA"))}static setColor(e,t){this.isHexCode(t)&&localStorage.setItem(this.getPropertyName(this.defaultConfig,n=>n[e]),t)}static getColor(e){return this.getStoredValueOrDefault(e)}static set algorithm(e){localStorage.setItem(this.getPropertyName(this.defaultConfig,t=>t.algorithm),e)}static get algorithm(){return this.getStoredValueOrDefault("algorithm")}};_.defaultConfig={accidentalMode:1,frequencyOfA:440,debugMode:"true",primary:"#FF7A00",highlight:"#FFFFFF",background:"#000000",algorithm:"McLeod"},_.ALowerBoundFreq=415,_.AUpperBoundFreq=466;var $n=T`
     :root {
         --doc-height: 100%;
     }
 
     :host {
-        --primary-color: ${se(u.defaultConfig.primary)};
-        --background-color: ${se(u.defaultConfig.background)};
-        --highlight-color: ${se(u.defaultConfig.highlight)};
+        --primary-color: ${_e(_.defaultConfig.primary)};
+        --background-color: ${_e(_.defaultConfig.background)};
+        --highlight-color: ${_e(_.defaultConfig.highlight)};
         --font-family: "Archivo Black", sans-serif;
 
         // Set some defaults
@@ -8483,8 +8483,8 @@ readers do not read off random characters that represent icons */
         color: var(--highlight-color);
         font-size: 3em;
     }
-`,ge=class extends k{constructor(){super(...arguments);this.showSettings=!1}connectedCallback(){super.connectedCallback(),this.calculateDocumentHeight(),this.style.setProperty("--primary-color",u.getColor("primary")),this.style.setProperty("--highlight-color",u.getColor("highlight")),this.style.setProperty("--background-color",u.getColor("background"))}calculateDocumentHeight(){let e=()=>{document.documentElement.style.setProperty("--doc-height",`${window.innerHeight}px`)};window.addEventListener("resize",e),e()}refreshTheme(e){this.style.setProperty("--"+e.color+"-color",e.value)}toggleSettings(){this.showSettings=!this.showSettings}renderSettings(){return this.showSettings?w`
-            <tn-settings @theme-changed="${this.refreshTheme}"></tn-settings>`:v}render(){return w`
+`,Me=class extends ${constructor(){super(...arguments);this.showSettings=!1}connectedCallback(){super.connectedCallback(),this.calculateDocumentHeight(),this.style.setProperty("--primary-color",_.getColor("primary")),this.style.setProperty("--highlight-color",_.getColor("highlight")),this.style.setProperty("--background-color",_.getColor("background"))}calculateDocumentHeight(){let e=()=>{document.documentElement.style.setProperty("--doc-height",`${window.innerHeight}px`)};window.addEventListener("resize",e),e()}refreshTheme(e){this.style.setProperty("--"+e.color+"-color",e.value)}toggleSettings(){this.showSettings=!this.showSettings}renderSettings(){return this.showSettings?S`
+            <tn-settings @theme-changed="${this.refreshTheme}"></tn-settings>`:q}render(){return S`
             <div class="app-body">
                 <div class="app-content">
                     <div class="icon" @click="${this.toggleSettings}"><i
@@ -8493,70 +8493,7 @@ readers do not read off random characters that represent icons */
                     ${this.renderSettings()}
                 </div>
             </div>
-        `}};ge.styles=[Go,pe],h([y()],ge.prototype,"showSettings",2),ge=h([E("tn-app")],ge);var vt={};Q(vt,{AccordionComponent:()=>Re});var Jo=S`
-    details > summary {
-        list-style: none;
-        padding: 1em;
-    }
-
-    summary::-webkit-details-marker {
-        display: none
-    }
-
-    summary::marker {
-        content: none;
-    }
-
-    summary::after {
-        font-family: "Font Awesome 6 Free";
-        font-weight: 900;
-        content: "\\f107";
-    }
-
-    details[open] summary:after {
-        font-family: "Font Awesome 6 Free";
-        font-weight: 900;
-        content: "\\f106";
-    }
-
-    .accordion {
-        border-radius: 1em;
-        backdrop-filter: blur(25px);
-        background-color: rgba(255, 255, 255, 0.3);
-        color: var(--highlight-color);
-        font-size: 2em;
-
-        margin-block: 1em;
-        margin-inline: 1em;
-        padding-block-end: 0.1px;
-    }
-
-    .content {
-        padding-inline: 1em;
-        padding-block-end: 1em;
-        border-radius: 1em;
-        color: var(--highlight-color);
-    }
-
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .icon {
-        margin-left: auto;
-    }
-`,Re=class extends k{render(){return w`
-            <details class="accordion" open>
-                <summary class="header">
-                    <slot name="header"></slot>
-                </summary>
-                <div class="content">
-                    <slot name="content"></slot>
-                </div>
-            </details>
-        `}};Re.styles=[Jo,pe],Re=h([E("tn-accordion")],Re);var yt={};Q(yt,{SettingsComponent:()=>P});var Qo=S`
+        `}};Me.styles=[$n,U],x([C()],Me.prototype,"showSettings",2),Me=x([P("tn-app")],Me);var Ut={};B(Ut,{ExperimentalSettingsComponent:()=>Fe});var It={};B(It,{SettingsComponent:()=>Ve,SettingsComponentStyles:()=>ie});var ie=T`
     input {
         margin-inline-end: 1em;
     }
@@ -8668,56 +8605,23 @@ readers do not read off random characters that represent icons */
         font-family: var(--font-family);
     }
 
-    i {
-        cursor: pointer;
+    select {
+        border: none;
+        background: var(--background-color);
+        color: var(--highlight-color);
+        align-self: stretch;
+        border-radius: 1em;
+        font-family: var(--font-family);
     }
 
-    .modal {
-        width: 110%;
-        height: 110%;
-        right: -5%;
-        top: -5%;
-        position: absolute;
-        z-index: 1;
-        backdrop-filter: blur(3em);
-        overflow-y: scroll;
-
-        -ms-overflow-style: none; /* IE and Edge */
-        scrollbar-width: none; /* Firefox */
-
-        -webkit-user-select: none; /* Safari */
-        -ms-user-select: none; /* IE 10 and IE 11 */
-        user-select: none; /* Standard syntax */
-    }
-
-    .scroll-shadow {
-        width: 110%;
-        height: 111%;
-        right: -5%;
-        top: -5%;
-        position: absolute;
-        z-index: 1;
-        box-shadow: inset 0 0 0 2em var(--background-color);
-        pointer-events: none;
-    }
-
-    .modal .header {
-        font-size: 3em;
-    }
-
-    .modal .row {
+    .row {
         display: flex;
         margin-block: 1em;
         margin-inline: 1em;
     }
 
-    .modal .setting {
-        padding: 1em;
-        border-radius: 1em;
-        backdrop-filter: blur(25px);
-        background-color: rgba(255, 255, 255, 0.3);
-        color: var(--highlight-color);
-        font-size: 2em;
+    i {
+        cursor: pointer;
     }
 
     .setting .content {
@@ -8734,15 +8638,69 @@ readers do not read off random characters that represent icons */
 
     /* Hide scrollbar for Chrome, Safari and Opera */
 
-    .modal::-webkit-scrollbar {
-        display: none;
+    .row input, select {
+        font-size: 0.75em;
+        margin-inline: 1em;
+        padding-inline: 1em;
     }
-
+`,Ve=class extends ${constructor(){super()}render(){return S`
+            <tn-modal>
+                <div slot="header">Settings</div>
+                <div slot="content">
+                    <tn-general-settings></tn-general-settings>
+                    <tn-theme-settings></tn-theme-settings>
+                    <tn-experimental-settings></tn-experimental-settings>
+                </div>
+            </tn-modal>
+        `}};Ve.styles=[ie,U],Ve=x([P("tn-settings")],Ve);var Po=$t(Co()),Ce=class{_inputLength;_fft;_bufferSupplier;_paddedInputBuffer;_transformBuffer;_inverseBuffer;static forFloat32Array(e){return new Ce(e,t=>new Float32Array(t))}static forFloat64Array(e){return new Ce(e,t=>new Float64Array(t))}static forNumberArray(e){return new Ce(e,t=>Array(t))}constructor(e,t){if(e<1)throw new Error("Input length must be at least one");this._inputLength=e,this._fft=new Po.default(Mn(2*e)),this._bufferSupplier=t,this._paddedInputBuffer=this._bufferSupplier(this._fft.size),this._transformBuffer=this._bufferSupplier(2*this._fft.size),this._inverseBuffer=this._bufferSupplier(2*this._fft.size)}get inputLength(){return this._inputLength}autocorrelate(e,t=this._bufferSupplier(e.length)){if(e.length!==this._inputLength)throw new Error(`Input must have length ${this._inputLength} but had length ${e.length}`);for(let o=0;o<e.length;o++)this._paddedInputBuffer[o]=e[o];for(let o=e.length;o<this._paddedInputBuffer.length;o++)this._paddedInputBuffer[o]=0;this._fft.realTransform(this._transformBuffer,this._paddedInputBuffer),this._fft.completeSpectrum(this._transformBuffer);let n=this._transformBuffer;for(let o=0;o<n.length;o+=2)n[o]=n[o]*n[o]+n[o+1]*n[o+1],n[o+1]=0;this._fft.inverseTransform(this._inverseBuffer,this._transformBuffer);for(let o=0;o<e.length;o++)t[o]=this._inverseBuffer[2*o];return t}};function En(r){let e=[],t=!1,n=-1/0,o=-1;for(let a=1;a<r.length-1;a++)r[a-1]<=0&&r[a]>0?(t=!0,o=a,n=r[a]):r[a-1]>0&&r[a]<=0?(t=!1,o!==-1&&e.push(o)):t&&r[a]>n&&(n=r[a],o=a);return e}function qn(r,e){let[t,n,o]=[r-1,r,r+1],[a,f,c]=[e[t],e[n],e[o]],s=a/2-f+c/2,i=-(a/2)*(n+o)+f*(t+o)-c/2*(t+n),h=a*n*o/2-f*t*o+c*t*n/2,b=-i/(2*s),l=s*b*b+i*b+h;return[b,l]}var he=class{_autocorrelator;_nsdfBuffer;_clarityThreshold=.9;static forFloat32Array(e){return new he(e,t=>new Float32Array(t))}static forFloat64Array(e){return new he(e,t=>new Float64Array(t))}static forNumberArray(e){return new he(e,t=>Array(t))}constructor(e,t){this._autocorrelator=new Ce(e,t),this._nsdfBuffer=t(e)}get inputLength(){return this._autocorrelator.inputLength}findPitch(e,t){this._nsdf(e);let n=En(this._nsdfBuffer);if(n.length===0)return[0,0];let o=Math.max(...n.map(s=>this._nsdfBuffer[s])),a=n.find(s=>this._nsdfBuffer[s]>=this._clarityThreshold*o),[f,c]=qn(a,this._nsdfBuffer);return[t/f,Math.min(c,1)]}_nsdf(e){this._autocorrelator.autocorrelate(e,this._nsdfBuffer);let t=2*this._nsdfBuffer[0],n;for(n=0;n<this._nsdfBuffer.length&&t>0;n++)this._nsdfBuffer[n]=2*this._nsdfBuffer[n]/t,t-=e[n]**2+e[e.length-n-1]**2;for(;n<this._nsdfBuffer.length;n++)this._nsdfBuffer[n]=0}};function Mn(r){return r--,r|=r>>1,r|=r>>2,r|=r>>4,r|=r>>8,r|=r>>16,r++,r}var Pe=$t(Bo()),Vo=["McLeod","YIN","AMDF","Dynamic Wavelet"],Rt=class{constructor(){this.pitch=-1;this.volume=-1;this.clarity=-1}},Ot=class{constructor(e){this.detector=he.forFloat32Array(e.analyserNode.fftSize)}detect(e){let t=new Float32Array(this.detector.inputLength);e.analyserNode.getFloatTimeDomainData(t);let n=new Rt;[n.pitch,n.clarity]=this.detector.findPitch(t,e.audioContext.sampleRate);let o=t.reduce((a,f)=>a+f*f,0);return n.volume=Math.sqrt(o/t.length),n}},dt=class{detect(e){let t=new Float32Array(2048);e.analyserNode.getFloatTimeDomainData(t);let n=new Rt;n.pitch=this.detector(t),n.clarity=1;let o=t.reduce((a,f)=>a+f*f,0);return n.volume=Math.sqrt(o/t.length),n}},Lt=class extends dt{constructor(){super();this.detector=Pe.YIN()}},jt=class extends dt{constructor(){super();this.detector=Pe.AMDF()}},Dt=class extends dt{constructor(){super();this.detector=Pe.DynamicWavelet()}};var Fe=class extends ${constructor(){super();this.algorithm=_.algorithm}updateAlgorithm(e){let t=e.target.value;this.algorithm=t,_.algorithm=t}render(){return S`
+                    <tn-accordion>
+                        <div slot="header">Experimental</div>
+                        <div slot="content">
+                            <div class="row">
+                                <label>Pitch Detection Algorithm</label>
+                                <select @input="${this.updateAlgorithm}">
+                                    ${Vo.map(e=>S`
+                                        <option .selected="${e===this.algorithm}" .value="${e}">${e}</option>
+                                    `)}
+                                </select>
+                            </div>
+                        </div>
+                    </tn-accordion>
+        `}};Fe.styles=[ie,U],x([te()],Fe.prototype,"algorithm",2),Fe=x([P("tn-experimental-settings")],Fe);var Ht={};B(Ht,{GeneralSettingsComponent:()=>me});var me=class extends ${constructor(){super();this.frequencyOfA=_.frequencyOfA;this.accidentalMode=_.accidentalMode}updateAccidentalMode(e){let t=e.target.checked===!1?1:0;this.accidentalMode=t,_.accidentalMode=t}resetFrequencyOfA(){this.frequencyOfA=_.defaultConfig.frequencyOfA,_.frequencyOfA=_.defaultConfig.frequencyOfA}updateFrequencyOfA(e){let t=Number(e.target.value);this.frequencyOfA=t,_.frequencyOfA=t}render(){return S`
+                <tn-accordion>
+                    <div slot="header">General</div>
+                    <div slot="content">
+                        <div class="row">
+                            <label for="flats" class="switch">
+                                <input id="flats"
+                                       type="checkbox"
+                                       .checked="${this.accidentalMode===0}"
+                                       @click=${this.updateAccidentalMode}>
+                                <span class="slider round"></span>
+                            </label>
+                            <span>Use Flats</span>
+                        </div>
+                        <div class="row">
+                            <input id="frequencyOfA"
+                                   type="range"
+                                   max="${_.AUpperBoundFreq}"
+                                   min="${_.ALowerBoundFreq}"
+                                   .value="${this.frequencyOfA}"
+                                   @input=${this.updateFrequencyOfA}>
+                            <label style="flex: 1" for="frequencyOfA">
+                                A = ${this.frequencyOfA}HZ
+                            </label>
+                            ${this.frequencyOfA!==_.defaultConfig.frequencyOfA?S`
+                                <i class="fa fa-undo" @click=${this.resetFrequencyOfA}></i>`:q}
+                        </div>
+                    </div>
+                </tn-accordion>
+    `}};me.styles=[ie,U],x([te()],me.prototype,"frequencyOfA",2),x([te()],me.prototype,"accidentalMode",2),me=x([P("tn-general-settings")],me);var Yt={};B(Yt,{ThemeSettingsComponent:()=>se});var ht=class extends Event{constructor(e,t){super("theme-changed",{bubbles:!0,composed:!0});this.color=e,this.value=t}};var Bn=T`
     .color-row {
         align-items: center;
     }
 
-    .color-row input {
+    .row input, select {
         margin-inline: 1em;
     }
 
@@ -8771,76 +8729,154 @@ readers do not read off random characters that represent icons */
     .color-label {
         flex: 1;
     }
-`,P=class extends k{constructor(){super();this.frequencyOfA=u.frequencyOfA;this.accidentalMode=u.accidentalMode;this.primaryColor=u.getColor("primary");this.highlightColor=u.getColor("highlight");this.backgroundColor=u.getColor("background")}resetFrequencyOfA(){this.frequencyOfA=u.defaultConfig.frequencyOfA,u.frequencyOfA=u.defaultConfig.frequencyOfA}updateAccidentalMode(e){let t=e.target.checked===!1?1:0;this.accidentalMode=t,u.accidentalMode=t}updateFrequencyOfA(e){let t=Number(e.target.value);this.frequencyOfA=t,u.frequencyOfA=t}updateColor(e,t){let o=e.target.value;u.setColor(t,o),this.updateLocalColor(t,o),this.dispatchEvent(new Ve(t,o))}resetColor(e){u.setColor(e,u.defaultConfig[e]),this.updateLocalColor(e,u.defaultConfig[e]),this.dispatchEvent(new Ve(e,u.defaultConfig[e]))}updateLocalColor(e,t){switch(e){case"primary":this.primaryColor=t;break;case"background":this.backgroundColor=t;break;case"highlight":this.highlightColor=t;break}}render(){return w`
+`,se=class extends ${constructor(){super();this.primaryColor=_.getColor("primary");this.highlightColor=_.getColor("highlight");this.backgroundColor=_.getColor("background")}updateColor(e,t){let n=e.target.value;_.setColor(t,n),this.updateLocalColor(t,n),this.dispatchEvent(new ht(t,n))}resetColor(e){_.setColor(e,_.defaultConfig[e]),this.updateLocalColor(e,_.defaultConfig[e]),this.dispatchEvent(new ht(e,_.defaultConfig[e]))}updateLocalColor(e,t){switch(e){case"primary":this.primaryColor=t;break;case"background":this.backgroundColor=t;break;case"highlight":this.highlightColor=t;break}}render(){return S`
+            <tn-accordion>
+                <div slot="header">Theme</div>
+                <div slot="content">
+                    <div class="row color-row">
+                        <div class="color-ball primary"></div>
+                        <input id="primary-color" type="text" maxlength="7" size="7"
+                               .value="${this.primaryColor}"
+                               @input="${e=>this.updateColor(e,"primary")}">
+                        <label for="primary-color" class="color-label">Primary</label>
+                        ${this.primaryColor!==_.defaultConfig.primary?S`
+                            <i class="fa fa-undo" @click=${()=>this.resetColor("primary")}></i>`:q}
+                    </div>
+                    <div class="row color-row">
+                        <div class="color-ball highlight"></div>
+                        <input id="highlight-color" type="text" maxlength="7" size="7"
+                               .value="${this.highlightColor}"
+                               @input="${e=>this.updateColor(e,"highlight")}"
+                        >
+                        <label for="highlight-color" class="color-label">Highlight</label>
+                        ${this.highlightColor!==_.defaultConfig.highlight?S`
+                            <i class="fa fa-undo" @click=${()=>this.resetColor("highlight")}></i>`:q}
+                    </div>
+                    <div class="row color-row">
+                        <div class="color-ball background"></div>
+                        <input id="background-color" type="text" maxlength="7" size="7"
+                               .value="${this.backgroundColor}"
+                               @input="${e=>this.updateColor(e,"background")}"
+                        >
+                        <label for="background-color" class="color-label">Background</label>
+                        ${this.backgroundColor!==_.defaultConfig.background?S`
+                            <i class="fa fa-undo" @click=${()=>this.resetColor("background")}></i>`:q}
+                    </div>
+                </div>
+            </tn-accordion>
+        `}};se.styles=[Bn,ie,U],x([te()],se.prototype,"primaryColor",2),x([te()],se.prototype,"highlightColor",2),x([te()],se.prototype,"backgroundColor",2),se=x([P("tn-theme-settings")],se);var Bt={};B(Bt,{AccordionComponent:()=>Ge});var Vn=T`
+    details > summary {
+        list-style: none;
+        padding: 1em;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    summary::-webkit-details-marker {
+        display: none
+    }
+
+    summary::marker {
+        content: none;
+    }
+
+    summary::after {
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        content: "\\f107";
+    }
+
+    details[open] summary:after {
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        content: "\\f106";
+    }
+
+    details {
+        border-radius: 1em;
+        backdrop-filter: blur(25px);
+        background-color: rgba(255, 255, 255, 0.3);
+        color: var(--highlight-color);
+        font-size: 2em;
+
+        margin-block: 1em;
+        margin-inline: 1em;
+        padding-block-end: 0.1px;
+    }
+
+    .content {
+        padding-inline: 1em;
+        padding-block-end: 1em;
+        border-radius: 1em;
+        color: var(--highlight-color);
+    }
+`,Ge=class extends ${render(){return S`
+            <details>
+                <summary class="header">
+                    <slot name="header"></slot>
+                </summary>
+                <div class="content">
+                    <slot name="content"></slot>
+                </div>
+            </details>
+        `}};Ge.styles=[Vn,U],Ge=x([P("tn-accordion")],Ge);var Vt={};B(Vt,{SettingsComponent:()=>Xe});var Wn=T`
+    .modal {
+        width: 110%;
+        height: 110%;
+        right: -5%;
+        top: -5%;
+        position: absolute;
+        z-index: 1;
+
+        backdrop-filter: blur(3em);
+        -webkit-backdrop-filter: blur(3em); /* Safari */
+        overflow-y: scroll;
+
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+
+        -webkit-user-select: none; /* Safari */
+        -ms-user-select: none; /* IE 10 and IE 11 */
+        user-select: none; /* Standard syntax */
+    }
+
+    .scroll-shadow {
+        width: 110%;
+        height: 111%;
+        right: -5%;
+        top: -5%;
+        position: absolute;
+        z-index: 1;
+        box-shadow: inset 0 0 0 2em var(--background-color);
+        pointer-events: none;
+    }
+
+    .header {
+        font-size: 3em;
+    }
+
+    .row {
+        display: flex;
+        margin-block: 1em;
+        margin-inline: 1em;
+    }
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+
+    .modal::-webkit-scrollbar {
+        display: none;
+    }
+`,Xe=class extends ${render(){return S`
             <div class="modal">
-                <div class="header row">Settings</div>
-                <tn-accordion>
-                    <div slot="header">General</div>
-                    <div slot="content">
-                        <div class="row">
-                            <label for="flats" class="switch">
-                                <input id="flats"
-                                       type="checkbox"
-                                       .checked="${this.accidentalMode===0}"
-                                       @click=${this.updateAccidentalMode}>
-                                <span class="slider round"></span>
-                            </label>
-                            <span>Use Flats</span>
-                        </div>
-                        <div class="row">
-                            <input id="frequencyOfA"
-                                   type="range"
-                                   max="${u.AUpperBoundFreq}"
-                                   min="${u.ALowerBoundFreq}"
-                                   .value="${this.frequencyOfA}"
-                                   @input=${this.updateFrequencyOfA}>
-                            <label style="flex: 1" for="frequencyOfA">
-                                A = ${this.frequencyOfA}HZ
-                            </label>
-                            ${this.frequencyOfA!==u.defaultConfig.frequencyOfA?w`
-                                <i class="fa fa-undo" @click=${this.resetFrequencyOfA}></i>`:v}
-                        </div>
-                    </div>
-                </tn-accordion>
-                <tn-accordion>
-                    <div slot="header">Theme</div>
-                    <div slot="content">
-                        <div class="row color-row">
-                            <div class="color-ball primary"></div>
-                            <input id="primary-color" type="text" maxlength="7" size="7"
-                                   .value="${this.primaryColor}"
-                                   @input="${e=>this.updateColor(e,"primary")}">
-                            <label for="primary-color" class="color-label">Primary</label>
-                            ${this.primaryColor!==u.defaultConfig.primary?w`
-                                <i class="fa fa-undo" @click=${()=>this.resetColor("primary")}></i>`:v}
-                        </div>
-                        <div class="row color-row">
-                            <div class="color-ball highlight"></div>
-                            <input id="highlight-color" type="text" maxlength="7" size="7"
-                                   .value="${this.highlightColor}"
-                                   @input="${e=>this.updateColor(e,"highlight")}"
-                            >
-                            <label for="highlight-color" class="color-label">Highlight</label>
-                            ${this.highlightColor!==u.defaultConfig.highlight?w`
-                                <i class="fa fa-undo" @click=${()=>this.resetColor("highlight")}></i>`:v}
-                        </div>
-                        <div class="row color-row">
-                            <div class="color-ball background"></div>
-                            <input id="background-color" type="text" maxlength="7" size="7"
-                                   .value="${this.backgroundColor}"
-                                   @input="${e=>this.updateColor(e,"background")}"
-                            >
-                            <label for="background-color" class="color-label">Background</label>
-                            ${this.backgroundColor!==u.defaultConfig.background?w`
-                                <i class="fa fa-undo" @click=${()=>this.resetColor("background")}></i>`:v}
-                        </div>
-                    </div>
-                </tn-accordion>
+                <slot class="header row" name="header"></slot>
+                <slot name="content"></slot>
             </div>
             <div class="scroll-shadow"></div>
-        `}};P.styles=[Qo,pe],h([ce()],P.prototype,"frequencyOfA",2),h([ce()],P.prototype,"accidentalMode",2),h([ce()],P.prototype,"primaryColor",2),h([ce()],P.prototype,"highlightColor",2),h([ce()],P.prototype,"backgroundColor",2),P=h([E("tn-settings")],P);var wt={};Q(wt,{snapshots:()=>so});var so={};so["TunerComponent should equal snapshot"]=`<tn-tuner>
+        `}};Xe.styles=[Wn],Xe=x([P("tn-modal")],Xe);var Wt={};B(Wt,{snapshots:()=>Wo});var Wo={};Wo["TunerComponent should equal snapshot"]=`<tn-tuner>
 </tn-tuner>
-`;var xt={};Q(xt,{TunerNoteComponent:()=>q});var ve=12,Xo=["C","C","D","D","E","F","F","G","G","A","A","B"],en=[1,3,6,8,10],tn=["C","D","D","E","E","F","G","G","A","A","B","B"],te;(function(t){t[t.sharp=0]="sharp",t[t.flat=1]="flat"})(te||(te={}));var T=class{get letter(){return this.lookupLetter()}get accidental(){return this.lookupAccidental()}constructor(e){this.index=_.clamp(e,[0,127]),this.octave=Math.floor(e/ve)-1}lookupLetter(){return u.accidentalMode?Xo[this.index%ve]:tn[this.index%ve]}lookupAccidental(){return en.includes(this.index%ve)?u.accidentalMode?"#":"\u266D":""}},kt=new T(0),on=new T(69),lo=new T(127),ye=class{static freqToNote(e){if(e<this.noteToPitch(kt))return kt;if(e>this.noteToPitch(lo))return lo;let t=Math.round(ve*Math.log2(e/this.noteToPitch(kt)));if(isNaN(t))throw new Error("calculated frequency produced NaN");return new T(t)}static noteToPitch(e){let t=e.index-on.index,o=ft(2,1/ve);return u.frequencyOfA*ft(o,t)}};var nn=S`
+`;var Zt={};B(Zt,{TunerNoteComponent:()=>H});var Te=12,Kn=["C","C","D","D","E","F","F","G","G","A","A","B"],Zn=[1,3,6,8,10],Jn=["C","D","D","E","E","F","G","G","A","A","B","B"],pe;(function(t){t[t.sharp=0]="sharp",t[t.flat=1]="flat"})(pe||(pe={}));var V=class{get letter(){return this.lookupLetter()}get accidental(){return this.lookupAccidental()}constructor(e){this.index=N.clamp(e,[0,127]),this.octave=Math.floor(e/Te)-1}lookupLetter(){return _.accidentalMode?Kn[this.index%Te]:Jn[this.index%Te]}lookupAccidental(){return Zn.includes(this.index%Te)?_.accidentalMode?"#":"\u266D":""}},Kt=new V(0),Qn=new V(69),Ko=new V(127),ze=class{static freqToNote(e){if(e<this.noteToPitch(Kt))return Kt;if(e>this.noteToPitch(Ko))return Ko;let t=Math.round(Te*Math.log2(e/this.noteToPitch(Kt)));if(isNaN(t))throw new Error("calculated frequency produced NaN");return new V(t)}static noteToPitch(e){let t=e.index-Qn.index,n=St(2,1/Te);return _.frequencyOfA*St(n,t)}};var Gn=T`
     :host {
         font-family: var(--font-family);
     }
@@ -8893,7 +8929,7 @@ readers do not read off random characters that represent icons */
     .tuner-liquid {
         fill: var(--primary-color);
     }
-`,q=class extends k{constructor(){super();this.note=new T(0);this.clarity=1;this.accuracy=0;this.accuracyBuffer=[q.bufferSize];this.heightAnimator=new We}updateHeightAnimation(){if(this.heightAnimatorReference)this.heightAnimator.reference=this.heightAnimatorReference;else return;let e=_.map(this.accuracy,[0,1],[90,25]);this.heightAnimator.to=e+""}update(e){super.update(e),!isNaN(Number(e.get("accuracy")))&&this.updateHeightAnimation()}render(){return w`
+`,H=class extends ${constructor(){super();this.note=new V(0);this.clarity=1;this.accuracy=0;this.accuracyBuffer=[H.bufferSize];this.heightAnimator=new ut}updateHeightAnimation(){if(this.heightAnimatorReference)this.heightAnimator.reference=this.heightAnimatorReference;else return;let e=N.map(this.accuracy,[0,1],[90,25]);this.heightAnimator.to=e+""}update(e){super.update(e),!isNaN(Number(e.get("accuracy")))&&this.updateHeightAnimation()}render(){return S`
             <div class="tuner-note-container">
                 <svg id="view" viewBox="0 2 100 100" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg">
                     <use href="#note-letter" class="tuner-note-letter"/>
@@ -8957,7 +8993,7 @@ readers do not read off random characters that represent icons */
                     </defs>
                 </svg>
             </div>
-        `}};q.styles=nn,q.bufferSize=25,h([y()],q.prototype,"note",2),h([y()],q.prototype,"clarity",2),h([y({type:Number})],q.prototype,"accuracy",2),h([Lt("#height-animator")],q.prototype,"heightAnimatorReference",2),q=h([E("tn-tuner-note")],q);var we=class{set reference(e){this._reference=e}get from(){return this._reference.getAttribute("values").match(we.fromMatcher)[0]}set from(e){this._reference.setAttribute("values",this._reference.getAttribute("values").replace(we.fromMatcher,e))}get to(){return this._reference.getAttribute("values").match(we.toMatcher)[0]}set to(e){this._reference.setAttribute("values",this._reference.getAttribute("values").replace(we.toMatcher,e))}onEndEvent(){this.from=this.to}},We=we;We.fromMatcher=/-?\d+\.?\d*(?=;)/g,We.toMatcher=/-?\d+\.?\d*$/g;var _t={};Q(_t,{SpokeComponent:()=>j,TunerRingComponent:()=>N});var vo=it(go()),un=S`
+        `}};H.styles=Gn,H.bufferSize=25,x([C()],H.prototype,"note",2),x([C()],H.prototype,"clarity",2),x([C({type:Number})],H.prototype,"accuracy",2),x([ao("#height-animator")],H.prototype,"heightAnimatorReference",2),H=x([P("tn-tuner-note")],H);var Ne=class{set reference(e){this._reference=e}get from(){return this._reference.getAttribute("values").match(Ne.fromMatcher)[0]}set from(e){this._reference.setAttribute("values",this._reference.getAttribute("values").replace(Ne.fromMatcher,e))}get to(){return this._reference.getAttribute("values").match(Ne.toMatcher)[0]}set to(e){this._reference.setAttribute("values",this._reference.getAttribute("values").replace(Ne.toMatcher,e))}onEndEvent(){this.from=this.to}},ut=Ne;ut.fromMatcher=/-?\d+\.?\d*(?=;)/g,ut.toMatcher=/-?\d+\.?\d*$/g;var Jt={};B(Jt,{SpokeComponent:()=>ne,TunerRingComponent:()=>J});var tn=$t(en()),cr=T`
   :host {
     --needle-degree: 0rad;
     --opacity: 1;
@@ -8995,13 +9031,13 @@ readers do not read off random characters that represent icons */
   .bottom-spokes > tn-spoke {
     background-color: var(--primary-color);
   }
-`,N=class extends k{constructor(){super(...arguments);this.accuracy=0;this.volume=0}updated(){this.style.setProperty("--needle-degree",this.convertAccuracyToRadians()+"rad")}convertAccuracyToRadians(){let e=this.accuracy*(Math.PI/2)-Math.PI/2;return this.pitchAccidental==te.sharp&&(e*=-1),e}static angleDifference(e,t){let o=e-t;return o+=o>Math.PI?-(2*Math.PI):o<-Math.PI?2*Math.PI:0,Math.abs(o)}render(){let e=[],t=[],o=41;for(let n=0;n<o;n++){let a=n*(Math.PI/(o-1))-Math.PI/2,f=n>=(o-3)/2&&n<=(o+1)/2,c=N.angleDifference(a,this.convertAccuracyToRadians()),i=_.map(c,[Math.PI,0],[0,1]),s=_.clamp(this.volume*8,[.3,.9]);e.push(w`
-                <tn-spoke .index="${n}" .scaleFactor="${i}"
+`,J=class extends ${constructor(){super(...arguments);this.accuracy=0;this.volume=0}updated(){this.style.setProperty("--needle-degree",this.convertAccuracyToRadians()+"rad")}convertAccuracyToRadians(){let e=this.accuracy*(Math.PI/2)-Math.PI/2;return this.pitchAccidental==pe.sharp&&(e*=-1),e}static angleDifference(e,t){let n=e-t;return n+=n>Math.PI?-(2*Math.PI):n<-Math.PI?2*Math.PI:0,Math.abs(n)}render(){let e=[],t=[],n=41;for(let o=0;o<n;o++){let a=o*(Math.PI/(n-1))-Math.PI/2,f=o>=(n-3)/2&&o<=(n+1)/2,c=J.angleDifference(a,this.convertAccuracyToRadians()),s=N.map(c,[Math.PI,0],[0,1]),i=N.clamp(this.volume*8,[.3,.9]);e.push(S`
+                <tn-spoke .index="${o}" .scaleFactor="${s}"
                           .arcPosition="${a}" .isMiddle="${f}"></tn-spoke>
-            `),t.push(w`
-                <tn-spoke .index="${n}" .scaleFactor="${s}"
+            `),t.push(S`
+                <tn-spoke .index="${o}" .scaleFactor="${i}"
                           .arcPosition="${a+Math.PI}"></tn-spoke>
-            `)}return w`
+            `)}return S`
             <div class="tuner-ring">
                 <div class="ring">
                     <span class="top-spokes">
@@ -9013,7 +9049,7 @@ readers do not read off random characters that represent icons */
                 </div>
                 <div class="tuner-needle"></div>
             </div>
-        `}};N.styles=un,h([y()],N.prototype,"accuracy",2),h([y()],N.prototype,"volume",2),h([y()],N.prototype,"pitchAccidental",2),N=h([E("tn-tuner-ring")],N);var hn=S`
+        `}};J.styles=cr,x([C()],J.prototype,"accuracy",2),x([C()],J.prototype,"volume",2),x([C()],J.prototype,"pitchAccidental",2),J=x([P("tn-tuner-ring")],J);var ir=T`
   :host {
     --x-scale: 1;
     --y-scale: 1;
@@ -9028,16 +9064,22 @@ readers do not read off random characters that represent icons */
     transition: all cubic-bezier(0, 0, .2, 1.3) 600ms;
   }
 
-`,j=class extends k{constructor(){super(...arguments);this.scaleFactor=0;this.arcPosition=0;this.index=0;this.isMiddle=!1}connectedCallback(){super.connectedCallback(),this.isMiddle&&this.style.setProperty("background","var(--primary-color)"),this.setupPosition()}updated(){let e=(0,vo.default)(0,0,1,0),t=this.scaleFactor,o=_.map(this.scaleFactor,[0,1],[1,0]),n=e(t)*5,a=e(o)*15;this.style.setProperty("--x-scale",n+a+""),this.style.setProperty("--y-scale",n+"")}setupPosition(){let e=50*Math.cos(this.arcPosition)+50+"%",t=50*Math.sin(this.arcPosition)+50+"%";this.style.setProperty("bottom",e),this.style.setProperty("left",t),this.style.setProperty("--angle",this.arcPosition+"rad")}};j.styles=hn,h([y()],j.prototype,"scaleFactor",2),h([y()],j.prototype,"arcPosition",2),h([y()],j.prototype,"index",2),h([y()],j.prototype,"isMiddle",2),j=h([E("tn-spoke")],j);var Nt={};Q(Nt,{TunerComponent:()=>O});function At(r){if(Array.isArray(r))return r}function $t(r,e){var t=r==null?null:typeof Symbol!="undefined"&&r[Symbol.iterator]||r["@@iterator"];if(t!=null){var o=[],n=!0,a=!1,f,c;try{for(t=t.call(r);!(n=(f=t.next()).done)&&(o.push(f.value),!(e&&o.length===e));n=!0);}catch(i){a=!0,c=i}finally{try{!n&&t.return!=null&&t.return()}finally{if(a)throw c}}return o}}function ke(r,e){(e==null||e>r.length)&&(e=r.length);for(var t=0,o=new Array(e);t<e;t++)o[t]=r[t];return o}function He(r,e){if(!!r){if(typeof r=="string")return ke(r,e);var t=Object.prototype.toString.call(r).slice(8,-1);if(t==="Object"&&r.constructor&&(t=r.constructor.name),t==="Map"||t==="Set")return Array.from(r);if(t==="Arguments"||/^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t))return ke(r,e)}}function St(){throw new TypeError(`Invalid attempt to destructure non-iterable instance.
-In order to be iterable, non-array objects must have a [Symbol.iterator]() method.`)}function Ct(r,e){return At(r)||$t(r,e)||He(r,e)||St()}function Et(r){if(Array.isArray(r))return ke(r)}function qt(r){if(typeof Symbol!="undefined"&&r[Symbol.iterator]!=null||r["@@iterator"]!=null)return Array.from(r)}function Tt(){throw new TypeError(`Invalid attempt to spread non-iterable instance.
-In order to be iterable, non-array objects must have a [Symbol.iterator]() method.`)}function zt(r){return Et(r)||qt(r)||He(r)||Tt()}function Ge(r,e){if(!(r instanceof e))throw new TypeError("Cannot call a class as a function")}function yo(r,e){for(var t=0;t<e.length;t++){var o=e[t];o.enumerable=o.enumerable||!1,o.configurable=!0,"value"in o&&(o.writable=!0),Object.defineProperty(r,o.key,o)}}function Je(r,e,t){return e&&yo(r.prototype,e),t&&yo(r,t),r}function z(r,e,t){return e in r?Object.defineProperty(r,e,{value:t,enumerable:!0,configurable:!0,writable:!0}):r[e]=t,r}var Ao=it(ko()),$o=it(_o()),mn=function(){function r(e,t){if(Ge(this,r),z(this,"_inputLength",void 0),z(this,"_fft",void 0),z(this,"_bufferSupplier",void 0),z(this,"_paddedInputBuffer",void 0),z(this,"_transformBuffer",void 0),z(this,"_inverseBuffer",void 0),e<1)throw new Error("Input length must be at least one");this._inputLength=e,this._fft=new Ao.default((0,$o.default)(2*e)),this._bufferSupplier=t,this._paddedInputBuffer=this._bufferSupplier(this._fft.size),this._transformBuffer=this._bufferSupplier(2*this._fft.size),this._inverseBuffer=this._bufferSupplier(2*this._fft.size)}return Je(r,[{key:"inputLength",get:function(){return this._inputLength}},{key:"autocorrelate",value:function(t){var o=arguments.length>1&&arguments[1]!==void 0?arguments[1]:this._bufferSupplier(t.length);if(t.length!==this._inputLength)throw new Error("Input must have length ".concat(this._inputLength," but had length ").concat(t.length));for(var n=0;n<t.length;n++)this._paddedInputBuffer[n]=t[n];for(var a=t.length;a<this._paddedInputBuffer.length;a++)this._paddedInputBuffer[a]=0;this._fft.realTransform(this._transformBuffer,this._paddedInputBuffer),this._fft.completeSpectrum(this._transformBuffer);for(var f=this._transformBuffer,c=0;c<f.length;c+=2)f[c]=f[c]*f[c]+f[c+1]*f[c+1],f[c+1]=0;this._fft.inverseTransform(this._inverseBuffer,this._transformBuffer);for(var i=0;i<t.length;i++)o[i]=this._inverseBuffer[2*i];return o}}],[{key:"forFloat32Array",value:function(t){return new r(t,function(o){return new Float32Array(o)})}},{key:"forFloat64Array",value:function(t){return new r(t,function(o){return new Float64Array(o)})}},{key:"forNumberArray",value:function(t){return new r(t,function(o){return Array(o)})}}]),r}();function pn(r){for(var e=[],t=!1,o=-1/0,n=-1,a=1;a<r.length-1;a++)r[a-1]<=0&&r[a]>0?(t=!0,n=a,o=r[a]):r[a-1]>0&&r[a]<=0?(t=!1,n!==-1&&e.push(n)):t&&r[a]>o&&(o=r[a],n=a);return e}function gn(r,e){var t=r-1,o=r,n=r+1,a=[e[t],e[o],e[n]],f=a[0],c=a[1],i=a[2],s=f/2-c+i/2,d=-(f/2)*(o+n)+c*(t+n)-i/2*(t+o),l=f*o*n/2-c*t*n+i*t*o/2,b=-d/(2*s),m=s*b*b+d*b+l;return[b,m]}var So=function(){function r(e,t){Ge(this,r),z(this,"_autocorrelator",void 0),z(this,"_nsdfBuffer",void 0),z(this,"_clarityThreshold",.9),this._autocorrelator=new mn(e,t),this._nsdfBuffer=t(e)}return Je(r,[{key:"inputLength",get:function(){return this._autocorrelator.inputLength}},{key:"findPitch",value:function(t,o){var n=this;this._nsdf(t);var a=pn(this._nsdfBuffer);if(a.length===0)return[0,0];var f=Math.max.apply(Math,zt(a.map(function(b){return n._nsdfBuffer[b]}))),c=a.find(function(b){return n._nsdfBuffer[b]>=n._clarityThreshold*f}),i=gn(c,this._nsdfBuffer),s=Ct(i,2),d=s[0],l=s[1];return[o/d,Math.min(l,1)]}},{key:"_nsdf",value:function(t){this._autocorrelator.autocorrelate(t,this._nsdfBuffer);var o=2*this._nsdfBuffer[0],n;for(n=0;n<this._nsdfBuffer.length&&o>0;n++)this._nsdfBuffer[n]=2*this._nsdfBuffer[n]/o,o-=Math.pow(t[n],2)+Math.pow(t[t.length-n-1],2);for(;n<this._nsdfBuffer.length;n++)this._nsdfBuffer[n]=0}}],[{key:"forFloat32Array",value:function(t){return new r(t,function(o){return new Float32Array(o)})}},{key:"forFloat64Array",value:function(t){return new r(t,function(o){return new Float64Array(o)})}},{key:"forNumberArray",value:function(t){return new r(t,function(o){return Array(o)})}}]),r}();var oe=class{static debug(...e){u.debugMode&&console.debug(e)}static error(...e){console.error(e)}};var Mt=class{constructor(e=new Pt,t=17){this.refreshRate=t,this._audioSource=e,this.pitchDetector=So.forFloat32Array(this._audioSource.analyserNode.fftSize)}static Instance(e=new Pt,t=17){return this._instance||(this._instance=new this(e,t))}startListening(){this._audioSource.connect().then(()=>{this.intervalReference=window.setInterval(this.listen.bind(this),this.refreshRate)})}stopListening(){window.clearInterval(this.intervalReference)}setOnListen(e){this.onListen=e}get pitch(){return this._pitch}get clarity(){return this._clarity}get volume(){return this._volume}get audioSource(){return this._audioSource}set audioSource(e){e.analyserNode.smoothingTimeConstant=1,this._audioSource=e}listen(){let e=new Float32Array(this.pitchDetector.inputLength);this._audioSource.analyserNode.getFloatTimeDomainData(e),[this._pitch,this._clarity]=this.pitchDetector.findPitch(e,this._audioSource.audioContext.sampleRate),this.pitch===0&&oe.debug("Pitch not detected.",this._pitch,this._clarity);let t=e.reduce((o,n)=>o+n*n,0);this._volume=Math.sqrt(t/e.length),this.onListen(this._pitch,this._clarity,this._volume)}},Pt=class{constructor(){this.audioContext=new AudioContext,this.analyserNode=new AnalyserNode(this.audioContext)}connect(){return Rt(this,null,function*(){let e;try{e=yield navigator.mediaDevices.getUserMedia({audio:!0})}catch(t){oe.error(t)}return this.sourceNode=this.audioContext.createMediaStreamSource(e),this.sourceNode.connect(this.analyserNode),yield this.audioContext.resume(),this})}};var O=class extends k{constructor(){super(...arguments);this.pitchDetectorService=Mt.Instance();this.note=new T(0);this.accuracy=0;this.clarity=1;this.volume=0;this.inTune=!1}connectedCallback(){super.connectedCallback(),this.pitchDetectorService.setOnListen((e,t,o)=>{if(this.clarity=t,this.volume=o,o<.1&&t<.99)return;this.note=ye.freqToNote(e);let n=ye.noteToPitch(this.note),a=ye.noteToPitch(new T(this.note.index-1)),f=ye.noteToPitch(new T(this.note.index+1)),c;e<n?(this.pitchAccidental=te.flat,c=_.map(e,[a,n],[-1,1])):(this.pitchAccidental=te.sharp,c=_.map(e,[f,n],[-1,1])),c<0&&(c=0),this.inTune=c>.95,this.accuracy=c}),this.pitchDetectorService.startListening()}disconnectedCallback(){super.disconnectedCallback(),this.pitchDetectorService.stopListening()}updateOscillatorFrequency(e){let t=this.pitchDetectorService.audioSource;t.frequency=Number(e.target.value)}setPlayback(e){e.target.checked?this.pitchDetectorService.audioSource.sourceNode.connect(this.pitchDetectorService.audioSource.audioContext.destination):this.pitchDetectorService.audioSource.sourceNode.disconnect(this.pitchDetectorService.audioSource.audioContext.destination)}resumeContext(){this.pitchDetectorService.audioSource.audioContext.resume().then(()=>{oe.debug("Audio source resumed")},e=>{oe.error("Audio source failed to resume",e)})}render(){return w`
+`,ne=class extends ${constructor(){super(...arguments);this.scaleFactor=0;this.arcPosition=0;this.index=0;this.isMiddle=!1}connectedCallback(){super.connectedCallback(),this.isMiddle&&this.style.setProperty("background","var(--primary-color)"),this.setupPosition()}updated(){let e=(0,tn.default)(0,0,1,0),t=this.scaleFactor,n=N.map(this.scaleFactor,[0,1],[1,0]),o=e(t)*5,a=e(n)*15;this.style.setProperty("--x-scale",o+a+""),this.style.setProperty("--y-scale",o+"")}setupPosition(){let e=50*Math.cos(this.arcPosition)+50+"%",t=50*Math.sin(this.arcPosition)+50+"%";this.style.setProperty("bottom",e),this.style.setProperty("left",t),this.style.setProperty("--angle",this.arcPosition+"rad")}};ne.styles=ir,x([C()],ne.prototype,"scaleFactor",2),x([C()],ne.prototype,"arcPosition",2),x([C()],ne.prototype,"index",2),x([C()],ne.prototype,"isMiddle",2),ne=x([P("tn-spoke")],ne);var Xt={};B(Xt,{TunerComponent:()=>re});var le=class{static debug(...e){_.debugMode&&console.debug(e)}static error(...e){console.error(e)}};var Qt=class{constructor(){this.audioContext=new AudioContext,this.analyserNode=new AnalyserNode(this.audioContext)}connect(){return ro(this,null,function*(){let e;try{e=yield navigator.mediaDevices.getUserMedia({audio:{echoCancellation:!1,autoGainControl:!1,noiseSuppression:!1,latency:0}})}catch(n){le.error(n)}this.sourceNode=this.audioContext.createMediaStreamSource(e);let t=this.audioContext.createBiquadFilter();return t.type="lowpass",t.frequency.setTargetAtTime(Qt.lowpassThreshold,this.audioContext.currentTime,0),this.sourceNode.connect(t),t.connect(this.analyserNode),yield this.audioContext.resume(),this})}},tt=Qt;tt.lowpassThreshold=8e3;var Gt=class{constructor(e=new tt,t=17){this.refreshRate=t,this._audioSource=e,this.algorithms=new Map,this.algorithms.set("McLeod",new Ot(this._audioSource)),this.algorithms.set("YIN",new Lt),this.algorithms.set("AMDF",new jt),this.algorithms.set("Dynamic Wavelet",new Dt)}static Instance(e=new tt,t=17){return this._instance||(this._instance=new this(e,t))}startListening(){this._audioSource.connect().then(()=>{this.intervalReference=window.setInterval(this.listen.bind(this),this.refreshRate)})}stopListening(){window.clearInterval(this.intervalReference)}setOnListen(e){this.onListen=e}get pitch(){return this._algorithmResult.pitch}get clarity(){return this._algorithmResult.clarity}get volume(){return this._algorithmResult.volume}get audioSource(){return this._audioSource}set audioSource(e){e.analyserNode.smoothingTimeConstant=1,this._audioSource=e}listen(){this._algorithmResult=this.algorithms.get(_.algorithm).detect(this._audioSource),this.pitch===-1&&le.debug("Pitch not detected.",this._algorithmResult.pitch,this._algorithmResult.clarity),this.onListen(this._algorithmResult.pitch,this._algorithmResult.clarity,this._algorithmResult.volume)}};var re=class extends ${constructor(){super(...arguments);this.pitchDetectorService=Gt.Instance();this.note=new V(0);this.accuracy=0;this.clarity=1;this.volume=0;this.inTune=!1}connectedCallback(){super.connectedCallback(),this.pitchDetectorService.setOnListen((e,t,n)=>{if(this.clarity=t,this.volume=n,n<.1&&t<.99)return;this.note=ze.freqToNote(e);let o=ze.noteToPitch(this.note),a=ze.noteToPitch(new V(this.note.index-1)),f=ze.noteToPitch(new V(this.note.index+1)),c;e<o?(this.pitchAccidental=pe.flat,c=N.map(e,[a,o],[-1,1])):(this.pitchAccidental=pe.sharp,c=N.map(e,[f,o],[-1,1])),c<0&&(c=0),this.inTune=c>.95,this.accuracy=c}),this.pitchDetectorService.startListening()}disconnectedCallback(){super.disconnectedCallback(),this.pitchDetectorService.stopListening()}updateOscillatorFrequency(e){let t=this.pitchDetectorService.audioSource;t.frequency=Number(e.target.value)}setPlayback(e){e.target.checked?this.pitchDetectorService.audioSource.sourceNode.connect(this.pitchDetectorService.audioSource.audioContext.destination):this.pitchDetectorService.audioSource.sourceNode.disconnect(this.pitchDetectorService.audioSource.audioContext.destination)}resumeContext(){this.pitchDetectorService.audioSource.audioContext.resume().then(()=>{le.debug("Audio source resumed")},e=>{le.error("Audio source failed to resume",e)})}render(){return S`
+            <!-- <div>
+                <input type="range" min="200"
+                                   max="300"
+                                   @input="${this.updateOscillatorFrequency}">
+                        </div>
+ <div>
+                Audio Playback: <input type="checkbox" @input="${this.setPlayback}">
+            </div> -->
             <div data-test-id="tuner.body" @click="${this.resumeContext}">
                 <tn-tuner-ring .accuracy="${this.accuracy}" .pitchAccidental="${this.pitchAccidental}"
                                .volume="${this.volume}"></tn-tuner-ring>
                 <tn-tuner-note .note="${this.note}" .accuracy="${this.accuracy}"
                                .clarity="${this.clarity}"></tn-tuner-note>
             </div>
-        `}};h([y()],O.prototype,"note",2),h([y()],O.prototype,"accuracy",2),h([y()],O.prototype,"clarity",2),h([y()],O.prototype,"volume",2),h([y()],O.prototype,"pitchAccidental",2),O=h([E("tn-tuner")],O);var vn=[gt,vt,yt,wt,xt,_t,Nt],Co=vn;Co[0].default;})();
+        `}};x([C()],re.prototype,"note",2),x([C()],re.prototype,"accuracy",2),x([C()],re.prototype,"clarity",2),x([C()],re.prototype,"volume",2),x([C()],re.prototype,"pitchAccidental",2),re=x([P("tn-tuner")],re);var sr=[Nt,Ut,Ht,It,Yt,Bt,Vt,Wt,Zt,Jt,Xt],on=sr;on[0].default;})();
 /**
  * @license
  * Copyright 2017 Google LLC
