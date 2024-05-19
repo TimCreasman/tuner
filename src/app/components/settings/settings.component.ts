@@ -148,7 +148,9 @@ export const SettingsComponentStyles = css`
     /* Hide scrollbar for Chrome, Safari and Opera */
 
     .row input, select {
+        font-size: 0.75em;
         margin-inline: 1em;
+        padding-inline: 1em;
     }
 `;
 
@@ -168,7 +170,7 @@ export class SettingsComponent extends LitElement {
                 <div slot="content">
                     <tn-general-settings></tn-general-settings>
                     <tn-theme-settings></tn-theme-settings>
-                    <tn-experimental-settings></tn-experiemental-settings>
+                    <tn-experimental-settings></tn-experimental-settings>
                 </div>
             </tn-modal>
         `;

@@ -9,7 +9,9 @@ const SettingsComponentStyles = css`
         top: -5%;
         position: absolute;
         z-index: 1;
-        background-color: var(--background-color);
+
+        backdrop-filter: blur(3em);
+        -webkit-backdrop-filter: blur(3em); /* Safari */
         overflow-y: scroll;
 
         -ms-overflow-style: none; /* IE and Edge */

@@ -5,7 +5,7 @@ export class ThemeEvent extends Event {
     value: string;
 
     constructor(color: AllowedColor, value: string) {
-        super('theme-changed');
+        super('theme-changed', { bubbles: true, composed: true });
         this.color = color;
         this.value = value;
     }

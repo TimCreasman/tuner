@@ -119,14 +119,14 @@ export class TunerComponent extends LitElement {
 
     render() {
         return html`
-            <div>
+            <!-- <div>
                 <input type="range" min="200"
                                    max="300"
                                    @input="${this.updateOscillatorFrequency}">
                         </div>
  <div>
                 Audio Playback: <input type="checkbox" @input="${this.setPlayback}">
-            </div>
+            </div> -->
             <div data-test-id="tuner.body" @click="${this.resumeContext}">
                 <tn-tuner-ring .accuracy="${this.accuracy}" .pitchAccidental="${this.pitchAccidental}"
                                .volume="${this.volume}"></tn-tuner-ring>
