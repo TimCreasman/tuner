@@ -1,12 +1,12 @@
 import { AllowedColor } from '../events/theme-event';
+import { AllowedAlgorithmTypes } from '../models/algorithm.model';
 import { MathUtility } from '../utilities/math-utility';
-import { AllowedAlgorithm } from './pitch-detector.service';
 
 type AppConfig = {
     accidentalMode: 0 | 1,
     frequencyOfA: number,
     debugMode: string,
-    algorithm: AllowedAlgorithm,
+    algorithm: AllowedAlgorithmTypes,
 } & { [key in AllowedColor]: string }
 
 export class ConfigService {
@@ -62,7 +62,7 @@ export class ConfigService {
             primary: this.getColor('primary'),
             highlight: this.getColor('highlight'),
             background: this.getColor('background'),
-            algorithm: this.algorithm 
+            algorithm: this.algorithm
         };
     }
 
@@ -105,7 +105,8 @@ export class ConfigService {
         localStorage.setItem(this.getPropertyName(this.defaultConfig, a => a.algorithm), algorithm);
     }
 
-    static get algorithm(): AllowedAlgorithm {
-        return this.getStoredValueOrDefault('algorithm') as AllowedAlgorithm;
+    static get algorithm(): AllowedAlgorithmTypes {
+        return this.getStoredValueOrDefault('algorithm') as AllowedAlgorithmTypes;
     }
 }
+

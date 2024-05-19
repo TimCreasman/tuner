@@ -19,6 +19,8 @@ export class MicSource implements AudioSource {
     // window.AnalyserNode
     readonly analyserNode: AnalyserNode;
 
+    private static lowpassThreshold = 8000;
+
     sourceNode: MediaStreamAudioSourceNode;
 
     public constructor() {
@@ -44,8 +46,16 @@ export class MicSource implements AudioSource {
 
         // the microphone source
         this.sourceNode = this.audioContext.createMediaStreamSource(stream);
+
+        // add in a basic filter for very high frequencies
+        const filter = this.audioContext.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setTargetAtTime(MicSource.lowpassThreshold, this.audioContext.currentTime, 0);
+        this.sourceNode.connect(filter);
+
         // pipe the media source to the analyser
-        this.sourceNode.connect(this.analyserNode);
+        filter.connect(this.analyserNode);
+
         // in most browsers the audio context gets automatically suspended, so it needs to be resumed here
         await this.audioContext.resume();
         return this;

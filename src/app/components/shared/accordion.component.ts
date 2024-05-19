@@ -59,7 +59,7 @@ export class AccordionComponent extends LitElement {
 
     protected render() {
         return html`
-            <details open>
+            <details>
                 <summary class="header">
                     <slot name="header"></slot>
                 </summary>

@@ -1,11 +1,12 @@
-import { AlgorithmResult, AllowedAlgorithm, Algorithm, McLeod, YIN } from '../models/algorithm.model';
+import { AlgorithmResult, AllowedAlgorithmTypes, Algorithm, McLeod, YIN, AMDF, DynamicWavelet } from '../models/algorithm.model';
 import { AudioSource, MicSource } from '../models/audio.model';
 import { Logger } from '../utilities/log-utility';
+import { ConfigService } from './config.service';
 
 export class PitchDetectorService {
     // the rate at which to update the pitch
     private readonly refreshRate: number;
-    private algorithms:{ [key in AllowedAlgorithm]: Algorithm} | Record<string, never> = {};
+    private algorithms: Map<AllowedAlgorithmTypes, Algorithm>;
     private _algorithmResult: AlgorithmResult;
         
     private _audioSource: AudioSource;
@@ -20,8 +21,12 @@ export class PitchDetectorService {
     private constructor(audioSource: AudioSource = new MicSource(), refreshRate = 17) {
         this.refreshRate = refreshRate;
         this._audioSource = audioSource;
-        this.algorithms['McLeod'] = new McLeod(this._audioSource);
-        this.algorithms['YIN'] = new YIN();
+
+        this.algorithms = new Map();
+        this.algorithms.set('McLeod', new McLeod(this._audioSource));
+        this.algorithms.set('YIN', new YIN());
+        this.algorithms.set('AMDF', new AMDF());
+        this.algorithms.set('Dynamic Wavelet', new DynamicWavelet());
     }
 
     public static Instance(audioSource: AudioSource = new MicSource(), refreshRate = 17) {
@@ -65,9 +70,7 @@ export class PitchDetectorService {
     }
 
     private listen(): void {
-        this._algorithmResult = this.algorithms['McLeod'].detect(this._audioSource);
-        console.log(this._algorithmResult.pitch);
-        
+        this._algorithmResult = this.algorithms.get(ConfigService.algorithm).detect(this._audioSource);
 
         if (this.pitch === -1) {
             Logger.debug('Pitch not detected.', this._algorithmResult.pitch, this._algorithmResult.clarity);

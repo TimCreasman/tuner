@@ -1,5 +1,5 @@
-import {customElement} from 'lit/decorators.js';
-import {css, html, LitElement} from 'lit';
+import { customElement } from 'lit/decorators.js';
+import { css, html, LitElement } from 'lit';
 
 const SettingsComponentStyles = css`
     .modal {
@@ -9,7 +9,7 @@ const SettingsComponentStyles = css`
         top: -5%;
         position: absolute;
         z-index: 1;
-        backdrop-filter: blur(3em);
+        background-color: var(--background-color);
         overflow-y: scroll;
 
         -ms-overflow-style: none; /* IE and Edge */
