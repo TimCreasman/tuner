@@ -34,7 +34,9 @@ const SettingsComponentStyles = css`
     }
 
     .header {
+        text-align: center;
         font-size: 3em;
+        justify-content: center;
     }
 
     .row {
