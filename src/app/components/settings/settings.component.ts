@@ -145,8 +145,6 @@ export const SettingsComponentStyles = css`
         padding-bottom: 1.5em;
     }
 
-    /* Hide scrollbar for Chrome, Safari and Opera */
-
     .row input, select {
         font-size: 0.75em;
         margin-inline: 1em;
