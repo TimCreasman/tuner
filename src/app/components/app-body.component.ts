@@ -3,6 +3,7 @@ import { css, html, LitElement, nothing, unsafeCSS } from 'lit';
 import Fontawesome from '../utilities/fontawesome';
 import { ConfigService } from '../services/config.service';
 import { ThemeEvent } from '../events/theme-event';
+import { ColorUtility } from '../utilities/color-utility';
 
 const AppBodyComponentStyles = css`
     :root {
@@ -10,14 +11,15 @@ const AppBodyComponentStyles = css`
     }
 
     :host {
+        // Necessary for using the theme on load
         --primary-color: ${unsafeCSS(ConfigService.defaultConfig.primary)};
         --background-color: ${unsafeCSS(ConfigService.defaultConfig.background)};
         --highlight-color: ${unsafeCSS(ConfigService.defaultConfig.highlight)};
         --font-family: "Archivo Black", sans-serif;
 
         // Set some defaults
-        background-color: var(--background-color, black);
-        color: var(--primary-color, orange);
+        background-color: rgb(var(--background-color));
+        color: rgb(var(--primary-color));
         font-family: var(--font-family);
     }
 
@@ -25,7 +27,7 @@ const AppBodyComponentStyles = css`
         width: 100%;
         height: 100vh; /* fallback for Js load */
         height: var(--doc-height);
-        background-color: var(--background-color, black);
+        background-color: rgb(var(--background-color, black));
     }
 
     /* Create a square view centered */
@@ -42,7 +44,7 @@ const AppBodyComponentStyles = css`
     }
     
     .floating-button {
-        color: var(--highlight-color);
+        color: rgb(var(--highlight-color));
         font-size: 3em;
         z-index: 2;
         position: absolute;
@@ -52,8 +54,22 @@ const AppBodyComponentStyles = css`
         right: 0%;
     }
 
+    .settings-button:hover {
+        -webkit-animation: fa-spin 1.7s infinite linear;
+        -moz-animation: fa-spin 1.7s infinite linear;
+        -o-animation: fa-spin 1.7s infinite linear;
+        animation: fa-spin 1.7s infinite linear;
+    }
+
     .donation-button {
         left: 0%;
+    }
+
+    .donation-button:hover {
+        -webkit-animation: fa-shake 1s infinite linear;
+        -moz-animation: fa-shake 1s infinite linear;
+        -o-animation: fa-shake 1s infinite linear;
+        animation: fa-shake 1s infinite linear;
     }
 `;
 
@@ -71,9 +87,13 @@ export class AppBodyComponent extends LitElement {
         super.connectedCallback();
         this.calculateDocumentHeight();
 
-        this.style.setProperty('--primary-color', ConfigService.getColor('primary'));
-        this.style.setProperty('--highlight-color', ConfigService.getColor('highlight'));
-        this.style.setProperty('--background-color', ConfigService.getColor('background'));
+        const primaryColorRGB = ColorUtility.hexToRgb(ConfigService.getColor('primary'));
+        const highlightColorRGB = ColorUtility.hexToRgb(ConfigService.getColor('highlight'));
+        const backgroundColorRGB = ColorUtility.hexToRgb(ConfigService.getColor('background'));
+
+        this.style.setProperty('--primary-color', `${primaryColorRGB.r}, ${primaryColorRGB.g}, ${primaryColorRGB.b}`);
+        this.style.setProperty('--highlight-color', `${highlightColorRGB.r}, ${highlightColorRGB.g}, ${highlightColorRGB.b}`);
+        this.style.setProperty('--background-color',`${backgroundColorRGB.r}, ${backgroundColorRGB.g}, ${backgroundColorRGB.b}`);
     }
 
     /**
@@ -90,7 +110,8 @@ export class AppBodyComponent extends LitElement {
     }
 
     private refreshTheme(e: ThemeEvent) {
-        this.style.setProperty('--' + e.color + '-color', e.value);
+        const color = ColorUtility.hexToRgb(e.value);
+        this.style.setProperty('--' + e.color + '-color', `${color.r}, ${color.g}, ${color.b}`);
     }
 
     private toggleSettings() {

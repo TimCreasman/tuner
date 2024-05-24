@@ -12,7 +12,7 @@ export const DonationComponentStyles = css`
 
         margin: 2em;
         padding: 4em;
-        color: var(--highlight-color);
+        color: rgb(var(--highlight-color));
 
         height: 30vw;
         container-type: inline-size;
@@ -24,7 +24,7 @@ export const DonationComponentStyles = css`
 
         border-radius: 1em;
         backdrop-filter: blur(25px);
-        background-color: rgba(255, 255, 255, 0.3);
+        background-color: rgba(var(--primary-color), 0.3);
 
         font: inherit;
         border: none;
@@ -52,7 +52,7 @@ export const DonationComponentStyles = css`
     .emphasis {
         font-size: 1.5em;
         font-weight: bold;
-        text-decoration: underline double var(--primary-color);
+        text-decoration: underline double rgb(var(--primary-color));
     }
 `;
 
@@ -74,8 +74,7 @@ export class DonationComponent extends LitElement {
                         <span class="emphasis">This application will always remain free,</span> but I love coffee and if you want to buy me one, I won't stop you.
                     </div>
                     <a class="donation-button" target="_blank" href="https://www.paypal.com/donate/?business=5NG3ZRJL9KA2G&no_recurring=0&item_name=Thank+you%21&currency_code=USD">
-                        <i class="fa fa-circle-dollar-to-slot"></i>
-                        <i class="fab fa-paypal"></i>
+                        <i class="fab fa-paypal"></i> Donate
                     </a>
                 </div>
             </tn-modal>

@@ -9,9 +9,9 @@ const TunerNoteComponentStyles = css`
     }
 
     .tuner-note-letter {
-        stroke: var(--highlight-color);
+        stroke: rgb(var(--highlight-color));
         stroke-width: 1;
-        fill: var(--background-color);
+        fill: rgb(var(--background-color));
         font-size: 2.5em;
     }
 
@@ -23,10 +23,10 @@ const TunerNoteComponentStyles = css`
     }
 
     .tuner-note-accidental {
-        stroke: var(--highlight-color);
+        stroke: rgb(var(--highlight-color));
         stroke-width: 0.5;
         stroke-linecap: round;
-        fill: var(--background-color);
+        fill: rgb(var(--background-color));
         font-size: 1em;
     }
 
@@ -39,10 +39,10 @@ const TunerNoteComponentStyles = css`
     }
 
     .tuner-note-octave {
-        stroke: var(--highlight-color);
+        stroke: rgb(var(--highlight-color));
         stroke-width: 0.5;
         stroke-linecap: round;
-        fill: var(--background-color);
+        fill: rgb(var(--background-color));
         font-size: 1em;
     }
 
@@ -54,7 +54,7 @@ const TunerNoteComponentStyles = css`
     }
 
     .tuner-liquid {
-        fill: var(--primary-color);
+        fill: rgb(var(--primary-color));
     }
 `;
 
