@@ -24,7 +24,7 @@ export const DonationComponentStyles = css`
 
         border-radius: 1em;
         backdrop-filter: blur(25px);
-        background-color: rgba(var(--highlight-color), 0.3);
+        background-color: rgba(var(--primary-color), 0.3);
 
         font: inherit;
         border: none;
@@ -74,8 +74,7 @@ export class DonationComponent extends LitElement {
                         <span class="emphasis">This application will always remain free,</span> but I love coffee and if you want to buy me one, I won't stop you.
                     </div>
                     <a class="donation-button" target="_blank" href="https://www.paypal.com/donate/?business=5NG3ZRJL9KA2G&no_recurring=0&item_name=Thank+you%21&currency_code=USD">
-                        <i class="fa fa-circle-dollar-to-slot"></i>
-                        <i class="fab fa-paypal"></i>
+                        <i class="fab fa-paypal"></i> Donate
                     </a>
                 </div>
             </tn-modal>
