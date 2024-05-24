@@ -12,7 +12,7 @@ export const DonationComponentStyles = css`
 
         margin: 2em;
         padding: 4em;
-        color: var(--highlight-color);
+        color: rgb(var(--highlight-color));
 
         height: 30vw;
         container-type: inline-size;
@@ -24,7 +24,7 @@ export const DonationComponentStyles = css`
 
         border-radius: 1em;
         backdrop-filter: blur(25px);
-        background-color: rgba(255, 255, 255, 0.3);
+        background-color: rgba(var(--highlight-color), 0.3);
 
         font: inherit;
         border: none;
@@ -52,7 +52,7 @@ export const DonationComponentStyles = css`
     .emphasis {
         font-size: 1.5em;
         font-weight: bold;
-        text-decoration: underline double var(--primary-color);
+        text-decoration: underline double rgb(var(--primary-color));
     }
 `;
 

@@ -34,7 +34,7 @@ export const SettingsComponentStyles = css`
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: var(--background-color);
+        background-color: rgb(var(--background-color));
     }
 
     .slider:before {
@@ -44,15 +44,15 @@ export const SettingsComponentStyles = css`
         width: 26px;
         left: 4px;
         bottom: 4px;
-        background-color: var(--highlight-color);
+        background-color: rgb(var(--highlight-color));
     }
 
     input:checked + .slider {
-        background-color: var(--primary-color);
+        background-color: rgb(var(--primary-color));
     }
 
     input:focus + .slider {
-        box-shadow: 0 0 1px var(--background-color);
+        box-shadow: 0 0 1px rgb(var(--background-color));
     }
 
     input:checked + .slider:before {
@@ -75,14 +75,14 @@ export const SettingsComponentStyles = css`
 
     input[type="range"]::-webkit-slider-runnable-track {
         margin: 0;
-        background: var(--background-color);
+        background: rgb(var(--background-color));
         height: 0.5rem;
     }
 
     /******** Firefox ********/
 
     input[type="range"]::-moz-range-track {
-        background: var(--background-color);
+        background: rgb(var(--background-color));
         height: 0.5rem;
     }
 
@@ -92,7 +92,7 @@ export const SettingsComponentStyles = css`
         -webkit-appearance: none; /* Override default look */
         appearance: none;
         margin-top: -12px; /* Centers thumb on the track */
-        background-color: var(--primary-color);
+        background-color: rgb(var(--primary-color));
         height: 2rem;
         width: 1rem;
     }
@@ -107,8 +107,8 @@ export const SettingsComponentStyles = css`
 
     input[type="text"] {
         border: none;
-        background: var(--background-color);
-        color: var(--highlight-color);
+        background: rgb(var(--background-color));
+        color: rgb(var(--highlight-color));
         align-self: stretch;
         border-radius: 1em;
         font-family: var(--font-family);
@@ -116,8 +116,8 @@ export const SettingsComponentStyles = css`
 
     select {
         border: none;
-        background: var(--background-color);
-        color: var(--highlight-color);
+        background: rgb(var(--background-color));
+        color: rgb(var(--highlight-color));
         align-self: stretch;
         border-radius: 1em;
         font-family: var(--font-family);
@@ -138,7 +138,7 @@ export const SettingsComponentStyles = css`
         backdrop-filter: blur(25px);
         border-radius: 1em;
         background-color: rgba(0, 0, 0, 0.8);
-        color: var(--highlight-color);
+        color: rgb(var(--highlight-color));
     }
 
     .setting > .header {

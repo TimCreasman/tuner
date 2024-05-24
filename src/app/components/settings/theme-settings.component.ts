@@ -25,15 +25,15 @@ const ThemeSettingComponentStyles = css`
     }
 
     .color-ball.primary {
-        background-color: var(--primary-color);
+        background-color: rgb(var(--primary-color));
     }
 
     .color-ball.highlight {
-        background-color: var(--highlight-color);
+        background-color: rgb(var(--highlight-color));
     }
 
     .color-ball.background {
-        background-color: var(--background-color);
+        background-color: rgb(var(--background-color));
     }
 
     .color-label {

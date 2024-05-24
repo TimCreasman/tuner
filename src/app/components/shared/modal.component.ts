@@ -31,9 +31,9 @@ const SettingsComponentStyles = css`
         top: -5%;
         position: absolute;
         z-index: 1;
-        box-shadow: inset 0 0 1em 2em var(--background-color);
-        -webkit-box-shadow: inset 0 0 1em 2em var(--background-color);
-        -moz-box-shadow: inset 0 0 1em 2em var(--background-color);
+        box-shadow: inset 0 0 1em 2em rgb(var(--background-color));
+        -webkit-box-shadow: inset 0 0 1em 2em rgb(var(--background-color));
+        -moz-box-shadow: inset 0 0 1em 2em rgb(var(--background-color));
         pointer-events: none;
     }
 
@@ -41,7 +41,7 @@ const SettingsComponentStyles = css`
         text-align: center;
         font-size: clamp(1rem, 4cqi, 4rem);
         justify-content: center;
-        color: var(--highlight-color);
+        color: rgb(var(--highlight-color));
     }
 
     .row {

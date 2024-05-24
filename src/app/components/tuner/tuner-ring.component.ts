@@ -13,7 +13,7 @@ const TunerRingComponentStyles = css`
   .tuner-needle {
     --width: 1.5vmin;
 
-    background: linear-gradient(0deg, transparent 70%, var(--primary-color) 30%);
+    background: linear-gradient(0deg, transparent 70%, rgb(var(--primary-color)) 30%);
     width: var(--width);
     height: 52%;
     position: absolute;
@@ -36,11 +36,11 @@ const TunerRingComponentStyles = css`
   }
 
   .top-spokes > tn-spoke {
-    background-color: var(--highlight-color);
+    background-color: rgb(var(--highlight-color));
   }
 
   .bottom-spokes > tn-spoke {
-    background-color: var(--primary-color);
+    background-color: rgb(var(--primary-color));
   }
 `;
 
@@ -168,7 +168,7 @@ export class SpokeComponent extends LitElement {
     connectedCallback() {
         super.connectedCallback();
         if (this.isMiddle) {
-            this.style.setProperty('background', 'var(--primary-color)');
+            this.style.setProperty('background', 'rgb(var(--primary-color))');
         }
         this.setupPosition();
     }
