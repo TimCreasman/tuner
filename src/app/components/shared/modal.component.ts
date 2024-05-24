@@ -10,8 +10,8 @@ const SettingsComponentStyles = css`
         position: absolute;
         z-index: 1;
 
-        backdrop-filter: blur(3em);
-        -webkit-backdrop-filter: blur(3em); /* Safari */
+        backdrop-filter: blur(6em);
+        -webkit-backdrop-filter: blur(6em); /* Safari */
         overflow-y: scroll;
 
         -ms-overflow-style: none; /* IE and Edge */
@@ -20,6 +20,8 @@ const SettingsComponentStyles = css`
         -webkit-user-select: none; /* Safari */
         -ms-user-select: none; /* IE 10 and IE 11 */
         user-select: none; /* Standard syntax */
+
+        container-type: inline-size;
     }
 
     .scroll-shadow {
@@ -29,17 +31,22 @@ const SettingsComponentStyles = css`
         top: -5%;
         position: absolute;
         z-index: 1;
-        box-shadow: inset 0 0 0 2em var(--background-color);
+        box-shadow: inset 0 0 1em 2em var(--background-color);
+        -webkit-box-shadow: inset 0 0 1em 2em var(--background-color);
+        -moz-box-shadow: inset 0 0 1em 2em var(--background-color);
         pointer-events: none;
     }
 
     .header {
-        font-size: 3em;
+        text-align: center;
+        font-size: clamp(1rem, 4cqi, 4rem);
+        justify-content: center;
+        color: var(--highlight-color);
     }
 
     .row {
         display: flex;
-        margin-block: 1em;
+        margin-top: 2em;
         margin-inline: 1em;
     }
 

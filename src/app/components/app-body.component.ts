@@ -40,14 +40,20 @@ const AppBodyComponentStyles = css`
         max-height: 90vh;
         max-width: 90vh;
     }
-
-    .icon {
-        z-index: 2;
-        position: absolute;
-        right: 0%;
-        top: 0%;
+    
+    .floating-button {
         color: var(--highlight-color);
         font-size: 3em;
+        z-index: 2;
+        position: absolute;
+    }
+
+    .settings-button {
+        right: 0%;
+    }
+
+    .donation-button {
+        left: 0%;
     }
 `;
 
@@ -57,6 +63,9 @@ export class AppBodyComponent extends LitElement {
 
     @property()
     showSettings = false;
+
+    @property()
+    showDonation = false;
 
     connectedCallback() {
         super.connectedCallback();
@@ -85,6 +94,7 @@ export class AppBodyComponent extends LitElement {
     }
 
     private toggleSettings() {
+        this.showDonation = false;
         this.showSettings = !this.showSettings;
     }
 
@@ -93,14 +103,27 @@ export class AppBodyComponent extends LitElement {
             <tn-settings @theme-changed="${this.refreshTheme}"></tn-settings>` : nothing;
     }
 
+    private toggleDonation() {
+        this.showSettings = false;
+        this.showDonation = !this.showDonation;
+    }
+
+    private renderDonation() {
+        return this.showDonation ? html`
+            <tn-donation></tn-donation>` : nothing;
+    }
+
     protected render() {
         return html`
             <div class="app-body">
                 <div class="app-content">
-                    <div class="icon" @click="${this.toggleSettings}"><i
+                    <div class="floating-button settings-button" @click="${this.toggleSettings}"><i
                             class="${this.showSettings ? 'far fa-circle-xmark' : 'fa fa-gear'}"></i></div>
+                    <div class="floating-button donation-button" @click="${this.toggleDonation}"><i
+                            class="${this.showDonation ? 'far fa-circle-xmark' : 'fa fa-coffee'}"></i></div>
                     <tn-tuner></tn-tuner>
                     ${this.renderSettings()}
+                    ${this.renderDonation()}
                 </div>
             </div>
         `;
