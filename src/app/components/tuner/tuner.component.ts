@@ -48,7 +48,7 @@ export class TunerComponent extends LitElement {
             this.clarity = clarity;
             this.volume = volume;
             // only update if we are above the volume and clarity thresholds
-            if (volume < 0.1 && clarity < 0.99) {
+            if (volume < 0.01 || clarity < 0.95) {
                 return;
             }
 
