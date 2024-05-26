@@ -4,6 +4,7 @@ import Fontawesome from '../utilities/fontawesome';
 import { ConfigService } from '../services/config.service';
 import { ThemeEvent } from '../events/theme-event';
 import { ColorUtility } from '../utilities/color-utility';
+import ButtonStyles from '../components/shared/css/button-styles';
 
 const AppBodyComponentStyles = css`
     :root {
@@ -41,41 +42,34 @@ const AppBodyComponentStyles = css`
         height: 90vw;
         max-height: 90vh;
         max-width: 90vh;
+
+        container-type: inline-size;
     }
     
     .floating-button {
         color: rgb(var(--highlight-color));
-        font-size: 3em;
+        font-size: clamp(1rem, 3cqi, 2rem);
         z-index: 2;
         position: absolute;
+        margin: 0.5em;
+        padding: 0.5em;
+
+        width: clamp(3rem, 10cqi, 6rem);
+        height: clamp(3rem, 10cqi, 6rem);
     }
 
     .settings-button {
         right: 0%;
     }
 
-    .settings-button:hover {
-        -webkit-animation: fa-spin 1.7s infinite linear;
-        -moz-animation: fa-spin 1.7s infinite linear;
-        -o-animation: fa-spin 1.7s infinite linear;
-        animation: fa-spin 1.7s infinite linear;
-    }
-
     .donation-button {
         left: 0%;
-    }
-
-    .donation-button:hover {
-        -webkit-animation: fa-shake 1s infinite linear;
-        -moz-animation: fa-shake 1s infinite linear;
-        -o-animation: fa-shake 1s infinite linear;
-        animation: fa-shake 1s infinite linear;
     }
 `;
 
 @customElement('tn-app')
 export class AppBodyComponent extends LitElement {
-    static styles = [AppBodyComponentStyles, Fontawesome];
+    static styles = [AppBodyComponentStyles, Fontawesome, ButtonStyles];
 
     @property()
     showSettings = false;
@@ -137,11 +131,11 @@ export class AppBodyComponent extends LitElement {
     protected render() {
         return html`
             <div class="app-body">
+                <button class="floating-button settings-button" @click="${this.toggleSettings}"><i
+                        class="${this.showSettings ? 'far fa-circle-xmark' : 'fa fa-gear'}"></i></button>
+                <button class="floating-button donation-button" @click="${this.toggleDonation}"><i
+                        class="${this.showDonation ? 'far fa-circle-xmark' : 'fa fa-coffee'}"></i></button>
                 <div class="app-content">
-                    <div class="floating-button settings-button" @click="${this.toggleSettings}"><i
-                            class="${this.showSettings ? 'far fa-circle-xmark' : 'fa fa-gear'}"></i></div>
-                    <div class="floating-button donation-button" @click="${this.toggleDonation}"><i
-                            class="${this.showDonation ? 'far fa-circle-xmark' : 'fa fa-coffee'}"></i></div>
                     <tn-tuner></tn-tuner>
                     ${this.renderSettings()}
                     ${this.renderDonation()}

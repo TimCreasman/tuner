@@ -2,6 +2,7 @@ import { customElement } from 'lit/decorators.js';
 import { css, html, LitElement } from 'lit';
 import Fontawesome from '../../utilities/fontawesome';
 import FontawesomeBrands from '../../utilities/fontawesome-brands';
+import ButtonStyles from '../shared/css/button-styles';
 
 export const DonationComponentStyles = css`
 
@@ -18,33 +19,6 @@ export const DonationComponentStyles = css`
         container-type: inline-size;
     }
 
-    .donation-button {
-        margin: 1em;
-        padding: 1em;
-
-        border-radius: 1em;
-        backdrop-filter: blur(25px);
-        background-color: rgba(var(--primary-color), 0.3);
-
-        font: inherit;
-        border: none;
-        color: inherit;
-        cursor: pointer;
-
-        align-self: center;
-        height: fit-content;
-        font-size: clamp(1rem, 4cqi, 4rem);
-
-        text-decoration: none;
-    }
-
-    .donation-button:hover {
-        -webkit-animation: fa-bounce 0.7s infinite linear;
-        -moz-animation: fa-bounce 0.7s infinite linear;
-        -o-animation: fa-bounce 0.7s infinite linear;
-        animation: fa-bounce 0.7s infinite linear;
-    }
-
     .donation-blurb {
         font-size: clamp(1rem, 4cqi, 4rem);
     }
@@ -59,7 +33,7 @@ export const DonationComponentStyles = css`
 @customElement('tn-donation')
 export class DonationComponent extends LitElement {
 
-    static styles = [DonationComponentStyles, FontawesomeBrands, Fontawesome];
+    static styles = [DonationComponentStyles, ButtonStyles, FontawesomeBrands, Fontawesome];
 
     constructor() {
         super();
