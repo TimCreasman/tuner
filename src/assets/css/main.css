@@ -14,5 +14,6 @@ body {
     --highlight-color: white;
     --font-family: "Archivo Black", sans-serif;
     --doc-height: 100%;
+    --entrance-transition: cubic-bezier(0.39, 0.575, 0.565, 1); 
 }
 
