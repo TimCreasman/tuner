@@ -3,6 +3,10 @@
 @import "../fontawesome/css/regular.css";
 @import "../fontawesome/css/brands.css";
 
+html {
+    touch-action: manipulation;
+}
+
 body {
     margin: 0;
 }
