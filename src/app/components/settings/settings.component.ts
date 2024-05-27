@@ -168,6 +168,7 @@ export class SettingsComponent extends LitElement {
                 <div slot="content">
                     <tn-general-settings></tn-general-settings>
                     <tn-theme-settings></tn-theme-settings>
+                    <tn-appearance-settings></tn-appearance-settings>
                     <tn-experimental-settings></tn-experimental-settings>
                 </div>
             </tn-modal>
