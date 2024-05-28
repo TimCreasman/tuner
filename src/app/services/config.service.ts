@@ -1,13 +1,16 @@
-import { AllowedColor } from '../events/theme-event';
+import { ThemeColor, themeColors } from '../events/theme-event';
 import { AllowedAlgorithmTypes } from '../models/algorithm.model';
 import { MathUtility } from '../utilities/math-utility';
+
+const components = ['upperRing' , 'lowerRing' , 'noteFill' , 'noteOutline' , 'noteOctave' , 'donationButton' , 'settingsButton'] as const;
+type Component = typeof components[number];
 
 type AppConfig = {
     accidentalMode: 0 | 1,
     frequencyOfA: number,
     debugMode: string,
     algorithm: AllowedAlgorithmTypes,
-} & { [key in AllowedColor]: string }
+} & { [key in ThemeColor]: string } & { [key in Component]: boolean }
 
 export class ConfigService {
 
@@ -20,8 +23,16 @@ export class ConfigService {
         primary: '#FF7A00',
         highlight: '#FFFFFF',
         background: '#000000',
-        // Algorithm
+        // Pitch detection algorithm
         algorithm: 'McLeod',
+        // Which components to show
+        upperRing: true,
+        lowerRing: true,
+        noteFill: true,
+        noteOutline: true,
+        noteOctave: true,
+        donationButton: true,
+        settingsButton: true,
     };
 
     public static ALowerBoundFreq = 415; // Lowest Baroque pitch
@@ -55,15 +66,22 @@ export class ConfigService {
     }
 
     static get config(): AppConfig {
-        return {
+        const config: Partial<AppConfig> = {
             accidentalMode: this.accidentalMode,
             frequencyOfA: this.frequencyOfA,
             debugMode: 'false',
-            primary: this.getColor('primary'),
-            highlight: this.getColor('highlight'),
-            background: this.getColor('background'),
             algorithm: this.algorithm
         };
+
+        for(const color in themeColors) {
+            config[color as ThemeColor] = this.getColor(color as ThemeColor);
+        }
+
+        for(const component in components) {
+            config[component as Component] = this.getComponent(component as Component);
+        }
+
+        return config as AppConfig;
     }
 
     static get debugMode(): boolean {
@@ -91,13 +109,13 @@ export class ConfigService {
         return Number(this.getStoredValueOrDefault('frequencyOfA'));
     }
 
-    static setColor(type: AllowedColor, hexColor: string): void {
+    static setColor(type: ThemeColor, hexColor: string): void {
         if (this.isHexCode(hexColor)) {
             localStorage.setItem(this.getPropertyName(this.defaultConfig, a => a[type]), hexColor);
         }
     }
 
-    static getColor(type: AllowedColor): string {
+    static getColor(type: ThemeColor): string {
         return this.getStoredValueOrDefault(type);
     }
 
@@ -107,6 +125,14 @@ export class ConfigService {
 
     static get algorithm(): AllowedAlgorithmTypes {
         return this.getStoredValueOrDefault('algorithm') as AllowedAlgorithmTypes;
+    }
+
+    static setComponent(type: Component, doShow: boolean) {
+        localStorage.setItem(this.getPropertyName(this.defaultConfig, a => a[type]), doShow.toString());
+    }
+
+    static getComponent(type: Component) {
+        return Boolean(this.getStoredValueOrDefault(type));
     }
 }
 
