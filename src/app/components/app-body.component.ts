@@ -1,6 +1,6 @@
 import { customElement, property } from 'lit/decorators.js';
 import { css, html, LitElement, nothing, unsafeCSS } from 'lit';
-import Fontawesome from '../utilities/fontawesome';
+import Fontawesome from '../components/shared/css/fontawesome';
 import { ConfigService } from '../services/config.service';
 import { ThemeEvent } from '../events/theme-event';
 import { ColorUtility } from '../utilities/color-utility';
@@ -124,6 +124,9 @@ export class AppBodyComponent extends LitElement {
     }
 
     private renderDonation() {
+        if (!ConfigService.getComponent('donationButton')) {
+            return nothing;
+        }
         return this.showDonation ? html`
             <tn-donation></tn-donation>` : nothing;
     }
@@ -144,3 +147,4 @@ export class AppBodyComponent extends LitElement {
         `;
     }
 }
+

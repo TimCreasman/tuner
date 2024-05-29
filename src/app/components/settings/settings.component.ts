@@ -1,6 +1,6 @@
 import { customElement } from 'lit/decorators.js';
 import { css, html, LitElement } from 'lit';
-import Fontawesome from '../../utilities/fontawesome';
+import Fontawesome from '../../components/shared/css/fontawesome';
 
 export const SettingsComponentStyles = css`
     input {

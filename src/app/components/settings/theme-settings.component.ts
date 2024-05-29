@@ -2,7 +2,7 @@ import { css, html, LitElement, nothing } from 'lit';
 import { customElement, state } from 'lit-element';
 import { ThemeColor, ThemeEvent } from '../../events/theme-event';
 import { ConfigService } from '../../services/config.service';
-import Fontawesome from '../../utilities/fontawesome';
+import Fontawesome from '../../components/shared/css/fontawesome';
 import { SettingsComponentStyles } from './settings.component';
 
 const ThemeSettingComponentStyles = css`
