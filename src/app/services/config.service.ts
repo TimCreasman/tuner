@@ -85,7 +85,7 @@ export class ConfigService {
     }
 
     static get debugMode(): boolean {
-        return Boolean(this.getStoredValueOrDefault('debugMode'));
+        return this.getStoredValueOrDefault('debugMode') === 'true';
     }
 
     static set debugMode(mode: boolean) {
