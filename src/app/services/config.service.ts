@@ -3,7 +3,7 @@ import { AllowedAlgorithmTypes } from '../models/algorithm.model';
 import { MathUtility } from '../utilities/math-utility';
 
 const components = ['upperRing' , 'lowerRing' , 'noteFill' , 'noteOutline' , 'noteOctave' , 'donationButton' , 'settingsButton'] as const;
-type Component = typeof components[number];
+export type Component = typeof components[number];
 
 type AppConfig = {
     accidentalMode: 0 | 1,
@@ -132,7 +132,7 @@ export class ConfigService {
     }
 
     static getComponent(type: Component) {
-        return Boolean(this.getStoredValueOrDefault(type));
+        return this.getStoredValueOrDefault(type) === 'true';
     }
 }
 
