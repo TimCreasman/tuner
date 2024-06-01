@@ -114,6 +114,9 @@ export class AppBodyComponent extends LitElement {
     }
 
     private renderSettings() {
+        if (!ConfigService.getComponent('settingsButton')) {
+            return nothing;
+        }
         return this.showSettings ? html`
             <tn-settings @theme-changed="${this.refreshTheme}"></tn-settings>` : nothing;
     }
@@ -131,13 +134,31 @@ export class AppBodyComponent extends LitElement {
             <tn-donation></tn-donation>` : nothing;
     }
 
+    private renderButtonDonation() {
+        if (!ConfigService.getComponent('donationButton')) {
+            return nothing;
+        }
+        return html`
+                <button class="floating-button donation-button" @click="${this.toggleDonation}"><i
+                        class="${this.showDonation ? 'far fa-circle-xmark' : 'fa fa-coffee'}"></i></button>
+        `;
+    }
+
+    private renderButtonSettings() {
+        if (!ConfigService.getComponent('settingsButton')) {
+            return nothing;
+        }
+        return html`
+                <button class="floating-button settings-button" @click="${this.toggleSettings}"><i
+                        class="${this.showSettings ? 'far fa-circle-xmark' : 'fa fa-gear'}"></i></button>
+        `;
+    }
+
     protected render() {
         return html`
             <div class="app-body">
-                <button class="floating-button settings-button" @click="${this.toggleSettings}"><i
-                        class="${this.showSettings ? 'far fa-circle-xmark' : 'fa fa-gear'}"></i></button>
-                <button class="floating-button donation-button" @click="${this.toggleDonation}"><i
-                        class="${this.showDonation ? 'far fa-circle-xmark' : 'fa fa-coffee'}"></i></button>
+                ${this.renderButtonDonation()}
+                ${this.renderButtonSettings()}
                 <div class="app-content">
                     <tn-tuner></tn-tuner>
                     ${this.renderSettings()}

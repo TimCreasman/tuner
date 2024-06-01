@@ -1,20 +1,18 @@
 import { ThemeColor, themeColors } from '../events/theme-event';
 import { AllowedAlgorithmTypes } from '../models/algorithm.model';
+import { Component, components } from '../models/component.model';
 import { MathUtility } from '../utilities/math-utility';
-
-const components = ['upperRing' , 'lowerRing' , 'noteFill' , 'noteOutline' , 'noteOctave' , 'donationButton' , 'settingsButton'] as const;
-export type Component = typeof components[number];
 
 type AppConfig = {
     accidentalMode: 0 | 1,
     frequencyOfA: number,
     debugMode: string,
     algorithm: AllowedAlgorithmTypes,
-} & { [key in ThemeColor]: string } & { [key in Component]: boolean }
+} & { [key in ThemeColor]: string } & { [key in Component]: string }
 
 export class ConfigService {
 
-    public static defaultConfig: AppConfig = {
+    public static defaultConfig: Partial<AppConfig> = {
         // 0 for flats, 1 for sharps
         accidentalMode: 1,
         frequencyOfA: 440,
@@ -26,13 +24,14 @@ export class ConfigService {
         // Pitch detection algorithm
         algorithm: 'McLeod',
         // Which components to show
-        upperRing: true,
-        lowerRing: true,
-        noteFill: true,
-        noteOutline: true,
-        noteOctave: true,
-        donationButton: true,
-        settingsButton: true,
+        upperRing: 'true',
+        lowerRing: 'true',
+        noteFill: 'true',
+        noteOctave: 'true',
+        noteOutline: 'true',
+        needle: 'true',
+        donationButton: 'true',
+        settingsButton: 'true',
     };
 
     public static ALowerBoundFreq = 415; // Lowest Baroque pitch
@@ -56,7 +55,7 @@ export class ConfigService {
     }
 
     private static getStoredValueOrDefault(key: keyof AppConfig) {
-        return localStorage.getItem(key) ?? this.defaultConfig[key] as string;
+        return localStorage.getItem(key) as string ?? this.defaultConfig[key] as string;
     }
 
     static set config(config: AppConfig) {
@@ -78,7 +77,7 @@ export class ConfigService {
         }
 
         for(const component in components) {
-            config[component as Component] = this.getComponent(component as Component);
+            config[component as Component] = this.getComponent(component as Component).toString();
         }
 
         return config as AppConfig;

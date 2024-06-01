@@ -1,8 +1,9 @@
 import {customElement, property} from 'lit/decorators.js';
-import {css, html, LitElement, TemplateResult} from 'lit';
+import {css, html, LitElement, nothing, TemplateResult} from 'lit';
 import {ACCIDENTALS} from '../../utilities/note-utility';
 import {MathUtility} from '../../utilities/math-utility';
 import bezier from 'bezier-easing';
+import { ConfigService } from '../../services/config.service';
 
 const TunerRingComponentStyles = css`
   :host {
@@ -117,13 +118,13 @@ export class TunerRingComponent extends LitElement {
             <div class="tuner-ring">
                 <div class="ring">
                     <span class="top-spokes">
-                        ${topRing}
+                        ${ConfigService.getComponent('upperRing') ? topRing : nothing}
                     </span>
                     <span class="bottom-spokes">
-                        ${bottomRing}
+                        ${ConfigService.getComponent('lowerRing') ? bottomRing : nothing}
                     </span>
                 </div>
-                <div class="tuner-needle"></div>
+                ${ConfigService.getComponent('needle') ? html`<div class="tuner-needle"></div>` : nothing}
             </div>
         `;
     }

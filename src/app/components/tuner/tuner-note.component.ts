@@ -1,16 +1,27 @@
-import {css, html, LitElement, PropertyValues} from 'lit';
-import {customElement, property, query} from 'lit/decorators.js';
-import {Note} from '../../utilities/note-utility';
-import {MathUtility} from '../../utilities/math-utility';
+import { css, html, LitElement, nothing, PropertyValues, svg } from 'lit';
+import { customElement, property, query } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
+import { Note } from '../../utilities/note-utility';
+import { MathUtility } from '../../utilities/math-utility';
+import { ConfigService } from '../../services/config.service';
 
 const TunerNoteComponentStyles = css`
     :host {
         font-family: var(--font-family);
     }
 
-    .tuner-note-letter {
+    .tuner-note-stroke-half {
+        stroke: rgb(var(--highlight-color));
+        stroke-linecap: round;
+        stroke-width: 0.5;
+    }
+
+    .tuner-note-stroke-full {
         stroke: rgb(var(--highlight-color));
         stroke-width: 1;
+    }
+
+    .tuner-note-letter {
         fill: rgb(var(--background-color));
         font-size: 2.5em;
     }
@@ -23,9 +34,6 @@ const TunerNoteComponentStyles = css`
     }
 
     .tuner-note-accidental {
-        stroke: rgb(var(--highlight-color));
-        stroke-width: 0.5;
-        stroke-linecap: round;
         fill: rgb(var(--background-color));
         font-size: 1em;
     }
@@ -39,9 +47,6 @@ const TunerNoteComponentStyles = css`
     }
 
     .tuner-note-octave {
-        stroke: rgb(var(--highlight-color));
-        stroke-width: 0.5;
-        stroke-linecap: round;
         fill: rgb(var(--background-color));
         font-size: 1em;
     }
@@ -71,7 +76,7 @@ export class TunerNoteComponent extends LitElement {
     @property()
     clarity = 1;
 
-    @property({type: Number})
+    @property({ type: Number })
     accuracy = 0;
 
     @query('#height-animator')
@@ -102,19 +107,35 @@ export class TunerNoteComponent extends LitElement {
             return;
         }
         this.updateHeightAnimation();
+
     }
 
     render() {
+        const octaveClasses = { 
+            'tuner-note-stroke-half': ConfigService.getComponent('noteOutline'),
+            'tuner-note-octave': true
+        };
+
+        const noteClasses = { 
+            'tuner-note-stroke-full': ConfigService.getComponent('noteOutline'),
+            'tuner-note-letter': true
+        };
+
+        const accidentalClasses = {
+            'tuner-note-stroke-half': ConfigService.getComponent('noteOutline'),
+            'tuner-note-accidental': true
+        };
+
         return html`
             <div class="tuner-note-container">
                 <svg id="view" viewBox="0 2 100 100" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg">
-                    <use href="#note-letter" class="tuner-note-letter"/>
 
-                    <use href="#liquid-effect" mask="url(#note-mask)"/>
+                    <use href="#note-letter" class=${classMap(noteClasses)}/>
 
-                    <use href="#note-octave" class="tuner-note-octave"/>
-                    <use href="#note-accidental" class="tuner-note-accidental"/>
+                    ${ConfigService.getComponent('noteFill') ? svg`<use href="#liquid-effect" mask="url(#note-mask)"/>` : nothing}
+                    ${ConfigService.getComponent('noteOctave') ? svg`<use href="#note-octave" class=${classMap(octaveClasses)}/>` : nothing}
 
+                    <use href="#note-accidental" class=${classMap(accidentalClasses)}/>
                     <defs>
                         <!-- Define the text used in the scene -->
                         <text id="note-letter" x="50%" y="50%" dominant-baseline="central"
@@ -165,6 +186,8 @@ export class TunerNoteComponent extends LitElement {
                         <!-- Defines the mask used to create the cutout of the liquid -->
                         <mask id="note-mask">
                             <use href="#note-letter" class="tuner-note-letter-mask"/>
+                            <use href="#note-octave" class="tuner-note-accidental-mask"/>
+                            <use href="#note-accidental" class="tuner-note-octave-mask"/>
                         </mask>
                     </defs>
                 </svg>
@@ -206,5 +229,4 @@ class HeightAnimatorComponent {
         this.from = this.to;
     }
 }
-
 

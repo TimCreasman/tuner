@@ -5,6 +5,7 @@ import { PitchDetectorService } from '../../services/pitch-detector.service';
 import { MathUtility } from '../../utilities/math-utility';
 import { Logger } from '../../utilities/log-utility';
 import { OscillatorSource } from '../../models/audio.model';
+import { ConfigService } from '../../services/config.service';
 
 @customElement('tn-tuner')
 export class TunerComponent extends LitElement {
