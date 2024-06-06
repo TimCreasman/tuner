@@ -1,8 +1,8 @@
 import { css, html, LitElement, nothing } from 'lit';
 import { customElement, state } from 'lit-element';
-import { AllowedColor, ThemeEvent } from '../../events/theme-event';
+import { ThemeColor, ThemeEvent } from '../../events/theme-event';
 import { ConfigService } from '../../services/config.service';
-import Fontawesome from '../../utilities/fontawesome';
+import Fontawesome from '../../components/shared/css/fontawesome';
 import { SettingsComponentStyles } from './settings.component';
 
 const ThemeSettingComponentStyles = css`
@@ -58,20 +58,20 @@ export class ThemeSettingsComponent extends LitElement {
         super();
     }
 
-    private updateColor(inputEvent: InputEvent, color: AllowedColor): void {
+    private updateColor(inputEvent: InputEvent, color: ThemeColor): void {
         const value = (<HTMLInputElement>inputEvent.target).value;
         ConfigService.setColor(color, value);
         this.updateLocalColor(color, value);
         this.dispatchEvent(new ThemeEvent(color, value));
     }
 
-    private resetColor(color: AllowedColor) {
+    private resetColor(color: ThemeColor) {
         ConfigService.setColor(color, ConfigService.defaultConfig[color]);
         this.updateLocalColor(color, ConfigService.defaultConfig[color]);
         this.dispatchEvent(new ThemeEvent(color, ConfigService.defaultConfig[color]));
     }
 
-    private updateLocalColor(color: AllowedColor, value: string) {
+    private updateLocalColor(color: ThemeColor, value: string) {
         switch (color) {
             case 'primary':
                 this.primaryColor = value;

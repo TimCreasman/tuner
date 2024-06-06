@@ -1,6 +1,6 @@
 import {customElement} from 'lit/decorators.js';
 import {css, html, LitElement} from 'lit';
-import Fontawesome from '../../utilities/fontawesome';
+import Fontawesome from './css/fontawesome';
 
 const AccordionComponentStyles = css`
     details > summary {

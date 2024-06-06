@@ -1,6 +1,6 @@
 import { customElement, html, LitElement, state } from 'lit-element';
 import { SettingsComponentStyles } from './settings.component';
-import Fontawesome from '../../utilities/fontawesome';
+import Fontawesome from '../../components/shared/css/fontawesome';
 import { ConfigService } from '../../services/config.service';
 import { AllowedAlgorithms } from '../../models/algorithm.model';
 

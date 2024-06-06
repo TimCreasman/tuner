@@ -1,6 +1,6 @@
 import { customElement, property } from 'lit/decorators.js';
 import { css, html, LitElement, nothing, unsafeCSS } from 'lit';
-import Fontawesome from '../utilities/fontawesome';
+import Fontawesome from '../components/shared/css/fontawesome';
 import { ConfigService } from '../services/config.service';
 import { ThemeEvent } from '../events/theme-event';
 import { ColorUtility } from '../utilities/color-utility';
@@ -123,18 +123,42 @@ export class AppBodyComponent extends LitElement {
         this.showDonation = !this.showDonation;
     }
 
+    private onDoubleClick() {
+        if (!this.showSettings) {
+            this.toggleSettings();
+        }
+    }
+
     private renderDonation() {
         return this.showDonation ? html`
             <tn-donation></tn-donation>` : nothing;
     }
 
-    protected render() {
+    private renderButtonDonation() {
+        if (!ConfigService.getComponent('donationButton')) {
+            return nothing;
+        }
         return html`
-            <div class="app-body">
-                <button class="floating-button settings-button" @click="${this.toggleSettings}"><i
-                        class="${this.showSettings ? 'far fa-circle-xmark' : 'fa fa-gear'}"></i></button>
                 <button class="floating-button donation-button" @click="${this.toggleDonation}"><i
                         class="${this.showDonation ? 'far fa-circle-xmark' : 'fa fa-coffee'}"></i></button>
+        `;
+    }
+
+    private renderButtonSettings() {
+        if (!ConfigService.getComponent('settingsButton') && !this.showSettings) {
+            return nothing;
+        }
+        return html`
+                <button class="floating-button settings-button" @click="${this.toggleSettings}"><i
+                        class="${this.showSettings ? 'far fa-circle-xmark' : 'fa fa-gear'}"></i></button>
+        `;
+    }
+
+    protected render() {
+        return html`
+            <div class="app-body" @dblclick="${this.onDoubleClick}">
+                ${this.renderButtonDonation()}
+                ${this.renderButtonSettings()}
                 <div class="app-content">
                     <tn-tuner></tn-tuner>
                     ${this.renderSettings()}
@@ -144,3 +168,4 @@ export class AppBodyComponent extends LitElement {
         `;
     }
 }
+

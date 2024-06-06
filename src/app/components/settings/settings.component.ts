@@ -1,6 +1,6 @@
 import { customElement } from 'lit/decorators.js';
 import { css, html, LitElement } from 'lit';
-import Fontawesome from '../../utilities/fontawesome';
+import Fontawesome from '../../components/shared/css/fontawesome';
 
 export const SettingsComponentStyles = css`
     input {
@@ -168,6 +168,7 @@ export class SettingsComponent extends LitElement {
                 <div slot="content">
                     <tn-general-settings></tn-general-settings>
                     <tn-theme-settings></tn-theme-settings>
+                    <tn-appearance-settings></tn-appearance-settings>
                     <tn-experimental-settings></tn-experimental-settings>
                 </div>
             </tn-modal>

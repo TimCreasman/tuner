@@ -1,7 +1,7 @@
 import { customElement } from 'lit/decorators.js';
 import { css, html, LitElement } from 'lit';
-import Fontawesome from '../../utilities/fontawesome';
-import FontawesomeBrands from '../../utilities/fontawesome-brands';
+import Fontawesome from '../shared/css/fontawesome';
+import FontawesomeBrands from '../shared/css/fontawesome-brands';
 import ButtonStyles from '../shared/css/button-styles';
 
 export const DonationComponentStyles = css`
