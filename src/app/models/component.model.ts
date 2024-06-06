@@ -1,6 +1,6 @@
 export const components = {
-    upperRing: 'Upper Ring',
-    lowerRing: 'Lower Ring',
+    frequencyRing: 'Frequency Ring',
+    volumeRing: 'Volume Ring',
     noteFill: 'Note Fill',
     noteOctave: 'Note Octave',
     noteOutline: 'Note Outline',

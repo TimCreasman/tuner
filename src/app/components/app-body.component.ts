@@ -114,9 +114,6 @@ export class AppBodyComponent extends LitElement {
     }
 
     private renderSettings() {
-        if (!ConfigService.getComponent('settingsButton')) {
-            return nothing;
-        }
         return this.showSettings ? html`
             <tn-settings @theme-changed="${this.refreshTheme}"></tn-settings>` : nothing;
     }
@@ -126,10 +123,13 @@ export class AppBodyComponent extends LitElement {
         this.showDonation = !this.showDonation;
     }
 
-    private renderDonation() {
-        if (!ConfigService.getComponent('donationButton')) {
-            return nothing;
+    private onDoubleClick() {
+        if (!this.showSettings) {
+            this.toggleSettings();
         }
+    }
+
+    private renderDonation() {
         return this.showDonation ? html`
             <tn-donation></tn-donation>` : nothing;
     }
@@ -145,7 +145,7 @@ export class AppBodyComponent extends LitElement {
     }
 
     private renderButtonSettings() {
-        if (!ConfigService.getComponent('settingsButton')) {
+        if (!ConfigService.getComponent('settingsButton') && !this.showSettings) {
             return nothing;
         }
         return html`
@@ -156,7 +156,7 @@ export class AppBodyComponent extends LitElement {
 
     protected render() {
         return html`
-            <div class="app-body">
+            <div class="app-body" @dblclick="${this.onDoubleClick}">
                 ${this.renderButtonDonation()}
                 ${this.renderButtonSettings()}
                 <div class="app-content">

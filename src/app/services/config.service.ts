@@ -24,8 +24,8 @@ export class ConfigService {
         // Pitch detection algorithm
         algorithm: 'McLeod',
         // Which components to show
-        upperRing: 'true',
-        lowerRing: 'true',
+        frequencyRing: 'true',
+        volumeRing: 'true',
         noteFill: 'true',
         noteOctave: 'true',
         noteOutline: 'true',
