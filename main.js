@@ -1416,10 +1416,10 @@ readers do not read off random characters that represent icons */
             <div class="tuner-ring">
                 <div class="ring">
                     <span class="top-spokes">
-                        ${f.getComponent("upperRing")?t:x}
+                        ${f.getComponent("frequencyRing")?t:x}
                     </span>
                     <span class="bottom-spokes">
-                        ${f.getComponent("lowerRing")?e:x}
+                        ${f.getComponent("volumeRing")?e:x}
                     </span>
                 </div>
                 ${f.getComponent("needle")?$`<div class="tuner-needle"></div>`:x}
