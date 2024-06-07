@@ -118,10 +118,10 @@ export class TunerRingComponent extends LitElement {
             <div class="tuner-ring">
                 <div class="ring">
                     <span class="top-spokes">
-                        ${ConfigService.getComponent('upperRing') ? topRing : nothing}
+                        ${ConfigService.getComponent('frequencyRing') ? topRing : nothing}
                     </span>
                     <span class="bottom-spokes">
-                        ${ConfigService.getComponent('lowerRing') ? bottomRing : nothing}
+                        ${ConfigService.getComponent('volumeRing') ? bottomRing : nothing}
                     </span>
                 </div>
                 ${ConfigService.getComponent('needle') ? html`<div class="tuner-needle"></div>` : nothing}
