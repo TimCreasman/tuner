@@ -32,6 +32,9 @@ export class TunerComponent extends LitElement {
     clarity = 1;
 
     @property()
+    frequency = 0;
+
+    @property()
     volume = 0;
 
     inTune = false;
@@ -76,6 +79,7 @@ export class TunerComponent extends LitElement {
             this.inTune = accuracy > 0.95;
 
             this.accuracy = accuracy;
+            this.frequency = MathUtility.round(freq, 1);
         });
                     // this.pitchDetectorService.audioSource = new OscillatorSource();
 
@@ -129,6 +133,7 @@ export class TunerComponent extends LitElement {
                 Audio Playback: <input type="checkbox" @input="${this.setPlayback}">
             </div> -->
             <div data-test-id="tuner.body" @click="${this.resumeContext}">
+                <tn-tuner-frequency .frequency="${this.frequency}"></tn-tuner-frequency>
                 <tn-tuner-ring .accuracy="${this.accuracy}" .pitchAccidental="${this.pitchAccidental}"
                                .volume="${this.volume}"></tn-tuner-ring>
                 <tn-tuner-note .note="${this.note}" .accuracy="${this.accuracy}"
