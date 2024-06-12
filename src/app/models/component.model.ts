@@ -1,5 +1,6 @@
 export const components = {
     frequencyRing: 'Frequency Ring',
+    frequencyText: 'Frequency Text',
     volumeRing: 'Volume Ring',
     noteFill: 'Note Fill',
     noteOctave: 'Note Octave',

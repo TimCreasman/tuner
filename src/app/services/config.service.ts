@@ -25,6 +25,7 @@ export class ConfigService {
         algorithm: 'McLeod',
         // Which components to show
         frequencyRing: 'true',
+        frequencyText: 'true',
         volumeRing: 'true',
         noteFill: 'true',
         noteOctave: 'true',

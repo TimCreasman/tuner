@@ -1,5 +1,6 @@
-import { css, html, LitElement } from 'lit';
+import { css, html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { ConfigService } from '../../services/config.service';
 const TunerFrequencyComponentStyles = css`
     :host {
         width: 100cqw;
@@ -29,8 +30,6 @@ export class TunerFrequencyComponent extends LitElement {
     frequency = 0;
 
     render() {
-        return html`
-            <div class="container">${this.frequency}<span class="hertz">Hz</span></div>
-        `;
+        return ConfigService.getComponent('frequencyText') ? html`<div class="container">${this.frequency}<span class="hertz">Hz</span></div>` : nothing;
     }
 }
