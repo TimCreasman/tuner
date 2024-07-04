@@ -8,6 +8,12 @@
     "stripInternal": true,
     "target": "es6",
     "module": "esnext",
+    "lib": [
+      "es2019",
+      "es6",
+      "dom",
+      "webworker"
+    ],
     "moduleResolution": "node",
     "noImplicitAny": true,
     "removeComments": true,
