@@ -23,6 +23,13 @@ sh.mkdir(dir);
 // Copy over the index.html
 sh.cp('src/index.html', dir);
 
+// Copy over the PWA manifest
+sh.cp('src/manifest.json', dir);
+// Copy over icon images used for PWA
+sh.cp('-R', 'src/assets/images/', dir + '/images');
+// Lastly, copy over the service worker used to enable caching for PWA offline mode
+sh.cp('src/serviceWorker.js', dir);
+
 // ES build
 export const buildOptions = {
   entryPoints: ['src/main.ts'],
