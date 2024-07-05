@@ -23,6 +23,9 @@ sh.mkdir(dir);
 // Copy over the index.html
 sh.cp('src/index.html', dir);
 
+// Copy over subdomain cname
+sh.cp('src/CNAME', dir);
+
 // Copy over the PWA manifest
 sh.cp('src/manifest.json', dir);
 // Copy over icon images used for PWA
