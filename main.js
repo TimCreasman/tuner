@@ -758,10 +758,10 @@ readers do not read off random characters that represent icons */
             <div class="app-body" @dblclick="${this.onDoubleClick}">
                 ${this.renderButtonDonation()}
                 ${this.renderButtonSettings()}
+                ${this.renderSettings()}
+                ${this.renderDonation()}
                 <div class="app-content">
                     <tn-tuner></tn-tuner>
-                    ${this.renderSettings()}
-                    ${this.renderDonation()}
                 </div>
             </div>
         `}};ht.styles=[Hi,I,Kt],_([F()],ht.prototype,"showSettings",2),_([F()],ht.prototype,"showDonation",2),ht=_([P("tn-app")],ht);var We={};L(We,{DonationComponent:()=>Zt,DonationComponentStyles:()=>Hr});var Ve={};L(Ve,{default:()=>Ye});var Ye=M`
@@ -1153,8 +1153,8 @@ readers do not read off random characters that represent icons */
         color: rgb(var(--highlight-color));
         font-size: 2em;
 
-        margin-block: 1em;
-        margin-inline: 3em;
+        margin-block: 2rem;
+        margin-inline: 9rem;
         padding-block-end: 0.1px;
 
         transition: all .2s var(--entrance-transition);
@@ -1186,10 +1186,8 @@ readers do not read off random characters that represent icons */
             </details>
         `}};ie.styles=[co,I],ie=_([P("tn-accordion")],ie);var nr={};L(nr,{SettingsComponent:()=>oe});var mo=M`
     .modal {
-        width: 110%;
-        height: 110%;
-        right: -5%;
-        top: -5%;
+        width: 100%;
+        height: 100%;
         position: absolute;
         z-index: 1;
 
@@ -1208,10 +1206,8 @@ readers do not read off random characters that represent icons */
     }
 
     .scroll-shadow {
-        width: 110%;
-        height: 111%;
-        right: -5%;
-        top: -5%;
+        width: 100%;
+        height: 100%;
         position: absolute;
         z-index: 1;
         box-shadow: inset 0 0 1em 2em rgb(var(--background-color));
@@ -1229,8 +1225,8 @@ readers do not read off random characters that represent icons */
 
     .row {
         display: flex;
-        margin-top: 2em;
-        margin-inline: 1em;
+        margin-top: 8rem;
+        margin-inline: 4rem;
     }
 
     /* Hide scrollbar for Chrome, Safari and Opera */
