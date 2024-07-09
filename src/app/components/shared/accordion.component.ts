@@ -39,8 +39,8 @@ const AccordionComponentStyles = css`
         color: rgb(var(--highlight-color));
         font-size: 2em;
 
-        margin-block: 1em;
-        margin-inline: 3em;
+        margin-block: 2rem;
+        margin-inline: 9rem;
         padding-block-end: 0.1px;
 
         transition: all .2s var(--entrance-transition);
