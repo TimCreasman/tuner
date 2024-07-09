@@ -159,10 +159,10 @@ export class AppBodyComponent extends LitElement {
             <div class="app-body" @dblclick="${this.onDoubleClick}">
                 ${this.renderButtonDonation()}
                 ${this.renderButtonSettings()}
+                ${this.renderSettings()}
+                ${this.renderDonation()}
                 <div class="app-content">
                     <tn-tuner></tn-tuner>
-                    ${this.renderSettings()}
-                    ${this.renderDonation()}
                 </div>
             </div>
         `;
