@@ -1,7 +1,7 @@
 /* eslint no-undef: 0 */
 
-const staticTuner = 'tuner-site-v1';
-const assets = [
+const cacheName = 'tuner-site-v1';
+const precachedResources = [
   '/',
   '/index.html',
   '/main.css',
@@ -120,18 +120,35 @@ const assets = [
   '/images/ios/1024.png',
 ];
 
-self.addEventListener('install', installEvent => {
-  installEvent.waitUntil(
-      caches.open(staticTuner).then(cache => {
-        cache.addAll(assets);
-      })
-  );
+async function precache() {
+  const cache = await caches.open(cacheName);
+  return cache.addAll(precachedResources);
+}
+
+function isCacheable(request) {
+  const url = new URL(request.url);
+  return !url.pathname.endsWith('.json');
+}
+
+async function cacheFirstWithRefresh(request) {
+  const fetchResponsePromise = fetch(request).then(async (networkResponse) => {
+    if (networkResponse.ok) {
+      const cache = await caches.open(cacheName);
+      cache.put(request, networkResponse.clone());
+    }
+    return networkResponse;
+  });
+
+  return (await caches.match(request)) || (await fetchResponsePromise);
+}
+
+self.addEventListener('install', (event) => {
+  event.waitUntil(precache());
 });
 
-self.addEventListener('fetch', fetchEvent => {
-  fetchEvent.respondWith(
-      caches.match(fetchEvent.request).then(res => {
-        return res || fetch(fetchEvent.request);
-      })
-  );
+self.addEventListener('fetch', (event) => {
+  if (isCacheable(event.request)) {
+    event.respondWith(cacheFirstWithRefresh(event.request));
+  }
 });
+
