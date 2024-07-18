@@ -5,6 +5,9 @@ import { ConfigService } from '../services/config.service';
 import { ThemeEvent } from '../events/theme-event';
 import { ColorUtility } from '../utilities/color-utility';
 import ButtonStyles from '../components/shared/css/button-styles';
+import KeenSliderCSS from '../components/shared/css/keen-slider-css';
+import {KeenSliderInstance}  from 'keen-slider';
+import KeenSlider from 'keen-slider';
 
 const AppBodyComponentStyles = css`
     :root {
@@ -69,7 +72,7 @@ const AppBodyComponentStyles = css`
 
 @customElement('tn-app')
 export class AppBodyComponent extends LitElement {
-    static styles = [AppBodyComponentStyles, Fontawesome, ButtonStyles];
+    static styles = [AppBodyComponentStyles, Fontawesome, ButtonStyles, KeenSliderCSS];
 
     @property()
     showSettings = false;
@@ -89,6 +92,17 @@ export class AppBodyComponent extends LitElement {
         this.style.setProperty('--highlight-color', `${highlightColorRGB.r}, ${highlightColorRGB.g}, ${highlightColorRGB.b}`);
         this.style.setProperty('--background-color',`${backgroundColorRGB.r}, ${backgroundColorRGB.g}, ${backgroundColorRGB.b}`);
     }
+
+    // private slider: KeenSliderInstance = null;
+    //
+    // firstUpdated() {
+    //     const wrapper = this.shadowRoot.getElementById('slider');
+    //     this.slider = new KeenSlider(wrapper, { loop: true});
+    // }
+    //
+    // disconnectedCallback() {
+    //     this.slider.destroy();
+    // }
 
     /**
      * Calculates the height of the document. We have to use this method as the vh css units are unreliable on mobile devices.
@@ -163,8 +177,9 @@ export class AppBodyComponent extends LitElement {
                 ${this.renderDonation()}
                 <div class="app-content">
                     <tn-carousel>
+                        <tn-tuner class="keen-slider__slide"></tn-tuner>
+                        <tn-tuner class="keen-slider__slide"></tn-tuner>
                     </tn-carousel>
-                    <tn-tuner></tn-tuner>
                 </div>
             </div>
         `;
