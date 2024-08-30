@@ -635,6 +635,10 @@ readers do not read off random characters that represent icons */
     content: "\\f057";
   }
 
+  .fa-circle-play::before {
+    content: "\\f144";
+  }
+
   .sr-only,
   .fa-sr-only {
     position: absolute;

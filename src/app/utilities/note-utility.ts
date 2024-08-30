@@ -58,7 +58,7 @@ export class Note {
     private lookupAccidental(): string {
         // if the note is an accidental
         if (ACCIDENTAL_INDEXES.includes(this.index % NOTES_IN_OCTAVE)) {
-            return (ConfigService.accidentalMode ? '#' : '♭');
+            return (ConfigService.accidentalMode ? '#' : 'b');
         } else {
             return '';
         }
