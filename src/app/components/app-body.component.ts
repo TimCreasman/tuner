@@ -162,7 +162,10 @@ export class AppBodyComponent extends LitElement {
                 ${this.renderSettings()}
                 ${this.renderDonation()}
                 <div class="app-content">
-                    <tn-tuner></tn-tuner>
+                    <tn-carousel>
+                        <tn-tuner></tn-tuner>
+                        <tn-pitch-pipe></tn-pitch-pipe>
+                    </tn-carousel>
                 </div>
             </div>
         `;
