@@ -43,6 +43,12 @@ export class Note {
         this.octave = Math.floor(index / NOTES_IN_OCTAVE) - 1;
     }
 
+    public equals(otherNote: Note) {
+        return this.index === otherNote.index && 
+            this.letter === otherNote.letter && 
+            this.accidental === otherNote.accidental;
+    }
+
     /**
      * @private
      * @returns {string} the note letter notation based on the accidental mode value set in the {@link ConfigService}
