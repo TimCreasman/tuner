@@ -133,8 +133,9 @@ export class PitchPipeComponent extends LitElement {
                     this.rotateToAngle(distanceToCenter);
                 } else {
                     // This deccelerates the wheel over time, it basically simulates friction
-                    const decceleration = this.pipeRotationVelocity > 0 ? -0.1 : 0.1;
+                    const decceleration = this.pipeRotationVelocity > 0 ? -0.2 : 0.2;
                     this.pipeRotationVelocity += decceleration;
+                    // only apply velocity if it is below a certain threshold
                     this.pipeRotation += this.pipeRotationVelocity;
                 }
             } 
@@ -143,7 +144,7 @@ export class PitchPipeComponent extends LitElement {
 
     private rotateToAngle(angle: number) {
         const dir = angle > 0 ? -1 : 1;
-        const snapAcceleration = 0.1;
+        const snapAcceleration = 0.2;
         const velocity = Math.sqrt(2 * snapAcceleration * Math.abs(angle));
         this.pipeRotationVelocity = velocity * dir;
     }
@@ -174,7 +175,7 @@ export class PitchPipeComponent extends LitElement {
     }
 
     private _handleRotationStart(movementY: number) {
-        this.pipeRotation += movementY;
+        this.pipeRotation += movementY / 4;
     }
     private _getCurrentNote(): Note {
         const angle = this.pipeRotation < 0 ? this.pipeRotation : this.pipeRotation - 360;
