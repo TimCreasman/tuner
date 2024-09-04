@@ -23,9 +23,14 @@ sh.mkdir(dir);
 // Copy over the index.html
 sh.cp('src/index.html', dir);
 
+// Copy over the audio files
+sh.cp('-R', 'src/assets/audio/', dir + '/audio');
+
 // Copy over subdomain cname
 sh.cp('src/CNAME', dir);
 
+
+// PWA files:
 // Copy over the PWA manifest
 sh.cp('src/manifest.json', dir);
 // Copy over icon images used for PWA
