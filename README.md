@@ -3,7 +3,7 @@
 ![Tuner Design](./src/assets/images/tuner_design_2.png)
 
 ![GitHub](https://img.shields.io/github/license/TimCreasman/tuner)
-![Website](https://img.shields.io/website/https/timcreasman.com/tuner)
+![Website](https://img.shields.io/website/https/tuner.timbits.dev)
 ![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/TimCreasman/tuner)
 ![GitHub last commit (branch)](https://img.shields.io/github/last-commit/TimCreasman/tuner/main)
 ![GitHub top language](https://img.shields.io/github/languages/top/TimCreasman/tuner)
@@ -12,7 +12,7 @@
 ## Try it out
 
 Visit my website to try it out for yourself:
-https://timcreasman.com/tuner
+https://tuner.timbits.dev/
 
 ## Developer Instructions
 
