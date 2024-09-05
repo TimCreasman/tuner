@@ -52,8 +52,8 @@ export class CarouselComponent extends LitElement {
     /**
     * Wraps each node with the keen-slider class
     **/
-    handleSlotchange(e: any) {
-        const childElements: HTMLElement[] = e.target.assignedElements({ flatten: true });
+    handleSlotchange(e: Event) {
+        const childElements: Element[] = (e.target as HTMLSlotElement).assignedElements({ flatten: true });
 
         for (const element of childElements) {
             element.className = 'keen-slider__slide';
@@ -74,7 +74,7 @@ export class CarouselComponent extends LitElement {
             </div>
             <div class="track-container">
                 <div>
-                    ${this._trackDetails?.slides.map((slide, index) => {
+                    ${this._trackDetails?.slides.map((_, index) => {
                        return html`<div class="track-ball ${this._trackDetails.rel === index ? 'active' : ''}"></div>`;
                     })}
                 </div>
