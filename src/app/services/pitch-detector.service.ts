@@ -35,6 +35,8 @@ export class PitchDetectorService {
 
     public startListening(): void {
         this._audioSource.connect().then(() => {
+            // clear out the old interval if it exists
+            window.clearInterval(this.intervalReference);
             this.intervalReference = window.setInterval(this.listen.bind(this), this.refreshRate);
         });
     }

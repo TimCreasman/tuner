@@ -31,6 +31,9 @@ const CarouselComponentStyles = css`
 export class CarouselComponent extends LitElement {
 
     static styles = [CarouselComponentStyles, Fontawesome, KeenSliderCSS];
+    
+    // property applied by the carousel when a slide is shown to the user
+    public static slideShownAttribute = 'carousel-slide-shown';
 
     private slider: KeenSliderInstance = null;
     private sliderWrapper: HTMLElement = null;
@@ -40,9 +43,7 @@ export class CarouselComponent extends LitElement {
 
     firstUpdated() {
         this.sliderWrapper = this.shadowRoot.getElementById('slider');
-        this.slider = new KeenSlider(this.sliderWrapper, {
-            loop: true
-        });
+        this.slider = new KeenSlider(this.sliderWrapper, { loop: true });
     }
 
     disconnectedCallback() {
@@ -55,14 +56,17 @@ export class CarouselComponent extends LitElement {
     handleSlotchange(e: Event) {
         const childElements: Element[] = (e.target as HTMLSlotElement).assignedElements({ flatten: true });
 
-        for (const element of childElements) {
+        childElements.forEach((element: Element) => {
             element.className = 'keen-slider__slide';
             this.sliderWrapper.appendChild(element);
-        }
+        });
 
         this.slider.update();
         this._trackDetails = this.slider?.track?.details;
         this.slider.on('slideChanged', () => {
+            childElements.forEach((element: Element, index: number) => {
+                element.setAttribute(CarouselComponent.slideShownAttribute, (this.slider?.track?.details?.rel === index).toString());
+            });
             this._trackDetails = this.slider?.track?.details;
         });
     }

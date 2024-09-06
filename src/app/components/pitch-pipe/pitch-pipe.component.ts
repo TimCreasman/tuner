@@ -1,9 +1,10 @@
 import { css, html, LitElement, svg } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import Fontawesome from '../../components/shared/css/fontawesome';
 import { MathUtility } from '../../utilities/math-utility';
 import { Note } from '../../utilities/note-utility';
+import { CarouselComponent } from '../shared/carousel.component';
 
 const PitchPipeComponentStyles = css`
     :host {
@@ -83,6 +84,9 @@ export class PitchPipeComponent extends LitElement {
     private _isUserInteracting = true;
     private _shouldUpdatePhysics = false;
 
+    @property({ attribute: CarouselComponent.slideShownAttribute })
+    isShown = false;
+
     set pipeRotation(value: number) {
         const oldValue = this.pipeRotation;
         this._pipeRotation = value % 360;
@@ -125,7 +129,7 @@ export class PitchPipeComponent extends LitElement {
         // Setup a simple physics sim for spinning the pipe
         const secondsPerUpdate = 1000 / 60; // 60 updates a second
         setInterval(() => {
-            if (!this._isUserInteracting && this._shouldUpdatePhysics) {
+            if (!this._isUserInteracting && this._shouldUpdatePhysics && this.isShown) {
                 this._shouldUpdatePhysics = false;
                 if (this.pipeRotationVelocity < 0.1 && this.pipeRotationVelocity > -0.1) {
                     this.pipeRotationVelocity = 0;

@@ -5,6 +5,7 @@ import {PitchDetectorService} from '../../services/pitch-detector.service';
 import {MathUtility} from '../../utilities/math-utility';
 import {Logger} from '../../utilities/log-utility';
 import {OscillatorSource} from '../../models/audio.model';
+import { CarouselComponent } from '../shared/carousel.component';
 
 @customElement('tn-tuner')
 export class TunerComponent extends LitElement {
@@ -32,6 +33,11 @@ export class TunerComponent extends LitElement {
 
   @property()
   volume = 0;
+
+  @property({ attribute: CarouselComponent.slideShownAttribute, converter: (value: string) => {
+        return value === 'true';
+    }})
+  isShown = true;
 
   inTune = false;
 
@@ -75,6 +81,8 @@ export class TunerComponent extends LitElement {
       this.inTune = accuracy > 0.95;
 
       this.accuracy = accuracy;
+            console.log('Listening');
+            
     });
     // this.pitchDetectorService.audioSource = new OscillatorSource();
 
@@ -84,6 +92,16 @@ export class TunerComponent extends LitElement {
   disconnectedCallback() {
     super.disconnectedCallback();
     this.pitchDetectorService.stopListening();
+  }
+
+  attributeChangedCallback(name: string, oldval: string, newval: string) {
+    super.attributeChangedCallback(name, oldval, newval);
+
+        if (this.isShown) {
+            this.pitchDetectorService.startListening();
+        } else {
+            this.pitchDetectorService.stopListening();
+        }
   }
 
   /**
