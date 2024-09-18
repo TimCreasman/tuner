@@ -21,8 +21,6 @@ const PitchPipeComponentStyles = css`
     .center-text {
         text-anchor: middle;
         dominant-baseline: middle;
-        /* The gear shape is not perfectly square, so I account for that here */
-        transform-origin: 50% 49.44444%;
     }
     .gear {
         font-family: var(--fa-style-family, "Font Awesome 6 Free");
@@ -205,11 +203,13 @@ export class PitchPipeComponent extends LitElement {
                 noteAccidentalClasses['fill-background-stroke-primary'] = this._currentNote.equals(note);
                 return svg`
                     <text @click=${() => this.rotateToAngle(noteAngle)}
-                        class="${classMap(noteClasses)}" x="50%" y="16%"
+                        class="${classMap(noteClasses)}" x="0%" y="-29%"
+                        transform-origin="0 25"
                         transform="rotate(${noteAngle})">
                         ${note.letter}
                     </text>
-                    <text class="${classMap(noteAccidentalClasses)}" x="54%" y="12%"
+                    <text class="${classMap(noteAccidentalClasses)}" x="4%" y="-33%"
+                        transform-origin="0 25"
                         transform="rotate(${noteAngle})">
                         ${note.accidental}
                     </text>
@@ -227,21 +227,23 @@ export class PitchPipeComponent extends LitElement {
                 @mousemove="${this._handleMouseMove}"
                 @touchmove="${this._handleTouchMove}">
                 <svg viewbox="0 0 1000 1000" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg">
-                    <text class="${classMap({'gear': true, 'background-gear': true, 'center-text': true })}" 
-                          fill="url(#gradient-fill-background-gear)" 
-                          stroke="url(#gradient-stroke-background-gear)"
-                          transform="rotate(${this.pipeRotation - this._pipeRotationOffset})"
-                          x="50%" y="55%">
-                        \uf013
-                    </text>
-                    <text class="${classMap({'gear': true, 'foreground-gear': true, 'center-text': true})}" 
-                          fill="url(#gradient-fill-foreground-gear)" 
-                          stroke="url(#gradient-stroke-foreground-gear)"
-                          transform="rotate(${this.pipeRotation})"
-                          x="50%" y="55%">
-                        \uf013
-                    </text>
-                    ${this._renderNotes()}
+                    <g transform="translate(500, 470)">
+                        <text class="${classMap({'gear': true, 'background-gear': true, 'center-text': true })}" 
+                              fill="url(#gradient-fill-background-gear)" 
+                              stroke="url(#gradient-stroke-background-gear)"
+                              transform="rotate(${this.pipeRotation - this._pipeRotationOffset})"
+                              transform-origin="0 25">
+                            \uf013
+                        </text>
+                        <text class="${classMap({'gear': true, 'foreground-gear': true, 'center-text': true})}" 
+                              fill="url(#gradient-fill-foreground-gear)" 
+                              stroke="url(#gradient-stroke-foreground-gear)"
+                              transform="rotate(${this.pipeRotation})"
+                              transform-origin="0 25">
+                            \uf013
+                        </text>
+                        ${this._renderNotes()}
+                    </g>
                     <defs>
                         <!-- gear fill gradients -->
                         <linearGradient id="gradient-fill-background-gear" 
