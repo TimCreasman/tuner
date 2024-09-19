@@ -232,6 +232,7 @@ export class PitchPipeComponent extends LitElement {
                               fill="url(#gradient-fill-background-gear)" 
                               stroke="url(#gradient-stroke-background-gear)"
                               transform="rotate(${this.pipeRotation - this._pipeRotationOffset})"
+                              text-rendering="geometricPrecision"
                               transform-origin="0 25">
                             \uf013
                         </text>
@@ -239,6 +240,7 @@ export class PitchPipeComponent extends LitElement {
                               fill="url(#gradient-fill-foreground-gear)" 
                               stroke="url(#gradient-stroke-foreground-gear)"
                               transform="rotate(${this.pipeRotation})"
+                              text-rendering="geometricPrecision"
                               transform-origin="0 25">
                             \uf013
                         </text>
