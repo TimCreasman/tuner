@@ -20,7 +20,7 @@ const PitchPipeComponentStyles = css`
     }
     .center-text {
         text-anchor: middle;
-        dominant-baseline: middle;
+        dominant-baseline: central;
     }
     .gear {
         font-family: var(--fa-style-family, "Font Awesome 6 Free");
@@ -203,13 +203,11 @@ export class PitchPipeComponent extends LitElement {
                 noteAccidentalClasses['fill-background-stroke-primary'] = this._currentNote.equals(note);
                 return svg`
                     <text @click=${() => this.rotateToAngle(noteAngle)}
-                        class="${classMap(noteClasses)}" x="0%" y="-29%"
-                        transform-origin="0 25"
+                        class="${classMap(noteClasses)}" x="0%" y="-33%"
                         transform="rotate(${noteAngle})">
                         ${note.letter}
                     </text>
-                    <text class="${classMap(noteAccidentalClasses)}" x="4%" y="-33%"
-                        transform-origin="0 25"
+                    <text class="${classMap(noteAccidentalClasses)}" x="4%" y="-37%"
                         transform="rotate(${noteAngle})">
                         ${note.accidental}
                     </text>
@@ -227,21 +225,17 @@ export class PitchPipeComponent extends LitElement {
                 @mousemove="${this._handleMouseMove}"
                 @touchmove="${this._handleTouchMove}">
                 <svg viewbox="0 0 1000 1000" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg">
-                    <g transform="translate(500, 470)">
+                    <g transform="translate(500, 500)">
                         <text class="${classMap({'gear': true, 'background-gear': true, 'center-text': true })}" 
                               fill="url(#gradient-fill-background-gear)" 
                               stroke="url(#gradient-stroke-background-gear)"
-                              transform="rotate(${this.pipeRotation - this._pipeRotationOffset})"
-                              text-rendering="geometricPrecision"
-                              transform-origin="0 25">
+                              transform="rotate(${this.pipeRotation - this._pipeRotationOffset})">
                             \uf013
                         </text>
                         <text class="${classMap({'gear': true, 'foreground-gear': true, 'center-text': true})}" 
                               fill="url(#gradient-fill-foreground-gear)" 
                               stroke="url(#gradient-stroke-foreground-gear)"
-                              transform="rotate(${this.pipeRotation})"
-                              text-rendering="geometricPrecision"
-                              transform-origin="0 25">
+                              transform="rotate(${this.pipeRotation})">
                             \uf013
                         </text>
                         ${this._renderNotes()}
