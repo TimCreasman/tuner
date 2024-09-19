@@ -1,9 +1,10 @@
 import { css, html, LitElement, svg } from 'lit';
-import { customElement } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import Fontawesome from '../../components/shared/css/fontawesome';
 import { MathUtility } from '../../utilities/math-utility';
 import { Note } from '../../utilities/note-utility';
+import { CarouselComponent } from '../shared/carousel.component';
 
 const PitchPipeComponentStyles = css`
     :host {
@@ -19,9 +20,7 @@ const PitchPipeComponentStyles = css`
     }
     .center-text {
         text-anchor: middle;
-        dominant-baseline: middle;
-        /* The gear shape is not perfectly square, so I account for that here */
-        transform-origin: 50% 49.44444%;
+        dominant-baseline: central;
     }
     .gear {
         font-family: var(--fa-style-family, "Font Awesome 6 Free");
@@ -83,6 +82,9 @@ export class PitchPipeComponent extends LitElement {
     private _isUserInteracting = true;
     private _shouldUpdatePhysics = false;
 
+    @property({ attribute: CarouselComponent.slideShownAttribute })
+    isShown = false;
+
     set pipeRotation(value: number) {
         const oldValue = this.pipeRotation;
         this._pipeRotation = value % 360;
@@ -125,7 +127,7 @@ export class PitchPipeComponent extends LitElement {
         // Setup a simple physics sim for spinning the pipe
         const secondsPerUpdate = 1000 / 60; // 60 updates a second
         setInterval(() => {
-            if (!this._isUserInteracting && this._shouldUpdatePhysics) {
+            if (!this._isUserInteracting && this._shouldUpdatePhysics && this.isShown) {
                 this._shouldUpdatePhysics = false;
                 if (this.pipeRotationVelocity < 0.1 && this.pipeRotationVelocity > -0.1) {
                     this.pipeRotationVelocity = 0;
@@ -133,8 +135,9 @@ export class PitchPipeComponent extends LitElement {
                     this.rotateToAngle(distanceToCenter);
                 } else {
                     // This deccelerates the wheel over time, it basically simulates friction
-                    const decceleration = this.pipeRotationVelocity > 0 ? -0.1 : 0.1;
+                    const decceleration = this.pipeRotationVelocity > 0 ? -0.2 : 0.2;
                     this.pipeRotationVelocity += decceleration;
+                    // only apply velocity if it is below a certain threshold
                     this.pipeRotation += this.pipeRotationVelocity;
                 }
             } 
@@ -143,7 +146,7 @@ export class PitchPipeComponent extends LitElement {
 
     private rotateToAngle(angle: number) {
         const dir = angle > 0 ? -1 : 1;
-        const snapAcceleration = 0.1;
+        const snapAcceleration = 0.2;
         const velocity = Math.sqrt(2 * snapAcceleration * Math.abs(angle));
         this.pipeRotationVelocity = velocity * dir;
     }
@@ -174,7 +177,7 @@ export class PitchPipeComponent extends LitElement {
     }
 
     private _handleRotationStart(movementY: number) {
-        this.pipeRotation += movementY;
+        this.pipeRotation += movementY / 4;
     }
     private _getCurrentNote(): Note {
         const angle = this.pipeRotation < 0 ? this.pipeRotation : this.pipeRotation - 360;
@@ -200,11 +203,11 @@ export class PitchPipeComponent extends LitElement {
                 noteAccidentalClasses['fill-background-stroke-primary'] = this._currentNote.equals(note);
                 return svg`
                     <text @click=${() => this.rotateToAngle(noteAngle)}
-                        class="${classMap(noteClasses)}" x="50%" y="16%"
+                        class="${classMap(noteClasses)}" x="0%" y="-33%"
                         transform="rotate(${noteAngle})">
                         ${note.letter}
                     </text>
-                    <text class="${classMap(noteAccidentalClasses)}" x="54%" y="12%"
+                    <text class="${classMap(noteAccidentalClasses)}" x="4%" y="-37%"
                         transform="rotate(${noteAngle})">
                         ${note.accidental}
                     </text>
@@ -222,21 +225,21 @@ export class PitchPipeComponent extends LitElement {
                 @mousemove="${this._handleMouseMove}"
                 @touchmove="${this._handleTouchMove}">
                 <svg viewbox="0 0 1000 1000" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg">
-                    <text class="${classMap({'gear': true, 'background-gear': true, 'center-text': true })}" 
-                          fill="url(#gradient-fill-background-gear)" 
-                          stroke="url(#gradient-stroke-background-gear)"
-                          transform="rotate(${this.pipeRotation - this._pipeRotationOffset})"
-                          x="50%" y="55%">
-                        \uf013
-                    </text>
-                    <text class="${classMap({'gear': true, 'foreground-gear': true, 'center-text': true})}" 
-                          fill="url(#gradient-fill-foreground-gear)" 
-                          stroke="url(#gradient-stroke-foreground-gear)"
-                          transform="rotate(${this.pipeRotation})"
-                          x="50%" y="55%">
-                        \uf013
-                    </text>
-                    ${this._renderNotes()}
+                    <g transform="translate(500, 500)">
+                        <text class="${classMap({'gear': true, 'background-gear': true, 'center-text': true })}" 
+                              fill="url(#gradient-fill-background-gear)" 
+                              stroke="url(#gradient-stroke-background-gear)"
+                              transform="rotate(${this.pipeRotation - this._pipeRotationOffset})">
+                            \uf013
+                        </text>
+                        <text class="${classMap({'gear': true, 'foreground-gear': true, 'center-text': true})}" 
+                              fill="url(#gradient-fill-foreground-gear)" 
+                              stroke="url(#gradient-stroke-foreground-gear)"
+                              transform="rotate(${this.pipeRotation})">
+                            \uf013
+                        </text>
+                        ${this._renderNotes()}
+                    </g>
                     <defs>
                         <!-- gear fill gradients -->
                         <linearGradient id="gradient-fill-background-gear" 

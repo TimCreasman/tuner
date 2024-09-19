@@ -20,10 +20,10 @@ const PitchPipePlayerComponentStyles = css`
 
     .play-note-button {
         pointer-events: auto;
-        width: 8.75ch;
-        height: 8.75ch;
+        width: 9ch;
+        height: 9ch;
         border-radius: 50%;
-        margin-top: 38%;
+        margin-top: 38.5%;
         color: rgb(var(--highlight-color));
     }
 `;
