@@ -243,13 +243,13 @@ export class PitchPipeComponent extends LitElement {
                     <defs>
                         <!-- gear fill gradients -->
                         <linearGradient id="gradient-fill-background-gear" 
-                            class="${classMap({'gear-gradient': true})}"
+                            class="gear-gradient"
                             gradientTransform="rotate(${-(this.pipeRotation - this._pipeRotationOffset) + 90})">
                             <stop offset="50%" class="stop-color-highlight"/>
                             <stop offset="50%" class="stop-color-primary"/>
                         </linearGradient>
                         <linearGradient id="gradient-fill-foreground-gear" 
-                            class="${classMap({'gear-gradient': true})}"
+                            class="gear-gradient"
                             gradientTransform="rotate(${-this.pipeRotation + 90})">
                             <stop offset="50%" class="stop-color-background"/>
                             <stop offset="50%" class="stop-color-primary"/>
