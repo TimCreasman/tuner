@@ -122,26 +122,30 @@ export class PitchPipeComponent extends LitElement {
     ];
     private _currentNote = this._notes[0];
 
+
+    // Setup a simple physics sim for spinning the pipe
+    private simulate = (): void => {
+        if (!this._isUserInteracting && this._shouldUpdatePhysics && this.isShown) {
+            
+            this._shouldUpdatePhysics = false;
+            if (this.pipeRotationVelocity < 0.1 && this.pipeRotationVelocity > -0.1) {
+                this.pipeRotationVelocity = 0;
+                const distanceToCenter = this.pipeRotation - Math.round(this.pipeRotation / 30) * 30;
+                this.rotateToAngle(distanceToCenter);
+            } else {
+                // This deccelerates the wheel over time, it basically simulates friction
+                const decceleration = this.pipeRotationVelocity > 0 ? -0.2 : 0.2;
+                this.pipeRotationVelocity += decceleration;
+                // only apply velocity if it is below a certain threshold
+                this.pipeRotation += this.pipeRotationVelocity;
+            }
+        } 
+        requestAnimationFrame(this.simulate);
+    };
+
     connectedCallback() {
         super.connectedCallback();
-        // Setup a simple physics sim for spinning the pipe
-        const secondsPerUpdate = 1000 / 60; // 60 updates a second
-        setInterval(() => {
-            if (!this._isUserInteracting && this._shouldUpdatePhysics && this.isShown) {
-                this._shouldUpdatePhysics = false;
-                if (this.pipeRotationVelocity < 0.1 && this.pipeRotationVelocity > -0.1) {
-                    this.pipeRotationVelocity = 0;
-                    const distanceToCenter = this.pipeRotation - Math.round(this.pipeRotation / 30) * 30;
-                    this.rotateToAngle(distanceToCenter);
-                } else {
-                    // This deccelerates the wheel over time, it basically simulates friction
-                    const decceleration = this.pipeRotationVelocity > 0 ? -0.2 : 0.2;
-                    this.pipeRotationVelocity += decceleration;
-                    // only apply velocity if it is below a certain threshold
-                    this.pipeRotation += this.pipeRotationVelocity;
-                }
-            } 
-        },(secondsPerUpdate));
+        requestAnimationFrame(this.simulate);
     }
 
     private rotateToAngle(angle: number) {
@@ -153,9 +157,10 @@ export class PitchPipeComponent extends LitElement {
 
     // To support both mobile and pc, both touch and mouse events need to be implemented
     private _handleMouseMove(event: MouseEvent) {
-        this._isUserInteracting = true;
         if (event.buttons > 0) {
-            this._handleRotationStart(event.movementY);
+            this._isUserInteracting = true;
+            const isScreenRight = event.pageX > (window.innerWidth / 2);
+            this._handleRotationStart(event.movementY, isScreenRight);
         }
     }
     private _handleMouseUp() {
@@ -167,7 +172,8 @@ export class PitchPipeComponent extends LitElement {
         this._isUserInteracting = true;
         const touch = event.touches[0];
         if (this._previousTouch) {
-            this._handleRotationStart(touch.pageY - this._previousTouch.pageY);
+            const isScreenRight = touch.pageX > (window.innerWidth / 2);
+            this._handleRotationStart(touch.pageY - this._previousTouch.pageY, isScreenRight);
         }
         this._previousTouch = touch;
     }
@@ -176,8 +182,12 @@ export class PitchPipeComponent extends LitElement {
         this._isUserInteracting = false;
     }
 
-    private _handleRotationStart(movementY: number) {
-        this.pipeRotation += movementY / 4;
+    private _handleRotationStart(movementY: number, isScreenRight = true) {
+        if (isScreenRight) {
+            this.pipeRotation += movementY / 4;
+        } else {
+            this.pipeRotation -= movementY / 4;
+        }
     }
     private _getCurrentNote(): Note {
         const angle = this.pipeRotation < 0 ? this.pipeRotation : this.pipeRotation - 360;
@@ -243,13 +253,13 @@ export class PitchPipeComponent extends LitElement {
                     <defs>
                         <!-- gear fill gradients -->
                         <linearGradient id="gradient-fill-background-gear" 
-                            class="${classMap({'gear-gradient': true})}"
+                            class="gear-gradient"
                             gradientTransform="rotate(${-(this.pipeRotation - this._pipeRotationOffset) + 90})">
                             <stop offset="50%" class="stop-color-highlight"/>
                             <stop offset="50%" class="stop-color-primary"/>
                         </linearGradient>
                         <linearGradient id="gradient-fill-foreground-gear" 
-                            class="${classMap({'gear-gradient': true})}"
+                            class="gear-gradient"
                             gradientTransform="rotate(${-this.pipeRotation + 90})">
                             <stop offset="50%" class="stop-color-background"/>
                             <stop offset="50%" class="stop-color-primary"/>
