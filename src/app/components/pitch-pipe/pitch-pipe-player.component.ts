@@ -43,7 +43,7 @@ export class PitchPipeComponent extends LitElement {
     render() {
         return html`
                 <div class="play-note-button-container" @click=${this._handlePlay}>
-                    <button class="play-note-button"><i class="fa fa-circle-play"></i></button>
+                    <button class="play-note-button" aria-label="Play Note"><i class="fa fa-circle-play"></i></button>
                 </div>
         `;  
     }

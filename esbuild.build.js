@@ -23,6 +23,9 @@ sh.mkdir(dir);
 // Copy over the index.html
 sh.cp('src/index.html', dir);
 
+// Copy over favicon
+sh.cp('src/assets/images/favicon/T.png', dir);
+
 // Copy over the audio files
 sh.cp('-R', 'src/assets/audio/', dir + '/audio');
 

@@ -139,7 +139,7 @@ export class AppBodyComponent extends LitElement {
             return nothing;
         }
         return html`
-                <button class="floating-button donation-button" @click="${this.toggleDonation}"><i
+                <button class="floating-button donation-button" @click="${this.toggleDonation}" aria-label="Donation"><i
                         class="${this.showDonation ? 'far fa-circle-xmark' : 'fa fa-coffee'}"></i></button>
         `;
     }
@@ -149,7 +149,7 @@ export class AppBodyComponent extends LitElement {
             return nothing;
         }
         return html`
-                <button class="floating-button settings-button" @click="${this.toggleSettings}"><i
+                <button class="floating-button settings-button" @click="${this.toggleSettings}" aria-label="Settings"><i
                         class="${this.showSettings ? 'far fa-circle-xmark' : 'fa fa-gear'}"></i></button>
         `;
     }
