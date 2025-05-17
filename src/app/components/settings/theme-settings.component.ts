@@ -62,13 +62,13 @@ export class ThemeSettingsComponent extends LitElement {
         const value = (<HTMLInputElement>inputEvent.target).value;
         ConfigService.setColor(color, value);
         this.updateLocalColor(color, value);
-        this.dispatchEvent(new ThemeEvent(color, value));
+        this.dispatchEvent(ThemeEvent.updatedColor(color, value));
     }
 
     private resetColor(color: ThemeColor) {
         ConfigService.setColor(color, ConfigService.defaultConfig[color]);
         this.updateLocalColor(color, ConfigService.defaultConfig[color]);
-        this.dispatchEvent(new ThemeEvent(color, ConfigService.defaultConfig[color]));
+        this.dispatchEvent(ThemeEvent.updatedColor(color, ConfigService.defaultConfig[color]));
     }
 
     private updateLocalColor(color: ThemeColor, value: string) {

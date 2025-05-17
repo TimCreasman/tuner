@@ -83,6 +83,18 @@ export class ConfigService {
         return config as AppConfig;
     }
 
+    static reset(): void {
+        ConfigService.accidentalMode = this.defaultConfig.accidentalMode;
+        ConfigService.frequencyOfA = this.defaultConfig.frequencyOfA;
+        for(const color of themeColors) {
+            ConfigService.setColor(color, this.defaultConfig[color]);
+        }
+        ConfigService.algorithm = this.defaultConfig.algorithm;
+        for(const component in components) {
+            ConfigService.setComponent(component as Component, true);
+        }
+    }
+
     static get debugMode(): boolean {
         return this.getStoredValueOrDefault('debugMode') === 'true';
     }

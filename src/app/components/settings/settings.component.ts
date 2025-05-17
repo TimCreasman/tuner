@@ -1,6 +1,10 @@
-import { customElement } from 'lit/decorators.js';
+import { customElement, queryAll } from 'lit/decorators.js';
 import { css, html, LitElement } from 'lit';
 import Fontawesome from '../../components/shared/css/fontawesome';
+import { AccordionToggleEvent as AccordionOpenEvent } from '../../events/accordion-toggle-event';
+import buttonStyles from '../shared/css/button-styles';
+import { ThemeColor, themeColors, ThemeEvent } from '../../events/theme-event';
+import { ConfigService } from '../../services/config.service';
 
 export const SettingsComponentStyles = css`
     input {
@@ -150,26 +154,63 @@ export const SettingsComponentStyles = css`
         margin-inline: 1em;
         padding-inline: 1em;
     }
+
+    .bottom-button {
+        font-size: clamp(1rem, 3cqi, 2rem);
+        margin: 0;
+    }
+
+    .bottom-button-container {
+        margin-inline: 9rem;
+        display: flex;
+        color: rgb(var(--highlight-color));
+        text-align: center;
+        justify-content: space-between;
+    }
 `;
 
 @customElement('tn-settings')
 export class SettingsComponent extends LitElement {
 
-    static styles = [SettingsComponentStyles, Fontawesome];
+    static styles = [SettingsComponentStyles, Fontawesome, buttonStyles];
 
     constructor() {
         super();
     }
+
+    private openedDetails: HTMLDetailsElement = null;
+
+    private handleToggle(event: AccordionOpenEvent) {
+        if (this.openedDetails && !this.openedDetails.isSameNode(event.detailsElement)) {
+            this.openedDetails.removeAttribute('open');
+        }
+
+        this.openedDetails = event.detailsElement;
+    }
+    
+    private handleClose(event: Event) {
+        this.dispatchEvent(new CustomEvent('settings-close', event));
+    }
+
+    private handleResetSettings() {
+        ConfigService.reset();
+        this.dispatchEvent(ThemeEvent.allReset());
+    }
+
 
     protected render() {
         return html`
             <tn-modal>
                 <div slot="header">Settings</div>
                 <div slot="content">
-                    <tn-general-settings></tn-general-settings>
-                    <tn-theme-settings></tn-theme-settings>
-                    <tn-appearance-settings></tn-appearance-settings>
-                    <tn-experimental-settings></tn-experimental-settings>
+                    <tn-general-settings @accordion-toggle="${this.handleToggle}"></tn-general-settings>
+                    <tn-theme-settings @accordion-toggle="${this.handleToggle}"></tn-theme-settings>
+                    <tn-appearance-settings @accordion-toggle="${this.handleToggle}"></tn-appearance-settings>
+                    <tn-experimental-settings @accordion-toggle="${this.handleToggle}"></tn-experimental-settings>
+                    <div class="bottom-button-container">
+                        <button class="bottom-button" @click="${this.handleResetSettings}" aria-label="Settings Reset"><i class="fa fa-undo"></i></button>
+                        <button class="bottom-button" @click="${this.handleClose}" aria-label="Settings Done">Done</button>
+                    </div>
                 </div>
             </tn-modal>
         `;

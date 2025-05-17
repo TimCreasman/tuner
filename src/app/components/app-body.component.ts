@@ -104,8 +104,10 @@ export class AppBodyComponent extends LitElement {
     }
 
     private refreshTheme(e: ThemeEvent) {
-        const color = ColorUtility.hexToRgb(e.value);
-        this.style.setProperty('--' + e.color + '-color', `${color.r}, ${color.g}, ${color.b}`);
+        e.updatedColors.forEach((value, color) => {
+            const rgbColor = ColorUtility.hexToRgb(value);
+            this.style.setProperty('--' + color + '-color', `${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b}`);
+        });
     }
 
     private toggleSettings() {
@@ -115,7 +117,7 @@ export class AppBodyComponent extends LitElement {
 
     private renderSettings() {
         return this.showSettings ? html`
-            <tn-settings @theme-changed="${this.refreshTheme}"></tn-settings>` : nothing;
+            <tn-settings @settings-close="${this.toggleSettings}" @theme-changed="${this.refreshTheme}"></tn-settings>` : nothing;
     }
 
     private toggleDonation() {

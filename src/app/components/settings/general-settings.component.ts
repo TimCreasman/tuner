@@ -32,10 +32,10 @@ export class GeneralSettingsComponent extends LitElement {
         this.frequencyOfA = value;
         ConfigService.frequencyOfA = value;
     }
-
+ 
     protected render() {
         return html`
-                <tn-accordion>
+                <tn-accordion >
                     <div slot="header">General</div>
                     <div slot="content">
                         <div class="row">

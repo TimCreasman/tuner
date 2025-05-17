@@ -1,6 +1,7 @@
-import {customElement} from 'lit/decorators.js';
+import {customElement, property} from 'lit/decorators.js';
 import {css, html, LitElement} from 'lit';
 import Fontawesome from './css/fontawesome';
+import { AccordionToggleEvent } from '../../events/accordion-toggle-event';
 
 const AccordionComponentStyles = css`
     details > summary {
@@ -68,9 +69,15 @@ export class AccordionComponent extends LitElement {
 
     static styles = [AccordionComponentStyles, Fontawesome];
 
+    private propogateOpenEvent(e: ToggleEvent) {
+        if (e.newState === 'open') {
+            this.dispatchEvent(new AccordionToggleEvent(e.target as HTMLDetailsElement));
+        }
+    }
+
     protected render() {
         return html`
-            <details>
+            <details @toggle="${this.propogateOpenEvent}">
                 <summary class="header">
                     <slot name="header"></slot>
                 </summary>

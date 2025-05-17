@@ -44,7 +44,7 @@ export class AppearanceSettingsComponent extends LitElement {
                                 <input id="${componentId}"
                                        type="checkbox"
                                        .checked="${ConfigService.getComponent(componentId)}"
-                                       @click= ${(e: InputEvent) => this.updateComponent(e, componentId)}>
+                                       @click=${(e: InputEvent) => this.updateComponent(e, componentId)}>
                                 <span class="slider round"></span>
                             </label>
                             <span class="nowrap">${components[componentId]}</span>
