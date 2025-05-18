@@ -5,7 +5,7 @@ import { ConfigService } from '../services/config.service';
 import { ThemeEvent } from '../events/theme-event';
 import { ColorUtility } from '../utilities/color-utility';
 import ButtonStyles from '../components/shared/css/button-styles';
-import { EventBus, subscribe, Registry, subscribable } from '../events/event-bus';
+import { subscribe, subscribable } from '../events/event-bus';
 
 const AppBodyComponentStyles = css`
     :root {
