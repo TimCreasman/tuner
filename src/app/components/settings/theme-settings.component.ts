@@ -1,9 +1,10 @@
 import { css, html, LitElement, nothing } from 'lit';
-import { customElement, state } from 'lit-element';
-import { ThemeColor, ThemeEvent } from '../../events/theme-event';
+import { customElement, property } from 'lit-element';
+import { ThemeColor } from '../../events/theme-event';
 import { ConfigService } from '../../services/config.service';
 import Fontawesome from '../../components/shared/css/fontawesome';
 import { SettingsComponentStyles } from './settings.component';
+import { subscribe, subscribable } from '../../events/event-bus';
 
 const ThemeSettingComponentStyles = css`
     .color-row {
@@ -42,17 +43,15 @@ const ThemeSettingComponentStyles = css`
 `;
 
 @customElement('tn-theme-settings')
+@subscribable
 export class ThemeSettingsComponent extends LitElement {
 
     static styles = [ThemeSettingComponentStyles, SettingsComponentStyles, Fontawesome];
 
-    // Theme
-    @state()
-    private primaryColor = ConfigService.getColor('primary');
-    @state()
-    private highlightColor = ConfigService.getColor('highlight');
-    @state()
-    private backgroundColor = ConfigService.getColor('background');
+    @subscribe('theme-change')
+    private onThemeChange = () => {
+        this.requestUpdate();
+    };
 
     constructor() {
         super();
@@ -61,28 +60,10 @@ export class ThemeSettingsComponent extends LitElement {
     private updateColor(inputEvent: InputEvent, color: ThemeColor): void {
         const value = (<HTMLInputElement>inputEvent.target).value;
         ConfigService.setColor(color, value);
-        this.updateLocalColor(color, value);
-        this.dispatchEvent(new ThemeEvent(color, value));
     }
 
     private resetColor(color: ThemeColor) {
         ConfigService.setColor(color, ConfigService.defaultConfig[color]);
-        this.updateLocalColor(color, ConfigService.defaultConfig[color]);
-        this.dispatchEvent(new ThemeEvent(color, ConfigService.defaultConfig[color]));
-    }
-
-    private updateLocalColor(color: ThemeColor, value: string) {
-        switch (color) {
-            case 'primary':
-                this.primaryColor = value;
-                break;
-            case 'background':
-                this.backgroundColor = value;
-                break;
-            case 'highlight':
-                this.highlightColor = value;
-                break;
-        }
     }
 
     protected render() {
@@ -93,30 +74,30 @@ export class ThemeSettingsComponent extends LitElement {
                     <div class="row color-row">
                         <div class="color-ball primary"></div>
                         <input id="primary-color" type="text" maxlength="7" size="7"
-                               .value="${this.primaryColor}"
+                               .value="${ConfigService.getColor('primary')}"
                                @input="${(e: InputEvent) => this.updateColor(e, 'primary')}">
                         <label for="primary-color" class="color-label">Primary</label>
-                        ${this.primaryColor !== ConfigService.defaultConfig.primary ? html`
+                        ${ConfigService.getColor('primary') !== ConfigService.defaultConfig.primary ? html`
                             <i class="fa fa-undo" @click=${() => this.resetColor('primary')}></i>` : nothing}
                     </div>
                     <div class="row color-row">
                         <div class="color-ball highlight"></div>
                         <input id="highlight-color" type="text" maxlength="7" size="7"
-                               .value="${this.highlightColor}"
+                               .value="${ConfigService.getColor('highlight')}"
                                @input="${(e: InputEvent) => this.updateColor(e, 'highlight')}"
                         >
                         <label for="highlight-color" class="color-label">Highlight</label>
-                        ${this.highlightColor !== ConfigService.defaultConfig.highlight ? html`
+                        ${ConfigService.getColor('highlight') !== ConfigService.defaultConfig.highlight ? html`
                             <i class="fa fa-undo" @click=${() => this.resetColor('highlight')}></i>` : nothing}
                     </div>
                     <div class="row color-row">
                         <div class="color-ball background"></div>
                         <input id="background-color" type="text" maxlength="7" size="7"
-                               .value="${this.backgroundColor}"
+                               .value="${ConfigService.getColor('background')}"
                                @input="${(e: InputEvent) => this.updateColor(e, 'background')}"
                         >
                         <label for="background-color" class="color-label">Background</label>
-                        ${this.backgroundColor !== ConfigService.defaultConfig.background ? html`
+                        ${ConfigService.getColor('background') !== ConfigService.defaultConfig.background ? html`
                             <i class="fa fa-undo" @click=${() => this.resetColor('background')}></i>` : nothing}
                     </div>
                 </div>

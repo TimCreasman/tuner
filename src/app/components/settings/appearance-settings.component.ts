@@ -3,6 +3,7 @@ import { SettingsComponentStyles } from './settings.component';
 import Fontawesome from '../../components/shared/css/fontawesome';
 import { ConfigService } from '../../services/config.service';
 import { Component, components } from '../../models/component.model';
+import { subscribable, subscribe } from '../../events/event-bus';
 
 export const AppearanceSettingsComponentStyles = css`
     .helper-text {
@@ -18,10 +19,16 @@ export const AppearanceSettingsComponentStyles = css`
 `;
 
 @customElement('tn-appearance-settings')
+@subscribable
 export class AppearanceSettingsComponent extends LitElement {
     static styles = [SettingsComponentStyles, AppearanceSettingsComponentStyles, Fontawesome];
 
     private settingsButtonHelperText = 'To get to this modal again without the settings button, double tap the screen.';
+
+    @subscribe('config-change')
+    private configUpdated = () => {
+        this.requestUpdate();
+    };
 
     constructor() {
         super();
@@ -44,7 +51,7 @@ export class AppearanceSettingsComponent extends LitElement {
                                 <input id="${componentId}"
                                        type="checkbox"
                                        .checked="${ConfigService.getComponent(componentId)}"
-                                       @click= ${(e: InputEvent) => this.updateComponent(e, componentId)}>
+                                       @click=${(e: InputEvent) => this.updateComponent(e, componentId)}>
                                 <span class="slider round"></span>
                             </label>
                             <span class="nowrap">${components[componentId]}</span>

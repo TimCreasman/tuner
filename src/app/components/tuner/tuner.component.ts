@@ -81,8 +81,6 @@ export class TunerComponent extends LitElement {
       this.inTune = accuracy > 0.95;
 
       this.accuracy = accuracy;
-            console.log('Listening');
-            
     });
     // this.pitchDetectorService.audioSource = new OscillatorSource();
 

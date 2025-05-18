@@ -1,4 +1,5 @@
-import { ThemeColor, themeColors } from '../events/theme-event';
+import { EventBus } from '../events/event-bus';
+import { ThemeColor, themeColors, ThemeEvent } from '../events/theme-event';
 import { AllowedAlgorithmTypes } from '../models/algorithm.model';
 import { Component, components } from '../models/component.model';
 import { MathUtility } from '../utilities/math-utility';
@@ -83,6 +84,18 @@ export class ConfigService {
         return config as AppConfig;
     }
 
+    static reset(): void {
+        ConfigService.accidentalMode = this.defaultConfig.accidentalMode;
+        ConfigService.frequencyOfA = this.defaultConfig.frequencyOfA;
+        for(const color of themeColors) {
+            ConfigService.setColor(color, this.defaultConfig[color]);
+        }
+        ConfigService.algorithm = this.defaultConfig.algorithm;
+        for(const component in components) {
+            ConfigService.setComponent(component as Component, true);
+        }
+    }
+
     static get debugMode(): boolean {
         return this.getStoredValueOrDefault('debugMode') === 'true';
     }
@@ -93,6 +106,7 @@ export class ConfigService {
 
     static set accidentalMode(mode: 0 | 1) {
         localStorage.setItem(this.getPropertyName(this.defaultConfig, a => a.accidentalMode), mode.toString());
+        EventBus.getInstance().dispatch<Event>('config-change', new Event('config-change'));
     }
 
     static get accidentalMode(): 0 | 1 {
@@ -102,6 +116,7 @@ export class ConfigService {
     static set frequencyOfA(frequency: number) {
         frequency = MathUtility.clamp(frequency, [this.ALowerBoundFreq, this.AUpperBoundFreq]);
         localStorage.setItem(this.getPropertyName(this.defaultConfig, a => a.frequencyOfA), frequency.toString());
+        EventBus.getInstance().dispatch<Event>('config-change', new Event('config-change'));
     }
 
     static get frequencyOfA() {
@@ -111,6 +126,7 @@ export class ConfigService {
     static setColor(type: ThemeColor, hexColor: string): void {
         if (this.isHexCode(hexColor)) {
             localStorage.setItem(this.getPropertyName(this.defaultConfig, a => a[type]), hexColor);
+            EventBus.getInstance().dispatch<ThemeEvent>('theme-change', ThemeEvent.updatedColor(type, hexColor));
         }
     }
 
@@ -120,6 +136,7 @@ export class ConfigService {
 
     static set algorithm(algorithm: string) {
         localStorage.setItem(this.getPropertyName(this.defaultConfig, a => a.algorithm), algorithm);
+        EventBus.getInstance().dispatch<Event>('config-change', new Event('config-change'));
     }
 
     static get algorithm(): AllowedAlgorithmTypes {
@@ -128,6 +145,7 @@ export class ConfigService {
 
     static setComponent(type: Component, doShow: boolean) {
         localStorage.setItem(this.getPropertyName(this.defaultConfig, a => a[type]), doShow.toString());
+        EventBus.getInstance().dispatch<Event>('config-change', new Event('config-change'));
     }
 
     static getComponent(type: Component) {
