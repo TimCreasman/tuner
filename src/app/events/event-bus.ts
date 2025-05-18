@@ -3,7 +3,7 @@ import 'reflect-metadata';
 
 type Callback = (...args: any[]) => any;
 type OverridableLitElement = Constructor<Pick<LitElement, keyof LitElement>>
-type Constructor<T = {}> = new (...args: any[]) => T;
+type Constructor<T = Record<string, unknown>> = new (...args: any[]) => T;
 
 const EVENT_META = Symbol();
 
@@ -106,6 +106,8 @@ export function subscribable<T extends OverridableLitElement>(constructor: T)  {
                 this.$subscriptions.push(EventBus.getInstance().register(meta.event, method));
             });
         }
+        
+        //eslint-disable-next-line
         //@ts-ignore
         // TODO - Find out why this complains
         // Automatically unregister when component dies
