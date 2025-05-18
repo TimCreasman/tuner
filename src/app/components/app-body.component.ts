@@ -5,6 +5,7 @@ import { ConfigService } from '../services/config.service';
 import { ThemeEvent } from '../events/theme-event';
 import { ColorUtility } from '../utilities/color-utility';
 import ButtonStyles from '../components/shared/css/button-styles';
+import { EventBus, subscribe, Registry, subscribable } from '../events/event-bus';
 
 const AppBodyComponentStyles = css`
     :root {
@@ -68,6 +69,7 @@ const AppBodyComponentStyles = css`
 `;
 
 @customElement('tn-app')
+@subscribable
 export class AppBodyComponent extends LitElement {
     static styles = [AppBodyComponentStyles, Fontawesome, ButtonStyles];
 
@@ -76,6 +78,19 @@ export class AppBodyComponent extends LitElement {
 
     @property()
     showDonation = false;
+
+    @subscribe('theme-change')
+    private refreshTheme = (e: ThemeEvent) => {
+        e.updatedColors.forEach((value, color) => {
+            const rgbColor = ColorUtility.hexToRgb(value);
+            this.style.setProperty('--' + color + '-color', `${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b}`);
+        });
+    };
+
+    @subscribe('config-change')
+    private refresh = () => {
+        this.requestUpdate();
+    };
 
     connectedCallback() {
         super.connectedCallback();
@@ -88,6 +103,9 @@ export class AppBodyComponent extends LitElement {
         this.style.setProperty('--primary-color', `${primaryColorRGB.r}, ${primaryColorRGB.g}, ${primaryColorRGB.b}`);
         this.style.setProperty('--highlight-color', `${highlightColorRGB.r}, ${highlightColorRGB.g}, ${highlightColorRGB.b}`);
         this.style.setProperty('--background-color',`${backgroundColorRGB.r}, ${backgroundColorRGB.g}, ${backgroundColorRGB.b}`);
+
+        // Set up refresh event
+        // this.$themeChanged = EventBus.getInstance().register('theme-change', this.refreshTheme);
     }
 
     /**
@@ -103,12 +121,6 @@ export class AppBodyComponent extends LitElement {
         documentHeight();
     }
 
-    private refreshTheme(e: ThemeEvent) {
-        e.updatedColors.forEach((value, color) => {
-            const rgbColor = ColorUtility.hexToRgb(value);
-            this.style.setProperty('--' + color + '-color', `${rgbColor.r}, ${rgbColor.g}, ${rgbColor.b}`);
-        });
-    }
 
     private toggleSettings() {
         this.showDonation = false;
@@ -117,7 +129,7 @@ export class AppBodyComponent extends LitElement {
 
     private renderSettings() {
         return this.showSettings ? html`
-            <tn-settings @settings-close="${this.toggleSettings}" @theme-changed="${this.refreshTheme}"></tn-settings>` : nothing;
+            <tn-settings @settings-close="${this.toggleSettings}"></tn-settings>` : nothing;
     }
 
     private toggleDonation() {
@@ -147,7 +159,7 @@ export class AppBodyComponent extends LitElement {
     }
 
     private renderButtonSettings() {
-        if (!ConfigService.getComponent('settingsButton') && !this.showSettings) {
+        if (!ConfigService.getComponent('settingsButton')) {
             return nothing;
         }
         return html`

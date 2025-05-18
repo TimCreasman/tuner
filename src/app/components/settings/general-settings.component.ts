@@ -2,15 +2,17 @@ import { customElement, html, LitElement, nothing, state } from 'lit-element';
 import { SettingsComponentStyles } from './settings.component';
 import Fontawesome from '../../components/shared/css/fontawesome';
 import { ConfigService } from '../../services/config.service';
+import { subscribable, subscribe } from '../../events/event-bus';
 
 @customElement('tn-general-settings')
+@subscribable
 export class GeneralSettingsComponent extends LitElement {
     static styles = [SettingsComponentStyles, Fontawesome];
 
-    @state()
-    private frequencyOfA = ConfigService.frequencyOfA;
-    @state()
-    private accidentalMode = ConfigService.accidentalMode;
+    @subscribe('config-change')
+    private refresh = () => {
+        this.requestUpdate();
+    };
 
     constructor() {
         super();
@@ -18,18 +20,15 @@ export class GeneralSettingsComponent extends LitElement {
 
     private updateAccidentalMode(inputEvent: InputEvent): void {
         const value = (<HTMLInputElement>inputEvent.target).checked === false ? 1 : 0;
-        this.accidentalMode = value;
         ConfigService.accidentalMode = value;
     }
 
     private resetFrequencyOfA() {
-        this.frequencyOfA = ConfigService.defaultConfig.frequencyOfA;
         ConfigService.frequencyOfA = ConfigService.defaultConfig.frequencyOfA;
     }
 
     private updateFrequencyOfA(inputEvent: InputEvent): void {
         const value = Number((<HTMLInputElement>inputEvent.target).value);
-        this.frequencyOfA = value;
         ConfigService.frequencyOfA = value;
     }
  
@@ -42,7 +41,7 @@ export class GeneralSettingsComponent extends LitElement {
                             <label for="flats" class="switch">
                                 <input id="flats"
                                        type="checkbox"
-                                       .checked="${(this.accidentalMode === 0)}"
+                                       .checked="${(ConfigService.accidentalMode === 0)}"
                                        @click=${this.updateAccidentalMode}>
                                 <span class="slider round"></span>
                             </label>
@@ -53,12 +52,12 @@ export class GeneralSettingsComponent extends LitElement {
                                    type="range"
                                    max="${ConfigService.AUpperBoundFreq}"
                                    min="${ConfigService.ALowerBoundFreq}"
-                                   .value="${this.frequencyOfA}"
+                                   .value="${ConfigService.frequencyOfA}"
                                    @input=${this.updateFrequencyOfA}>
                             <label style="flex: 1" for="frequencyOfA">
-                                A = ${this.frequencyOfA}HZ
+                                A = ${ConfigService.frequencyOfA}HZ
                             </label>
-                            ${this.frequencyOfA !== ConfigService.defaultConfig.frequencyOfA ? html`
+                            ${ConfigService.frequencyOfA !== ConfigService.defaultConfig.frequencyOfA ? html`
                                 <i class="fa fa-undo" @click=${(this.resetFrequencyOfA)}></i>` : nothing}
                         </div>
                     </div>

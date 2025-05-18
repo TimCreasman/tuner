@@ -7,7 +7,7 @@ export class ThemeEvent extends Event {
     updatedColors: Map<ThemeColor, string>;
 
     private constructor(updatedColors: Map<ThemeColor, string>) {
-        super('theme-changed', { bubbles: true, composed: true });
+        super('theme-change', { bubbles: true, composed: true });
         this.updatedColors = updatedColors;
     }
 
