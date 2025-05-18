@@ -16,13 +16,13 @@ describe('LogUtility', function () {
             ConfigService.debugMode = true;
             const debugSpy = spy(console, 'debug');
             Logger.debug('should log', 'should also log');
-            expect(debugSpy.calledWith(['should log', 'should also log'])).to.be.true;
+            expect(debugSpy.calledWith('should log', 'should also log')).to.be.true;
             debugSpy.restore();
 
             // Turn off debug mode:
             ConfigService.debugMode = true;
             Logger.debug('should not log');
-            expect(debugSpy.neverCalledWith(['should not log'])).to.be.true;
+            expect(debugSpy.neverCalledWith('should not log')).to.be.true;
         });
     });
 
@@ -30,7 +30,7 @@ describe('LogUtility', function () {
         it('should log an error', function () {
             const errorSpy = spy(console, 'error');
             Logger.error('should log error');
-            expect(errorSpy.calledWith(['should log error'])).to.be.true;
+            expect(errorSpy.calledWith('should log error')).to.be.true;
         });
     });
 });
