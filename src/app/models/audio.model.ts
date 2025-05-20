@@ -10,6 +10,8 @@ export interface AudioSource {
     get sourceNode(): MediaStreamAudioSourceNode | OscillatorNode;
 
     connect(): Promise<AudioSource>;
+
+    disconnect(): Promise<void>;
 }
 
 export class MicSource implements AudioSource {
@@ -37,6 +39,7 @@ export class MicSource implements AudioSource {
                     echoCancellation: false,
                     autoGainControl: false,
                     noiseSuppression: false,
+                    // Not supported on safari
                     latency: 0
                 }
             });
@@ -59,6 +62,14 @@ export class MicSource implements AudioSource {
         // in most browsers the audio context gets automatically suspended, so it needs to be resumed here
         await this.audioContext.resume();
         return this;
+    }
+
+    public async disconnect(): Promise<void> {
+        try {
+            await this.audioContext.suspend();
+        } catch (error) {
+            Logger.error(error);
+        }
     }
 }
 
@@ -88,6 +99,10 @@ export class OscillatorSource implements AudioSource {
         // in most browsers the audio context gets automatically suspended, so it needs to be resumed here
         await this.audioContext.resume();
         return this;
+    }
+
+    public async disconnect() {
+        throw Error('Not implemented');
     }
 
     set frequency(_frequency: number) {
