@@ -94,7 +94,6 @@ export class TunerComponent extends LitElement {
 
   attributeChangedCallback(name: string, oldval: string, newval: string) {
     super.attributeChangedCallback(name, oldval, newval);
-
         if (this.isShown) {
             this.pitchDetectorService.startListening();
         } else {

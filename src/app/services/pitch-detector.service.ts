@@ -42,6 +42,7 @@ export class PitchDetectorService {
     }
 
     public stopListening(): void {
+        this._audioSource.disconnect();
         window.clearInterval(this.intervalReference);
     }
 
