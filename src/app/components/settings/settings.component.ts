@@ -1,9 +1,9 @@
-import { customElement, queryAll } from 'lit/decorators.js';
+import { customElement } from 'lit/decorators.js';
 import { css, html, LitElement } from 'lit';
 import Fontawesome from '../../components/shared/css/fontawesome';
 import { AccordionToggleEvent as AccordionOpenEvent } from '../../events/accordion-toggle-event';
 import buttonStyles from '../shared/css/button-styles';
-import { ThemeColor, themeColors, ThemeEvent } from '../../events/theme-event';
+import { ThemeEvent } from '../../events/theme-event';
 import { ConfigService } from '../../services/config.service';
 
 export const SettingsComponentStyles = css`

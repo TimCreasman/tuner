@@ -1,7 +1,5 @@
+import { ThemeColor, themeColors } from '../constants/themes';
 import { ConfigService } from '../services/config.service';
-
-export const themeColors = ['primary' , 'highlight' , 'background'] as const;
-export type ThemeColor = typeof themeColors[number];
 
 export class ThemeEvent extends Event {
     updatedColors: Map<ThemeColor, string>;
