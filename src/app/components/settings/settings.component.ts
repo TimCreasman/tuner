@@ -1,9 +1,9 @@
-import { customElement, queryAll } from 'lit/decorators.js';
+import { customElement } from 'lit/decorators.js';
 import { css, html, LitElement } from 'lit';
 import Fontawesome from '../../components/shared/css/fontawesome';
 import { AccordionToggleEvent as AccordionOpenEvent } from '../../events/accordion-toggle-event';
 import buttonStyles from '../shared/css/button-styles';
-import { ThemeColor, themeColors, ThemeEvent } from '../../events/theme-event';
+import { ThemeEvent } from '../../events/theme-event';
 import { ConfigService } from '../../services/config.service';
 
 export const SettingsComponentStyles = css`
@@ -112,7 +112,7 @@ export const SettingsComponentStyles = css`
     input[type="text"] {
         border: none;
         background: rgb(var(--background-color));
-        color: rgb(var(--highlight-color));
+        color: rgb(var(--text-color));
         align-self: stretch;
         border-radius: 1em;
         font-family: var(--font-family);
@@ -121,7 +121,7 @@ export const SettingsComponentStyles = css`
     select {
         border: none;
         background: rgb(var(--background-color));
-        color: rgb(var(--highlight-color));
+        color: rgb(var(--text-color));
         align-self: stretch;
         border-radius: 1em;
         font-family: var(--font-family);
@@ -142,7 +142,7 @@ export const SettingsComponentStyles = css`
         backdrop-filter: blur(25px);
         border-radius: 1em;
         background-color: rgba(0, 0, 0, 0.8);
-        color: rgb(var(--highlight-color));
+        color: rgb(var(--text-color));
     }
 
     .setting > .header {
@@ -163,7 +163,7 @@ export const SettingsComponentStyles = css`
     .bottom-button-container {
         margin-inline: 9rem;
         display: flex;
-        color: rgb(var(--highlight-color));
+        color: rgb(var(--text-color));
         text-align: center;
         justify-content: space-between;
     }

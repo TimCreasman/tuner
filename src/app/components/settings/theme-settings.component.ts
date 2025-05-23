@@ -1,14 +1,15 @@
 import { css, html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit-element';
-import { ThemeColor } from '../../events/theme-event';
 import { ConfigService } from '../../services/config.service';
 import Fontawesome from '../../components/shared/css/fontawesome';
 import { SettingsComponentStyles } from './settings.component';
 import { subscribe, subscribable } from '../../events/event-bus';
+import { Theme, ThemeColor, ThemesList } from '../../constants/themes';
 
 const ThemeSettingComponentStyles = css`
     .color-row {
         align-items: center;
+        justify-content: space-between;
     }
 
     .row input, select {
@@ -18,8 +19,8 @@ const ThemeSettingComponentStyles = css`
     .color-ball {
         display: inline-block;
         border-radius: 100%;
-        width: 1.5em;
-        height: 1.5em;
+        width: 1em;
+        height: 1em;
         -webkit-box-shadow: inset 0.3em -0.3em 0 0 rgba(0, 0, 0, 0.5);
         -moz-box-shadow: inset 0.3em -0.3em 0 0 rgba(0, 0, 0, 0.5);
         box-shadow: inset 0.3em -0.3em 0 0 rgba(0, 0, 0, 0.5);
@@ -40,6 +41,27 @@ const ThemeSettingComponentStyles = css`
     .color-label {
         flex: 1;
     }
+
+    .theme-container {
+        height: 10em;
+        overflow-y: scroll;
+    }
+
+    .d-inline {
+        display: inline-block;
+    }
+
+    .theme-name {
+        margin-inline-end: 1em;
+    }
+
+    .palette {
+        display: flex;
+        width: 50%;
+        gap: 0.5em;
+        border-radius: 1em;
+        padding: 0.3em;
+    }
 `;
 
 @customElement('tn-theme-settings')
@@ -57,13 +79,8 @@ export class ThemeSettingsComponent extends LitElement {
         super();
     }
 
-    private updateColor(inputEvent: InputEvent, color: ThemeColor): void {
-        const value = (<HTMLInputElement>inputEvent.target).value;
-        ConfigService.setColor(color, value);
-    }
-
-    private resetColor(color: ThemeColor) {
-        ConfigService.setColor(color, ConfigService.defaultConfig[color]);
+    private updateTheme(theme: Theme): void {
+        ConfigService.setTheme(theme);
     }
 
     protected render() {
@@ -71,36 +88,20 @@ export class ThemeSettingsComponent extends LitElement {
             <tn-accordion>
                 <div slot="header">Theme</div>
                 <div slot="content">
-                    <div class="row color-row">
-                        <div class="color-ball primary"></div>
-                        <input id="primary-color" type="text" maxlength="7" size="7"
-                               .value="${ConfigService.getColor('primary')}"
-                               @input="${(e: InputEvent) => this.updateColor(e, 'primary')}">
-                        <label for="primary-color" class="color-label">Primary</label>
-                        ${ConfigService.getColor('primary') !== ConfigService.defaultConfig.primary ? html`
-                            <i class="fa fa-undo" @click=${() => this.resetColor('primary')}></i>` : nothing}
+                    <div class="theme-container">
+                        ${ThemesList.map(theme => {
+                        return html`
+                            <div class="row color-row" @click=${() => this.updateTheme(theme)}>
+                                <span class="d-inline theme-name">${theme.name}</span>
+                                <span class="palette" style="background: ${theme.background}"> 
+                                    <span class="color-ball" style="background: ${theme.primary}"></span>
+                                    <span class="color-ball" style="background: ${theme.highlight}"></span>
+                                    <span class="color-ball" style="background: ${theme.text}"></span>
+                                </span>
+                            </div>
+                        `;
+                        })}
                     </div>
-                    <div class="row color-row">
-                        <div class="color-ball highlight"></div>
-                        <input id="highlight-color" type="text" maxlength="7" size="7"
-                               .value="${ConfigService.getColor('highlight')}"
-                               @input="${(e: InputEvent) => this.updateColor(e, 'highlight')}"
-                        >
-                        <label for="highlight-color" class="color-label">Highlight</label>
-                        ${ConfigService.getColor('highlight') !== ConfigService.defaultConfig.highlight ? html`
-                            <i class="fa fa-undo" @click=${() => this.resetColor('highlight')}></i>` : nothing}
-                    </div>
-                    <div class="row color-row">
-                        <div class="color-ball background"></div>
-                        <input id="background-color" type="text" maxlength="7" size="7"
-                               .value="${ConfigService.getColor('background')}"
-                               @input="${(e: InputEvent) => this.updateColor(e, 'background')}"
-                        >
-                        <label for="background-color" class="color-label">Background</label>
-                        ${ConfigService.getColor('background') !== ConfigService.defaultConfig.background ? html`
-                            <i class="fa fa-undo" @click=${() => this.resetColor('background')}></i>` : nothing}
-                    </div>
-                </div>
             </tn-accordion>
         `;
     }

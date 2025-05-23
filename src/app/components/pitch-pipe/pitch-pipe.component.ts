@@ -47,8 +47,16 @@ const PitchPipeComponentStyles = css`
         stroke: rgb(var(--background-color));
         fill: rgb(var(--primary-color));
     }
+    .fill-text-stroke-background {
+        stroke: rgb(var(--background-color));
+        fill: rgb(var(--text-color));
+    }
     .fill-background-stroke-primary {
         stroke: rgb(var(--primary-color));
+        fill: rgb(var(--background-color));
+    }
+    .fill-background-stroke-text {
+        stroke: rgb(var(--text-color));
         fill: rgb(var(--background-color));
     }
 
@@ -66,7 +74,7 @@ const PitchPipeComponentStyles = css`
         stroke-width: calc(var(--stroke-width) / 4);
     }
     .gear-note-accidental-selected {
-        font-size: 8em;
+        font-size: 6em;
     }
 `;
 
@@ -203,14 +211,17 @@ export class PitchPipeComponent extends LitElement {
                     'gear-note': true,
                     'center-text': true,
                     'gear-note-selected': this._currentNote.equals(note),
-                    'fill-primary-stroke-background': this._currentNote.equals(note),
+                    'fill-text-stroke-background': this._currentNote.equals(note),
                     'fill-background-stroke-primary': !this._currentNote.equals(note),
                 };
-                const noteAccidentalClasses = structuredClone(noteClasses);
-                noteAccidentalClasses['gear-note-accidental'] = true;
-                noteAccidentalClasses['fill-primary-stroke-background'] = !this._currentNote.equals(note);
-                noteAccidentalClasses['gear-note-accidental-selected'] = this._currentNote.equals(note);
-                noteAccidentalClasses['fill-background-stroke-primary'] = this._currentNote.equals(note);
+
+                const noteAccidentalClasses: {[key: string]: boolean} = {
+                    'gear-note-accidental': true,
+                    'center-text': true,
+                    'gear-note-accidental-selected': this._currentNote.equals(note),
+                    'fill-primary-stroke-background': !this._currentNote.equals(note),
+                    'fill-background-stroke-text': this._currentNote.equals(note),
+                };
                 return svg`
                     <text @click=${() => this.rotateToAngle(noteAngle)}
                         class="${classMap(noteClasses)}" x="0%" y="-33%"

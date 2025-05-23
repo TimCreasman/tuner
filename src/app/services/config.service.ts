@@ -1,7 +1,8 @@
+import { Theme, ThemeColor, themeColors } from '../constants/themes';
 import { EventBus } from '../events/event-bus';
-import { ThemeColor, themeColors, ThemeEvent } from '../events/theme-event';
+import { ThemeEvent } from '../events/theme-event';
 import { AllowedAlgorithmTypes } from '../models/algorithm.model';
-import { Component, components } from '../models/component.model';
+import { Component, components } from '../constants/components';
 import { MathUtility } from '../utilities/math-utility';
 
 type AppConfig = {
@@ -21,6 +22,7 @@ export class ConfigService {
         // Theme
         primary: '#FF7A00',
         highlight: '#FFFFFF',
+        text: '#FFFFFF',
         background: '#000000',
         // Pitch detection algorithm
         algorithm: 'McLeod',
@@ -123,7 +125,16 @@ export class ConfigService {
         return Number(this.getStoredValueOrDefault('frequencyOfA'));
     }
 
-    static setColor(type: ThemeColor, hexColor: string): void {
+    static setTheme(theme: Theme) {
+        const updatedColors = new Map<ThemeColor, string>();
+        themeColors.forEach(color => {
+            this.setColor(color, theme[color]);
+            updatedColors.set(color, theme[color]);
+        });
+        EventBus.getInstance().dispatch<ThemeEvent>('theme-change', new ThemeEvent(updatedColors));
+    }
+
+    private static setColor(type: ThemeColor, hexColor: string): void {
         if (this.isHexCode(hexColor)) {
             localStorage.setItem(this.getPropertyName(this.defaultConfig, a => a[type]), hexColor);
             EventBus.getInstance().dispatch<ThemeEvent>('theme-change', ThemeEvent.updatedColor(type, hexColor));
