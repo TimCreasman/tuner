@@ -35,6 +35,7 @@ const TunerNoteComponentStyles = css`
 
     .tuner-note-accidental {
         fill: rgb(var(--background-color));
+        stroke: rgb(var(--primary-color));
         font-size: 1em;
     }
 
@@ -48,6 +49,7 @@ const TunerNoteComponentStyles = css`
 
     .tuner-note-octave {
         fill: rgb(var(--background-color));
+        stroke: rgb(var(--primary-color));
         font-size: 1em;
     }
 
@@ -59,7 +61,7 @@ const TunerNoteComponentStyles = css`
     }
 
     .tuner-liquid {
-        fill: rgb(var(--primary-color));
+        fill: rgb(var(--text-color));
     }
 `;
 

@@ -36,7 +36,7 @@ const AccordionComponentStyles = css`
     details {
         border-radius: 1em;
         backdrop-filter: blur(25px);
-        background-color: rgba(var(--primary-color), 0.3);
+        background-color: rgba(var(--highlight-color), 0.1);
         color: rgb(var(--text-color));
         font-size: 2em;
 
@@ -49,11 +49,11 @@ const AccordionComponentStyles = css`
 
     details:hover {
         scale: 1.1;
-        background-color: rgba(var(--primary-color), 0.6);
+        background-color: rgba(var(--highlight-color), 0.3);
     }
 
     details[open] {
-        background-color: rgba(var(--primary-color), 0.6);
+        background-color: rgba(var(--highlight-color), 0.3);
     }
 
     .content {
