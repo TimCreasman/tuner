@@ -17,11 +17,12 @@ const AppBodyComponentStyles = css`
         --primary-color: ${unsafeCSS(ConfigService.defaultConfig.primary)};
         --background-color: ${unsafeCSS(ConfigService.defaultConfig.background)};
         --highlight-color: ${unsafeCSS(ConfigService.defaultConfig.highlight)};
+        --text-color: ${unsafeCSS(ConfigService.defaultConfig.text)};
         --font-family: "Archivo Black", sans-serif;
 
         // Set some defaults
         background-color: rgb(var(--background-color));
-        color: rgb(var(--primary-color));
+        color: rgb(var(--text-color));
         font-family: var(--font-family);
     }
 
@@ -48,7 +49,7 @@ const AppBodyComponentStyles = css`
     }
     
     .floating-button {
-        color: rgb(var(--highlight-color));
+        color: rgb(var(--text-color));
         font-size: clamp(1rem, 3cqi, 2rem);
         z-index: 2;
         position: absolute;
@@ -97,15 +98,14 @@ export class AppBodyComponent extends LitElement {
         this.calculateDocumentHeight();
 
         const primaryColorRGB = ColorUtility.hexToRgb(ConfigService.getColor('primary'));
+        const textColorRGB = ColorUtility.hexToRgb(ConfigService.getColor('text'));
         const highlightColorRGB = ColorUtility.hexToRgb(ConfigService.getColor('highlight'));
         const backgroundColorRGB = ColorUtility.hexToRgb(ConfigService.getColor('background'));
 
         this.style.setProperty('--primary-color', `${primaryColorRGB.r}, ${primaryColorRGB.g}, ${primaryColorRGB.b}`);
+        this.style.setProperty('--text-color',`${textColorRGB.r}, ${textColorRGB.g}, ${textColorRGB.b}`);
         this.style.setProperty('--highlight-color', `${highlightColorRGB.r}, ${highlightColorRGB.g}, ${highlightColorRGB.b}`);
         this.style.setProperty('--background-color',`${backgroundColorRGB.r}, ${backgroundColorRGB.g}, ${backgroundColorRGB.b}`);
-
-        // Set up refresh event
-        // this.$themeChanged = EventBus.getInstance().register('theme-change', this.refreshTheme);
     }
 
     /**

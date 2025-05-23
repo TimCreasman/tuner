@@ -24,7 +24,7 @@ const PitchPipePlayerComponentStyles = css`
         height: 9ch;
         border-radius: 50%;
         margin-top: 38.5%;
-        color: rgb(var(--highlight-color));
+        color: rgb(var(--text-color));
     }
 `;
 

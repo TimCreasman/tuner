@@ -112,7 +112,7 @@ export const SettingsComponentStyles = css`
     input[type="text"] {
         border: none;
         background: rgb(var(--background-color));
-        color: rgb(var(--highlight-color));
+        color: rgb(var(--text-color));
         align-self: stretch;
         border-radius: 1em;
         font-family: var(--font-family);
@@ -121,7 +121,7 @@ export const SettingsComponentStyles = css`
     select {
         border: none;
         background: rgb(var(--background-color));
-        color: rgb(var(--highlight-color));
+        color: rgb(var(--text-color));
         align-self: stretch;
         border-radius: 1em;
         font-family: var(--font-family);
@@ -142,7 +142,7 @@ export const SettingsComponentStyles = css`
         backdrop-filter: blur(25px);
         border-radius: 1em;
         background-color: rgba(0, 0, 0, 0.8);
-        color: rgb(var(--highlight-color));
+        color: rgb(var(--text-color));
     }
 
     .setting > .header {
@@ -163,7 +163,7 @@ export const SettingsComponentStyles = css`
     .bottom-button-container {
         margin-inline: 9rem;
         display: flex;
-        color: rgb(var(--highlight-color));
+        color: rgb(var(--text-color));
         text-align: center;
         justify-content: space-between;
     }

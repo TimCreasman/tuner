@@ -3,13 +3,20 @@
  * It has been modified to fit the format of this app
 **/
 
-export type Theme = typeof themes[ThemeName]; 
-export type ThemeName = keyof typeof themes;
+export type MonkeyTypeTheme = typeof monkeyTypeThemes[MonkeyTypeThemeName]; 
+export type MonkeyTypeThemeName = keyof typeof monkeyTypeThemes;
 
-export const themeColors = ['primary' , 'highlight' , 'background'] as const;
+export type Theme = {
+    name: string,
+    primary: string,
+    highlight: string,
+    background: string
+    text: string;
+}
+export const themeColors = ['primary' , 'highlight' , 'background', 'text'] as const;
 export type ThemeColor = typeof themeColors[number];
 
-export const themes = {
+export const monkeyTypeThemes = {
   '8008': {
     bgColor: '#333a45',
     mainColor: '#f44c7f',
@@ -1116,20 +1123,16 @@ export const themes = {
   },
 } as const;
 
-// export const ThemesList: Theme[] = Object.keys(themes)
-//   .sort()
-//   .map(
-//     (it) =>
-//       ({
-//         ...themes[it as ThemeName],
-//         name: it,
-//       } as Theme)
-//   );
+// Convert the monkey type theme names into an internal format
+export const ThemesList: Theme[] = Object.keys(monkeyTypeThemes)
+  .sort()
+  .map(name => {
+        return {
+            name: name,
+            primary : monkeyTypeThemes[name as MonkeyTypeThemeName].mainColor,
+            text : monkeyTypeThemes[name as MonkeyTypeThemeName].textColor,
+            highlight : monkeyTypeThemes[name as MonkeyTypeThemeName].subColor,
+            background : monkeyTypeThemes[name as MonkeyTypeThemeName].bgColor,
+        } as Theme;
+    });
 
-// export const ThemesListSorted = [
-//   ...ThemesList.sort((a, b) => {
-//     const b1 = hexToHSL(a.bgColor);
-//     const b2 = hexToHSL(b.bgColor);
-//     return b2.lgt - b1.lgt;
-//   }),
-// ];

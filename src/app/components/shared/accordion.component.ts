@@ -37,7 +37,7 @@ const AccordionComponentStyles = css`
         border-radius: 1em;
         backdrop-filter: blur(25px);
         background-color: rgba(var(--primary-color), 0.3);
-        color: rgb(var(--highlight-color));
+        color: rgb(var(--text-color));
         font-size: 2em;
 
         margin-block: 2rem;
@@ -60,7 +60,7 @@ const AccordionComponentStyles = css`
         padding-inline: 1em;
         padding-block-end: 1em;
         border-radius: 1em;
-        color: rgb(var(--highlight-color));
+        color: rgb(var(--text-color));
     }
 `;
 

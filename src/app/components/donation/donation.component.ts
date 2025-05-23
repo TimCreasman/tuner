@@ -13,7 +13,7 @@ export const DonationComponentStyles = css`
 
         margin: 2em;
         padding: 4em;
-        color: rgb(var(--highlight-color));
+        color: rgb(var(--text-color));
 
         height: 30vw;
         container-type: inline-size;

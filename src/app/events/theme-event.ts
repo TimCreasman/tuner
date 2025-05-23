@@ -4,7 +4,7 @@ import { ConfigService } from '../services/config.service';
 export class ThemeEvent extends Event {
     updatedColors: Map<ThemeColor, string>;
 
-    private constructor(updatedColors: Map<ThemeColor, string>) {
+    constructor(updatedColors: Map<ThemeColor, string>) {
         super('theme-change', { bubbles: true, composed: true });
         this.updatedColors = updatedColors;
     }

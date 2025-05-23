@@ -37,7 +37,7 @@ const SettingsComponentStyles = css`
         text-align: center;
         font-size: clamp(1rem, 4cqi, 4rem);
         justify-content: center;
-        color: rgb(var(--highlight-color));
+        color: rgb(var(--text-color));
     }
 
     .row {
