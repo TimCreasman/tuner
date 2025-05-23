@@ -2,7 +2,7 @@ import { ThemeColor, themeColors } from '../constants/themes';
 import { EventBus } from '../events/event-bus';
 import { ThemeEvent } from '../events/theme-event';
 import { AllowedAlgorithmTypes } from '../models/algorithm.model';
-import { Component, components } from '../models/component.model';
+import { Component, components } from '../constants/components';
 import { MathUtility } from '../utilities/math-utility';
 
 type AppConfig = {

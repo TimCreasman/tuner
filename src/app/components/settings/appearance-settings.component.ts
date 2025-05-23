@@ -2,7 +2,7 @@ import { css, customElement, html, LitElement, nothing } from 'lit-element';
 import { SettingsComponentStyles } from './settings.component';
 import Fontawesome from '../../components/shared/css/fontawesome';
 import { ConfigService } from '../../services/config.service';
-import { Component, components } from '../../models/component.model';
+import { Component, components } from '../../constants/components';
 import { subscribable, subscribe } from '../../events/event-bus';
 
 export const AppearanceSettingsComponentStyles = css`
