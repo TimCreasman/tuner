@@ -737,6 +737,7 @@ readers do not read off random characters that represent icons */
         font-size: clamp(1rem, 3cqi, 2rem);
         z-index: 2;
         position: absolute;
+        top: 0;
         margin: 0.5em;
         padding: 0.5em;
 
@@ -1168,6 +1169,7 @@ readers do not read off random characters that represent icons */
     .bottom-button {
         font-size: clamp(1rem, 3cqi, 2rem);
         margin: 0;
+        margin-bottom: 8rem;
     }
 
     .bottom-button-container {
