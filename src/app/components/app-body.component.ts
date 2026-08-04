@@ -53,6 +53,7 @@ const AppBodyComponentStyles = css`
         font-size: clamp(1rem, 3cqi, 2rem);
         z-index: 2;
         position: absolute;
+        top: 0;
         margin: 0.5em;
         padding: 0.5em;
 
@@ -103,9 +104,9 @@ export class AppBodyComponent extends LitElement {
         const backgroundColorRGB = ColorUtility.hexToRgb(ConfigService.getColor('background'));
 
         this.style.setProperty('--primary-color', `${primaryColorRGB.r}, ${primaryColorRGB.g}, ${primaryColorRGB.b}`);
-        this.style.setProperty('--text-color',`${textColorRGB.r}, ${textColorRGB.g}, ${textColorRGB.b}`);
+        this.style.setProperty('--text-color', `${textColorRGB.r}, ${textColorRGB.g}, ${textColorRGB.b}`);
         this.style.setProperty('--highlight-color', `${highlightColorRGB.r}, ${highlightColorRGB.g}, ${highlightColorRGB.b}`);
-        this.style.setProperty('--background-color',`${backgroundColorRGB.r}, ${backgroundColorRGB.g}, ${backgroundColorRGB.b}`);
+        this.style.setProperty('--background-color', `${backgroundColorRGB.r}, ${backgroundColorRGB.g}, ${backgroundColorRGB.b}`);
     }
 
     /**

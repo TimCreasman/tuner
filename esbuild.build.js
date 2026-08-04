@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import {build} from 'esbuild';
 import importGlobPlugin from 'esbuild-plugin-import-glob';
-import packageJson from './package.json' assert {type: 'json'};
+import packageJson from './package.json' with {type: 'json'};
 import sh from 'shelljs';
 import minimist from 'minimist';
 

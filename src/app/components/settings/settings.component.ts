@@ -158,6 +158,7 @@ export const SettingsComponentStyles = css`
     .bottom-button {
         font-size: clamp(1rem, 3cqi, 2rem);
         margin: 0;
+        margin-bottom: 8rem;
     }
 
     .bottom-button-container {
@@ -187,7 +188,7 @@ export class SettingsComponent extends LitElement {
 
         this.openedDetails = event.detailsElement;
     }
-    
+
     private handleClose(event: Event) {
         this.dispatchEvent(new CustomEvent('settings-close', event));
     }
